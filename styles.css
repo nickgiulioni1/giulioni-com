@@ -1,0 +1,299 @@
+/* giulioni.com — one-sheet letterhead. Rules, not boxes. */
+
+:root {
+  --paper: #f5f6f7;
+  --ink: #101418;
+  --ink-soft: #3a424c;
+  --ink-mute: #565e68;
+  --ultra: #1f2ec4;
+  --ultra-deep: #16209a;
+  --rule: #c6cad0;
+  --sans: "Libre Franklin", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: var(--ultra);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  color: var(--ultra-deep);
+  text-decoration-thickness: 2px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ultra);
+  outline-offset: 3px;
+}
+
+/* Press bar — the one full-bleed color gesture */
+.press-bar {
+  height: 14px;
+  background: var(--ultra);
+}
+
+.sheet {
+  width: min(1120px, 100% - 5rem);
+  margin-inline: auto;
+  padding-block: clamp(2.75rem, 6vw, 4.5rem) clamp(2rem, 5vw, 3.5rem);
+}
+
+/* Masthead */
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem 2rem;
+  padding-bottom: clamp(0.75rem, 1.5vw, 1.1rem);
+  border-bottom: 3px solid var(--ink);
+}
+
+.name {
+  margin: 0;
+  font-size: clamp(3rem, 8.4vw, 6rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 0.84;
+}
+
+.stamp {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.15rem;
+  text-align: right;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+/* Sheet body */
+.sheet-body {
+  display: grid;
+  grid-template-columns: minmax(0, 400px) minmax(0, 1fr);
+  grid-template-areas:
+    "plate intro"
+    "plate column";
+  column-gap: clamp(2rem, 4.5vw, 4rem);
+  row-gap: clamp(2rem, 4vw, 3rem);
+  padding-top: clamp(2rem, 4.5vw, 3.25rem);
+}
+
+.plate {
+  grid-area: plate;
+  align-self: stretch;
+  margin: 0;
+}
+
+/* Full-column plate: the portrait is set as tall as the text beside it. */
+.plate img {
+  width: 100%;
+  height: 100%;
+  min-height: 32rem;
+  object-fit: cover;
+  object-position: 0% 50%;
+  filter: grayscale(1) contrast(1.14) brightness(0.99);
+}
+
+.intro {
+  grid-area: intro;
+  max-width: 36rem;
+}
+
+.column {
+  grid-area: column;
+  min-width: 0;
+}
+
+.lede {
+  margin: 0 0 1.15rem;
+  font-size: clamp(1.3rem, 2.2vw, 1.6rem);
+  font-weight: 600;
+  line-height: 1.24;
+  letter-spacing: -0.02em;
+  max-width: 34rem;
+  text-wrap: balance;
+}
+
+.intro p:not(.lede) {
+  margin: 0 0 0.85rem;
+  color: var(--ink-soft);
+}
+
+.intro p:last-child {
+  margin-bottom: 0;
+}
+
+/* Section rubrics */
+.rubric {
+  margin: 0 0 1.15rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--ink);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* Numbered work index */
+.index {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.index li {
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 1fr);
+  column-gap: 0.5rem;
+  padding: 1.15rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.index li:last-child {
+  border-bottom: 0;
+  padding-bottom: 0.35rem;
+}
+
+.num {
+  grid-row: 1 / span 3;
+  font-size: 1.1rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  color: var(--ultra);
+  padding-top: 0.16rem;
+}
+
+.index h3 {
+  margin: 0 0 0.2rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+
+.index p {
+  margin: 0;
+  max-width: 48ch;
+  color: var(--ink-soft);
+}
+
+.state {
+  margin-top: 0.3rem !important;
+  font-size: 0.9rem;
+  color: var(--ink-mute) !important;
+}
+
+/* Contact */
+.contact {
+  margin-top: clamp(2rem, 4vw, 2.75rem);
+}
+
+.reach {
+  margin: 0;
+  font-size: clamp(1.5rem, 3.2vw, 2.15rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+}
+
+.reach a {
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.14em;
+}
+
+.aside {
+  margin: 0.7rem 0 0;
+  max-width: 44ch;
+  color: var(--ink-mute);
+  font-size: 0.98rem;
+}
+
+/* Colophon */
+.colophon {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.35rem 1.5rem;
+  margin-top: clamp(3rem, 7vw, 5rem);
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+.colophon p {
+  margin: 0;
+}
+
+/* Narrow: one column — name, lede, portrait, work, contact */
+@media (max-width: 860px) {
+  .sheet {
+    width: min(1120px, 100% - 2.5rem);
+  }
+
+  .sheet-body {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "intro"
+      "plate"
+      "column";
+  }
+
+  .plate {
+    max-width: 26rem;
+  }
+
+  .plate img {
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 4 / 5;
+    object-position: 0% 40%;
+  }
+}
+
+@media (max-width: 560px) {
+  .masthead {
+    align-items: flex-start;
+  }
+
+  .stamp {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .index li {
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+  }
+}
