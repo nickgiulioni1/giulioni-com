@@ -8,13 +8,16 @@ Personal site for Nick Giulioni. Static — no build step.
 python3 -m http.server 8791 --directory .
 ```
 
-Open `http://127.0.0.1:8791/`.
+Open `http://127.0.0.1:8791/`, `http://127.0.0.1:8791/career/`, or
+`http://127.0.0.1:8791/work/`.
 
 ## Deploy subset
 
 | Path | Role |
 |---|---|
-| `index.html` | Page |
+| `index.html` | Home page |
+| `career/index.html` | Career page |
+| `work/index.html` | What I'm Working On page |
 | `styles.css` | System |
 | `assets/portrait-nick.jpg` | Hero plate (only asset referenced) |
 | `vercel.json` | Security headers (CSP allows Google Fonts) |
