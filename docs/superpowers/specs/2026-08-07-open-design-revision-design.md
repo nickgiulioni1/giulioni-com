@@ -6,11 +6,11 @@ Refine the approved Open Design direction without changing its printed-letterhea
 
 ## Career page
 
-- Present all experience in reverse chronological order, with current work first and the oldest role last.
+- Present the three chapters in reverse-career order: current AI product work first, Indiana operator work second, and e-commerce leadership last. Within each chapter, present entries newest to oldest.
 - Preserve the three-chapter scan structure: AI product builder, Indiana operator, and e-commerce leadership.
-- Use GitHub issues #1, #2, #6, and #7, including their comments, as the authoritative content and date source. Do not reconstruct Career history from memory.
+- Use GitHub issues #1, #2, #6, and #7 in `nickgiulioni1/giulioni-com`, including their comments, as the authoritative content and date source. Do not reconstruct Career history from memory.
 - Add Laural Mill to the Indiana operator chapter as an owned/operated wedding venue acquired in March 2023.
-- Within each chapter, order entries by most recent start or acquisition date. Current overlapping roles may remain grouped in the same chapter; they do not need to be forced into a single interleaved timeline across chapters.
+- Within each chapter, order entries by most recent start or acquisition date. Current overlapping roles remain grouped in their chapter; the chapter structure intentionally takes precedence over one globally interleaved timeline.
 - Keep Ballpark as the bridge between construction operations and current AI product work.
 - Retain the existing print-specific treatment, verified facts, contact information, and restrained letterhead system.
 
@@ -52,12 +52,12 @@ The production repository remains unchanged except for this planning specificati
 
 ## Verification
 
-- Career entries read newest to oldest.
+- Career chapters read current-to-earliest, and entries within each chapter read newest-to-oldest.
 - Laural Mill appears with the March 2023 acquisition date and no invented details.
 - Home offers balanced paths to Career and Work.
 - Career and Work pointers use the same heading level, type treatment, and layout area; on narrow screens they stack in the same source order.
 - LinkedIn, X, and Instagram use the exact verified URLs above.
-- Home and Career receive HTTP 200 from the Open Design preview root, and Work remains reachable through its internal link.
+- Use the preview URL returned by the completed Open Design run. Home, Career, shared CSS, and the portrait must return HTTP 200 from that preview root, and Work must remain reachable through its internal link.
 - All internal links and local assets return successfully.
 - HTML parses and the shared stylesheet has an equal count of opening and closing braces.
 - Preserve the existing 800px and 560px responsive breakpoints.
