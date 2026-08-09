@@ -1,10 +1,10 @@
 """Static-site contract for giulioni.com.
 
 Deterministic, standard-library-only checks describing the approved final
-production state: a three-page static site (Home, Career, What I'm Working On)
-with root-relative internal links and assets, the approved contact links
-(Email, LinkedIn, X, Instagram), the approved Career chapter order, a
-non-interactive planned Media label, CSP-safe markup, balanced CSS braces, and
+production state: a four-page static site (Home, Career, What I'm Working On,
+Media) with root-relative internal links and assets, the approved contact
+links (Email, LinkedIn, X, Instagram), the approved Career chapter order, the
+approved Media appearance entries, CSP-safe markup, balanced CSS braces, and
 none of the prohibited design patterns (scripts, cards, pills, gradients,
 shadows, radii) or Open Design-only artifacts (data-od-id attributes, sidecars,
 home.html, DESIGN.md, brand-spec.md).
@@ -24,6 +24,7 @@ PAGES = {
     "home": "index.html",
     "career": "career/index.html",
     "work": "work/index.html",
+    "media": "media/index.html",
 }
 
 # Approved contact links (exact strings, no trailing variants).
@@ -36,6 +37,44 @@ SOCIAL_HREFS = (
 
 # Approved Career chapter order: chapter-name headings in document order.
 CAREER_CHAPTERS = ["AI product work", "Indiana operator", "E-commerce leadership"]
+
+# Approved Media appearances: (episode title, URL), exact strings.
+MEDIA_ENTRIES = (
+    (
+        "You WON'T BELIEVE Nick Giulioni's Journey from Tech to Real Estate",
+        "https://www.rootsrealty.co/podcast/nick-giulioni-real-estate",
+    ),
+    (
+        "The Leverage Podcast - Nick Giulioni",
+        "https://www.youtube.com/watch?v=_A2HrOjWe50",
+    ),
+    (
+        "Episode 1 - Nick Giulioni: How To Go From Side Hustle To Real Business",
+        "https://www.youtube.com/watch?v=dv72SopKqeM",
+    ),
+    (
+        "Convert I.T. Skills Into Long Distance Real Estate Investing Success"
+        " - Nick Giulioni",
+        "https://www.youtube.com/watch?v=B3gRQMjCng0",
+    ),
+    (
+        "Why He Left Facebook to Build a Multimillion-Dollar Portfolio"
+        " in the Midwest",
+        "https://getindiana.com/podcast/nick-giulioni-off-leash-construction",
+    ),
+    (
+        "Finding Deals In Today's Real Estate Market",
+        "https://www.simplequarters.com/podcasts/finding-deals-in-todays-real-estate-market",
+    ),
+    (
+        "JF2103: Part-time Out Of State Investing With Nick Giulioni",
+        "https://www.bestevercre.com/podcast/jf2103-part-time-out-of-state-investing-with-nick-giulioni",
+    ),
+    (
+        "Episode 4 Nick Giulioni",
+        "https://www.hackingrealestatepodcast.com/episodes/104-nick-giulioni",
+    ),
+)
 
 # External schemes that are exempt from the root-relative rule.
 EXTERNAL_PREFIXES = ("#", "mailto:", "tel:", "data:", "http://", "https://")
@@ -108,8 +147,7 @@ class StructureTests(unittest.TestCase):
 
 
 class NavigationTests(unittest.TestCase):
-    """Approved primary nav: Home, Career, What I'm Working On, plus a
-    non-interactive planned Media label."""
+    """Approved primary nav: Home, Career, What I'm Working On, Media."""
 
     def test_each_page_has_approved_navigation(self):
         for name in PAGES:
@@ -125,27 +163,28 @@ class NavigationTests(unittest.TestCase):
                 )
                 self.assertIn("/career/", hrefs, "%s nav missing /career/" % name)
                 self.assertIn("/work/", hrefs, "%s nav missing /work/" % name)
+                self.assertIn("/media/", hrefs, "%s nav missing /media/" % name)
 
-    def test_media_is_noninteractive_planned_label(self):
+    def test_media_is_an_interactive_link_with_no_planned_markup(self):
         for name in PAGES:
             try:
                 html = _read_page(name)
             except AssertionError as exc:
                 self.fail(str(exc))
-            nav = _nav_block(html)
+            clean = _strip_html_comments(html)
             with self.subTest(page=name):
-                self.assertIn("Media", nav, "%s nav missing Media label" % name)
                 self.assertIn(
-                    "Planned", nav, "%s nav missing 'Planned' note on Media" % name
+                    '<a href="/media/"',
+                    clean,
+                    "%s nav must link Media via <a href=\"/media/\"" % name,
                 )
-                anchors = "\n".join(
-                    re.findall(r"<a\b.*?</a>", nav, flags=re.S | re.I)
-                )
-                self.assertNotRegex(
-                    anchors,
-                    r">Media\s*<",
-                    "%s Media must not be an interactive link" % name,
-                )
+                for stale in ("nav-planned", "planned-note", "aria-disabled"):
+                    self.assertNotIn(
+                        stale,
+                        clean,
+                        "%s must not carry stale planned-Media markup %r"
+                        % (name, stale),
+                    )
 
 
 class RootRelativeTests(unittest.TestCase):
@@ -220,6 +259,85 @@ class CareerContentTests(unittest.TestCase):
         self.assertIn(
             "Laural Mill", html, "Career page must include the Laural Mill entry"
         )
+
+
+class MediaContentTests(unittest.TestCase):
+    """Media page carries exactly the eight approved appearances."""
+
+    @staticmethod
+    def _entries_block():
+        html = _strip_html_comments(_read_page("media"))
+        opens = re.findall(r'<section\s+class="media-entries">', html)
+        if len(opens) != 1:
+            raise AssertionError(
+                "media page must contain exactly one "
+                '<section class="media-entries"> (found %d)' % len(opens)
+            )
+        start = html.index('<section class="media-entries">')
+        end = html.index("</section>", start)
+        block = html[start : end + len("</section>")]
+        if "<section" in block[1:]:
+            raise AssertionError(
+                "media-entries section must not contain nested <section>"
+            )
+        return block
+
+    def test_exactly_one_media_entries_section_with_no_nesting(self):
+        self._entries_block()
+
+    def test_each_approved_url_appears_exactly_once_as_href(self):
+        block = self._entries_block()
+        for _title, url in MEDIA_ENTRIES:
+            with self.subTest(url=url):
+                self.assertEqual(
+                    block.count('href="%s"' % url),
+                    1,
+                    "media-entries must link %r exactly once" % url,
+                )
+
+    def test_every_external_href_in_block_is_an_approved_url(self):
+        block = self._entries_block()
+        found = set(re.findall(r'href="(https://[^"]*)"', block))
+        self.assertEqual(
+            found,
+            {url for _title, url in MEDIA_ENTRIES},
+            "media-entries external hrefs must equal the approved eight URLs",
+        )
+
+    def test_each_approved_episode_title_appears(self):
+        block = self._entries_block()
+        for title, _url in MEDIA_ENTRIES:
+            with self.subTest(title=title):
+                self.assertIn(
+                    title, block, "media-entries missing episode title %r" % title
+                )
+
+    def test_media_head_block_and_current_nav_state(self):
+        html = _read_page("media")
+        self.assertIn("<title>Media | Nick Giulioni</title>", html)
+        self.assertIn(
+            '<meta property="og:title" content="Media | Nick Giulioni">', html
+        )
+        self.assertIn(
+            '<meta property="og:description" content="Podcast and interview '
+            "appearances by Nick Giulioni, from real-estate investing to "
+            'operating businesses in Indiana.">',
+            html,
+        )
+        self.assertIn('<a href="/media/" aria-current="page">Media</a>', html)
+
+    def test_no_embed_markup_on_any_page(self):
+        for name in PAGES:
+            try:
+                html = _read_page(name)
+            except AssertionError as exc:
+                self.fail(str(exc))
+            clean = _strip_html_comments(html).lower()
+            with self.subTest(page=name):
+                for tag in ("<iframe", "<embed", "<object", "<script"):
+                    self.assertNotIn(
+                        tag, clean, "%s must not contain %s markup" % (name, tag)
+                    )
 
 
 class MarkupHygieneTests(unittest.TestCase):
