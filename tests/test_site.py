@@ -67,10 +67,6 @@ MEDIA_ENTRIES = (
         "https://www.simplequarters.com/podcasts/finding-deals-in-todays-real-estate-market",
     ),
     (
-        "JF2103: Part-time Out Of State Investing With Nick Giulioni",
-        "https://www.bestevercre.com/podcast/jf2103-part-time-out-of-state-investing-with-nick-giulioni",
-    ),
-    (
         "Episode 4 Nick Giulioni",
         "https://www.hackingrealestatepodcast.com/episodes/104-nick-giulioni",
     ),
@@ -262,7 +258,7 @@ class CareerContentTests(unittest.TestCase):
 
 
 class MediaContentTests(unittest.TestCase):
-    """Media page carries exactly the eight approved appearances."""
+    """Media page carries exactly the seven approved appearances."""
 
     @staticmethod
     def _entries_block():
@@ -301,7 +297,7 @@ class MediaContentTests(unittest.TestCase):
         self.assertEqual(
             found,
             {url for _title, url in MEDIA_ENTRIES},
-            "media-entries external hrefs must equal the approved eight URLs",
+            "media-entries external hrefs must equal the approved seven URLs",
         )
 
     def test_each_approved_episode_title_appears(self):
