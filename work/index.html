@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>What I'm Working On | Nick Giulioni</title>
-  <meta name="description" content="Current products and operating proof from Nick Giulioni, including Ballpark, A Little True, and Best Notes.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Selected work | Nick Giulioni</title>
+  <meta name="description" content="Selected work from Nick Giulioni: Ballpark, the AI construction-estimating product, and A Little True.">
+  <meta property="og:title" content="Selected work | Nick Giulioni">
+  <meta property="og:description" content="Selected work from Nick Giulioni: Ballpark, the AI construction-estimating product, and A Little True.">
   <meta name="theme-color" content="#1f2ec4">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,53 +15,87 @@
 </head>
 <body>
 <!--
-THESIS: Work is evidence, not a gallery. Ballpark shows how operating work becomes a tool.
-OWN-WORLD: A proof ledger made from typographic scale, numbered entries, rules, and one ultramarine press color.
-STORY: The flagship case study leads, current builds follow, then four operating receipts close the argument.
-FIRST VIEWPORT: Shared masthead, direct title, short purpose statement, and Ballpark at dominant scale.
-FORM: Editorial case-study sheet with asymmetrical hierarchy and no project cards.
-FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+THESIS: Selected work is one Ballpark case study plus one shipped product, plus the three receipts a recruiter expects.
+OWN-WORLD: Editorial case-study sheet with typographic scale, numbered entries, rules, and one ultramarine press color.
+STORY: Ballpark is the proof point that the operator-to-product seam is real.
+FIRST VIEWPORT: Masthead, page title, Ballpark case study.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review and the spec.
 -->
 <div class="press-bar" aria-hidden="true"></div>
 <main class="sheet">
   <header class="masthead">
-    <div class="masthead-main"><p class="site-name"><a href="/">Nick Giulioni</a></p><p class="stamp"><span>Carmel, Indiana</span><span>Operator and product builder</span></p></div>
-    <nav class="site-nav" aria-label="Primary"><a href="/">Home</a><a href="/career/">Career</a><a href="/work/" aria-current="page">What I'm Working On</a><a href="/media/">Media</a></nav>
+    <div class="masthead-main">
+      <p class="site-name"><a href="/">Nick Giulioni</a></p>
+      <p class="stamp"><span>AI Product · AI Solutions · Industry Principal</span><span>Construction tech and field-service software · Remote or Indianapolis</span></p>
+    </div>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="/">Home</a>
+      <a href="/career/">Resume</a>
+      <a href="/work/" aria-current="page">Selected work</a>
+      <a class="contact-link" href="mailto:nick@giulioni.com">Contact</a>
+    </nav>
   </header>
 
   <header class="page-head">
-    <div><p class="page-kicker">Current work and proof</p><h1 class="page-title">What I'm Working On</h1></div>
-    <p class="page-deck">I build tools from inside the work. These are the current products and the operating experience behind them.</p>
+    <div><p class="page-kicker">Selected work</p><h1 class="page-title">Selected work</h1></div>
+    <p class="page-deck">One AI product built from inside the operating work, one shipped iOS app, and the receipts behind them.</p>
   </header>
 
-  <section class="flagship">
-    <div class="flagship-mark" aria-hidden="true">01</div>
-    <div><p class="rubric">Flagship case study</p><h2>Ballpark</h2><p>AI construction estimating, built from inside a $3 million construction company because estimating was too slow. Ballpark began as an automated pricing tool for construction estimates and is now a standalone product.</p><p class="status">Current product work</p></div>
-  </section>
+  <article class="work-case" data-project="ballpark">
+    <p class="work-num" aria-hidden="true">01</p>
+    <header class="work-identity">
+      <h2>Ballpark</h2>
+      <p class="status">AI construction estimating</p>
+    </header>
+    <div class="case-story">
+      <dl class="case-facts">
+        <div class="case-fact" data-fact="context">
+          <dt>Operating context</dt>
+          <dd>Built inside a $3M+ construction operator in Greater Indianapolis because estimating was too slow and too hard to standardize.</dd>
+        </div>
+        <div class="case-fact" data-fact="problem">
+          <dt>Problem</dt>
+          <dd>Construction estimating was inconsistent and slow across the team; pricing knowledge lived in people's heads and one-off spreadsheets.</dd>
+        </div>
+        <div class="case-fact" data-fact="built">
+          <dt>Built</dt>
+          <dd>An AI-assisted estimating product that turns project details into reliable pricing with AI as a replaceable seam.</dd>
+        </div>
+        <div class="case-fact" data-fact="status">
+          <dt>Status</dt>
+          <dd>Current product work.</dd>
+        </div>
+      </dl>
+    </div>
+  </article>
 
-  <ol class="work-list">
-    <li class="work-item"><span class="work-num">02</span><h3>A Little True</h3><p>Shipped iOS app.</p><a href="https://alittletrue.com">alittletrue.com</a></li>
-    <li class="work-item"><span class="work-num">03</span><h3>Best Notes</h3><p>Markdown-first workspace.</p><span class="status">In progress</span></li>
-    <li class="work-item"><span class="work-num">04</span><h3>The Wilds &amp; Laural Mill</h3><p>Wedding venues I own and operate.</p><span class="status">Operating</span></li>
-  </ol>
+  <article class="work-case work-case-also-shipped" data-project="a-little-true">
+    <p class="work-num" aria-hidden="true">02</p>
+    <header class="work-identity">
+      <h2>Also shipped</h2>
+      <p class="status">A Little True</p>
+    </header>
+    <div class="case-story">
+      <p class="also-shipped-line">Shipped iOS app — <a class="destination-link" href="https://alittletrue.com">alittletrue.com</a>.</p>
+    </div>
+  </article>
 
   <section class="receipts">
-    <p class="rubric">Operating receipts</p><h2>The work behind the products</h2>
+    <p class="rubric">Operating receipts</p>
+    <h2>The work behind the products</h2>
     <div class="receipt-grid">
       <article class="receipt"><strong>3,000+</strong><p>doors supported by the maintenance department launched at Off Leash Construction.</p></article>
-      <article class="receipt"><strong>$3M</strong><p>in annual revenue in Off Leash Construction's first year.</p></article>
+      <article class="receipt"><strong>$3M+</strong><p>in annual revenue in Off Leash Construction's first year.</p></article>
       <article class="receipt"><strong>$150M</strong><p>annual budget managed with a team of six at Razer.</p></article>
-      <article class="receipt"><strong>48 hours</strong><p>to build a fully branded short-term-rental division pitch kit using AI-accelerated workflows.</p></article>
     </div>
   </section>
 
   <div class="contact-line">
     <a href="mailto:nick@giulioni.com">Email</a>
     <a href="https://www.linkedin.com/in/nickgiulioni">LinkedIn</a>
-    <a href="https://x.com/NickGiulioni">X</a>
-    <a href="https://www.instagram.com/nickgiulioni/">Instagram</a>
   </div>
-  <footer class="colophon"><p>&copy; 2026 Nick Giulioni</p><p>giulioni.com</p></footer>
+
+  <footer class="colophon"><p>&copy; 2026 Nick Giulioni</p><p><a href="/media/">Earlier media</a> · giulioni.com</p></footer>
 </main>
 </body>
 </html>
