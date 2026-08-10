@@ -1,7 +1,7 @@
 # Recruiter-First Site Direction
 
-**Status:** Owner-approved recruiter-first rewrite, 2026-08-10  
-**Scope:** `/`, `/career/`, `/work/`, `/media/`, plus `assets/nick-giulioni-resume.pdf`  
+**Status:** Owner-approved recruiter-first rewrite, 2026-08-10
+**Scope:** `/`, `/career/`, `/work/`, `/media/`, plus `assets/nick-giulioni-resume.pdf`
 **Design authority:** Preserve the connected-letterhead system in `styles.css`.
 
 ## Objective

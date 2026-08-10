@@ -53,10 +53,6 @@ if [[ "${PORT}" == "0" ]]; then
   PORT="$(python3 -c 'import socket; s=socket.socket(); s.bind(("127.0.0.1",0)); print(s.getsockname()[1]); s.close()')"
 fi
 
-if ! grep -q '^assets/$' "${REPO_ROOT}/.gitignore" 2>/dev/null && [[ ! -f "${OUTPUT_PDF}" ]]; then
-  :
-fi
-
 # Start the local server. Use python3 http.server so we don't introduce
 # other build dependencies. Background it, redirect output to a temp log.
 (
