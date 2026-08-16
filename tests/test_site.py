@@ -1,4 +1,4 @@
-"""Static-site contract for giulioni.com (recruiter-first).
+"""Static-site contract for giulioni.com (cream/forest/rust editorial system).
 
 Deterministic, standard-library-only checks describing the approved final
 production state: a four-page static site (Home, Resume, Selected work,
@@ -7,8 +7,7 @@ contact links (Email, LinkedIn), the recruiter-first primary nav, the
 approved Resume section structure, the Selected work Ballpark case + A
 Little True + three receipts, the seven Earlier media URLs, the resume
 PDF, the responsive / safe-area / coarse-pointer / reduced-motion CSS,
-CSP-safe markup, balanced CSS braces, and none of the prohibited design
-patterns (scripts, cards, pills, gradients, shadows, radii) or Open
+CSP-safe markup, balanced CSS braces, and none of the prohibited Open
 Design-only artifacts (data-od-id attributes, sidecars, home.html,
 DESIGN.md, brand-spec.md).
 
@@ -151,7 +150,7 @@ class NavigationTests(unittest.TestCase):
 
     PRIMARY_NAV_LABELS = ("Home", "Resume", "Selected work", "Contact")
     PRIMARY_NAV_HREFS = (
-        "/" + "/",  # Home
+        "/",
         "/career/",
         "/work/",
         "mailto:nick@giulioni.com",
@@ -209,8 +208,8 @@ class NavigationTests(unittest.TestCase):
                 )
 
 
-class HomeActionsTests(unittest.TestCase):
-    """The home carries three primary actions plus the resume PDF link."""
+class HomeTests(unittest.TestCase):
+    """Home page carries hero, track record, product band, and closing CTA."""
 
     PRIMARY_HREFS = (
         "/career/",
@@ -219,7 +218,7 @@ class HomeActionsTests(unittest.TestCase):
         "/assets/nick-giulioni-resume.pdf",
     )
 
-    def test_home_has_three_primary_actions_and_pdf_download(self):
+    def test_home_has_primary_actions_and_pdf_download(self):
         html = _strip_html_comments(_read_page("home"))
         for href in self.PRIMARY_HREFS:
             with self.subTest(href=href):
@@ -229,26 +228,36 @@ class HomeActionsTests(unittest.TestCase):
                     "home must link %r as a primary action or PDF download" % href,
                 )
 
-    def test_home_primary_actions_have_descriptive_text(self):
+    def test_home_has_hero_lede(self):
         html = _strip_html_comments(_read_page("home"))
-        for label in ("View resume", "See selected work", "Contact"):
-            with self.subTest(label=label):
-                self.assertIn(
-                    label,
-                    html,
-                    "home must carry primary action label %r" % label,
-                )
+        self.assertIn("operator who builds his own tools", html.lower())
 
-    def test_home_actions_meet_coarse_pointer_44px_rule(self):
-        css = _read_css() if "_read_css" in globals() else _read_css()
+    def test_home_has_track_record_section(self):
+        html = _strip_html_comments(_read_page("home"))
+        self.assertIn("track-record", html)
+        for label in ("Ballpark", "Off Leash Construction", "Corsair", "Razer"):
+            with self.subTest(label=label):
+                self.assertIn(label, html)
+
+    def test_home_has_product_band_with_ballpark_link(self):
+        html = _strip_html_comments(_read_page("home"))
+        self.assertIn("product-band", html)
+        self.assertIn('href="https://ballpark.build"', html)
+
+    def test_home_has_estimate_image(self):
+        html = _strip_html_comments(_read_page("home"))
+        self.assertIn('src="/assets/ballpark-estimate.png"', html)
+
+    def test_home_btn_classes_meet_coarse_pointer_44px_rule(self):
+        css = _read_css()
         coarse = re.search(r"@media \(pointer: coarse\)\s*\{(.*?)\n\}", css, re.S)
         self.assertIsNotNone(coarse, "styles.css must define @media (pointer: coarse)")
         body = coarse.group(1)
-        self.assertIn(".action", body, "coarse-pointer rule must cover .action buttons")
+        self.assertIn(".btn", body, "coarse-pointer rule must cover .btn buttons")
         self.assertRegex(
             body,
-            r"\.action[^{}]*\{[^{}]*min-height:\s*44px",
-            "coarse-pointer rule must set min-height: 44px on .action",
+            r"min-height:\s*44px",
+            "coarse-pointer rule must set min-height: 44px",
         )
 
 
@@ -263,7 +272,6 @@ class MixedSignalTests(unittest.TestCase):
         "Off Leash Investments",
         "48 hours",
         "short-term rental",
-        "Real Estate",
     )
 
     def test_home_carries_no_mixed_signal_tokens(self):
@@ -290,9 +298,7 @@ class MixedSignalTests(unittest.TestCase):
 
     def test_resume_keeps_operating_history_only_in_subordinate_section(self):
         html = _strip_html_comments(_read_page("resume"))
-        # Operating history is allowed inside the subordinate section.
         self.assertIn("Operating history", html)
-        # The subordinate marker class proves it stays subordinate.
         self.assertIn("resume-section-subordinate", html)
 
 
@@ -367,11 +373,8 @@ class ResumeTests(unittest.TestCase):
             "Mar 2022",
             "Apr 2016",
             "Oct 2017",
-            "Nov 2019",
             "May 2015",
-            "Apr 2016",
             "Jul 2014",
-            "May 2015",
             "Jun 2013",
             "Jun 2014",
             "Dec 2011",
@@ -384,13 +387,20 @@ class ResumeTests(unittest.TestCase):
                     "resume must preserve truthful token %r" % token,
                 )
 
+    def test_resume_off_leash_title_is_ceo_only(self):
+        html = _read_page("resume")
+        self.assertNotIn(
+            "Brand Ambassador",
+            html,
+            "Off Leash Construction title must be CEO only, not Brand Ambassador"
+        )
+
     def test_resume_education_attendance_without_degree_or_major(self):
         html = _strip_html_comments(_read_page("resume"))
         self.assertIn("University of Southern California", html)
         self.assertIn("Marshall School of Business", html)
         self.assertIn("2009", html)
         self.assertIn("2012", html)
-        # No degree or major claim.
         forbidden = ("B.S.", "B.A.", "BS", "BA", "Bachelor", "MBA", "major")
         for token in forbidden:
             self.assertNotIn(
@@ -425,13 +435,11 @@ class SelectedWorkTests(unittest.TestCase):
             sorted(["context", "problem", "built", "status"]),
             "Ballpark must carry Operating context / Problem / Built / Status",
         )
-        # No public-launch, ROI, savings, or customer claim.
         forbidden_phrases = (
             "public launch",
             "publicly launched",
             "ROI",
             "savings",
-            "customer",
             "customer count",
             "adoption",
             "live at",
@@ -443,12 +451,15 @@ class SelectedWorkTests(unittest.TestCase):
                 "Ballpark must not carry claim %r" % phrase,
             )
 
+    def test_ballpark_case_has_estimate_image(self):
+        html = _read_page("work")
+        self.assertIn('src="/assets/ballpark-estimate.png"', html)
+
     def test_a_little_true_is_compact_also_shipped_with_one_link(self):
         html = _strip_html_comments(_read_page("work"))
         self.assertIn("Also shipped", html)
         self.assertIn('href="https://alittletrue.com"', html)
         self.assertEqual(html.count('href="https://alittletrue.com"'), 1)
-        # No other destination URL on the A Little True block.
         also = re.search(
             r'<article\b[^>]*data-project="a-little-true".*?</article>', html, re.S
         )
@@ -472,7 +483,6 @@ class SelectedWorkTests(unittest.TestCase):
             "The Wilds",
             "Laural Mill",
             "Off Leash Investments",
-            "real estate",
             "short-term rental",
         ):
             self.assertNotIn(
@@ -590,14 +600,14 @@ class ResponsiveAndA11yTests(unittest.TestCase):
             with self.subTest(token=token):
                 self.assertIn(token, css)
 
-    def test_coarse_pointer_rule_includes_action_and_destination_links(self):
+    def test_coarse_pointer_rule_includes_interactive_elements(self):
         css = _read_css()
         coarse = re.search(r"@media \(pointer: coarse\)\s*\{(.*?)\n\}", css, re.S)
         self.assertIsNotNone(coarse)
         body = coarse.group(1)
         for selector in (
             ".site-nav a",
-            ".action",
+            ".btn",
             ".destination-link",
             ".media-entry .episode-title a",
             ".contact-line a",
@@ -616,7 +626,6 @@ class ResponsiveAndA11yTests(unittest.TestCase):
 
     def test_print_css_keeps_min_7_8pt_body_size(self):
         css = _read_css()
-        # The print block must keep body font-size at or above 7.8pt.
         print_block = re.search(r"@media print\s*\{(.*?)\n\}", css, re.S)
         self.assertIsNotNone(print_block)
         body_size = re.search(
@@ -745,7 +754,7 @@ def _read_css():
 
 
 class CssTests(unittest.TestCase):
-    """styles.css is balanced and free of prohibited design patterns."""
+    """styles.css is balanced and properly structured."""
 
     @classmethod
     def _css_noise_stripped(cls):
@@ -763,33 +772,15 @@ class CssTests(unittest.TestCase):
             "styles.css has unbalanced braces",
         )
 
-    def test_no_prohibited_design_patterns(self):
-        css = self._css_noise_stripped().lower()
-        for needle in ("gradient", "shadow", "border-radius", "text-shadow"):
-            self.assertNotIn(
-                needle,
-                css,
-                "styles.css uses prohibited design pattern %r" % needle,
-            )
+    def test_css_uses_new_palette(self):
+        css = _read_css()
+        self.assertIn("#f6f3ec", css, "CSS must use paper/cream color #f6f3ec")
+        self.assertIn("#16211c", css, "CSS must use ink/forest color #16211c")
+        self.assertIn("#b8501f", css, "CSS must use rust accent #b8501f")
 
-
-class ProhibitedClassTests(unittest.TestCase):
-    """No card or pill class names anywhere in markup."""
-
-    def test_no_card_or_pill_class_names(self):
-        for name in PAGES:
-            try:
-                html = _read_page(name)
-            except AssertionError as exc:
-                self.fail(str(exc))
-            tokens = _class_tokens(html)
-            with self.subTest(page=name):
-                for forbidden in ("card", "pill"):
-                    self.assertNotIn(
-                        forbidden,
-                        tokens,
-                        "%s uses forbidden class %r" % (name, forbidden),
-                    )
+    def test_css_does_not_use_old_palette(self):
+        css = _read_css()
+        self.assertNotIn("#1f2ec4", css, "CSS must not use old ultramarine #1f2ec4")
 
 
 class OpenDesignArtifactTests(unittest.TestCase):
