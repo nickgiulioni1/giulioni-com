@@ -232,12 +232,35 @@ class HomeTests(unittest.TestCase):
         html = _strip_html_comments(_read_page("home"))
         self.assertIn("operator who builds his own tools", html.lower())
 
+    def test_home_has_approved_hero_thesis(self):
+        html = _strip_html_comments(_read_page("home"))
+        for phrase in (
+            "expensive problem",
+            "$150M annual budget",
+            "$3M in its first year",
+            "3,000+ doors",
+            "Estimating was the thing that kept breaking",
+            "Ballpark",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(
+                    phrase,
+                    html,
+                    "hero thesis must contain approved phrase %r" % phrase,
+                )
+
     def test_home_has_track_record_section(self):
         html = _strip_html_comments(_read_page("home"))
         self.assertIn("track-record", html)
         for label in ("Ballpark", "Off Leash Construction", "Corsair", "Razer"):
             with self.subTest(label=label):
                 self.assertIn(label, html)
+
+    def test_home_track_record_has_three_cells_per_row(self):
+        html = _strip_html_comments(_read_page("home"))
+        self.assertIn("track-problem", html, "track record must have problem cells")
+        self.assertIn("track-did", html, "track record must have what-I-did cells")
+        self.assertIn("track-outcome", html, "track record must have outcome cells")
 
     def test_home_has_product_band_with_ballpark_link(self):
         html = _strip_html_comments(_read_page("home"))

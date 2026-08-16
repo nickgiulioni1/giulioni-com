@@ -210,8 +210,8 @@ a:hover { color: var(--ink); text-decoration-thickness: 2px; }
 }
 .track-row {
   display: grid;
-  grid-template-columns: minmax(160px, 1fr) 2fr 1.5fr;
-  gap: 1.5rem;
+  grid-template-columns: minmax(140px, 1fr) 1.5fr 1.5fr 1.5fr;
+  gap: 1.25rem;
   padding: 1.25rem 1.5rem;
   background: var(--paper);
 }
@@ -229,7 +229,15 @@ a:hover { color: var(--ink); text-decoration-thickness: 2px; }
   font-weight: 600;
   color: var(--ink);
 }
-.track-desc { color: var(--ink-soft); }
+.track-label .track-years {
+  display: block;
+  font-weight: 400;
+  font-size: .8125rem;
+  color: var(--ink-mute);
+  margin-top: .25rem;
+}
+.track-problem { color: var(--ink-soft); }
+.track-did { color: var(--ink-soft); }
 .track-outcome { color: var(--ink-soft); }
 .track-outcome strong { color: var(--ink); font-weight: 600; }
 .track-outcome a { color: var(--rust); font-weight: 500; }
@@ -578,17 +586,23 @@ a:hover { color: var(--ink); text-decoration-thickness: 2px; }
   .portrait { max-width: 320px; order: -1; }
   .product-band-inner { grid-template-columns: 1fr; }
   .product-image { max-width: 600px; }
-  .track-row { grid-template-columns: 1fr; gap: .75rem; }
+  .track-row { grid-template-columns: 1fr; gap: .5rem; }
   .track-row-header { display: none; }
-  .track-label::before {
-    content: "Problem: ";
+  .track-problem::before,
+  .track-did::before,
+  .track-outcome::before {
+    display: block;
     font-family: var(--mono);
     font-size: .625rem;
     font-weight: 500;
     letter-spacing: .1em;
     text-transform: uppercase;
     color: var(--ink-mute);
+    margin-bottom: .25rem;
   }
+  .track-problem::before { content: "Problem"; }
+  .track-did::before { content: "What I did"; }
+  .track-outcome::before { content: "Result"; }
   .receipt-grid { grid-template-columns: 1fr; }
 }
 
