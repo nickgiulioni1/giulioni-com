@@ -249,6 +249,23 @@ class HomeTests(unittest.TestCase):
                     "hero thesis must contain approved phrase %r" % phrase,
                 )
 
+    def test_home_carries_target_role_language(self):
+        html = _strip_html_comments(_read_page("home"))
+        for phrase in (
+            "AI product",
+            "solutions",
+            "enablement",
+            "forward-deployed",
+            "construction",
+            "field service",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(
+                    phrase.lower(),
+                    html.lower(),
+                    "home must carry target-role phrase %r" % phrase,
+                )
+
     def test_home_has_track_record_section(self):
         html = _strip_html_comments(_read_page("home"))
         self.assertIn("track-record", html)
@@ -370,9 +387,10 @@ class ResumeTests(unittest.TestCase):
     def test_resume_carries_target_role_language(self):
         html = _strip_html_comments(_read_page("resume"))
         for phrase in (
-            "AI Product",
-            "AI Solutions",
-            "Industry Principal",
+            "AI product",
+            "solutions",
+            "enablement",
+            "forward-deployed",
             "construction tech",
             "field-service software",
         ):
