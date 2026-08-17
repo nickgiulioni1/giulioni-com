@@ -269,7 +269,7 @@ class HomeTests(unittest.TestCase):
     def test_home_has_track_record_section(self):
         html = _strip_html_comments(_read_page("home"))
         self.assertIn("track-record", html)
-        for label in ("Ballpark", "Off Leash Construction", "Corsair", "Razer"):
+        for label in ("Ballpark", "Off Leash Construction", "Meta", "Corsair", "Razer"):
             with self.subTest(label=label):
                 self.assertIn(label, html)
 
@@ -298,6 +298,26 @@ class HomeTests(unittest.TestCase):
             body,
             r"min-height:\s*44px",
             "coarse-pointer rule must set min-height: 44px",
+        )
+
+    def test_home_carries_meta_unit_growth_figures(self):
+        html = _strip_html_comments(_read_page("home"))
+        for token in ("Meta", "Portal", "Oculus", "300%", "450%"):
+            with self.subTest(token=token):
+                self.assertIn(
+                    token,
+                    html,
+                    "home must carry Meta tenure token %r" % token,
+                )
+        self.assertRegex(
+            html,
+            r"units.{0,20}300%|300%.{0,20}units",
+            "home must mention units near 300% figure",
+        )
+        self.assertRegex(
+            html,
+            r"units.{0,20}450%|450%.{0,20}units",
+            "home must mention units near 450% figure",
         )
 
 
@@ -449,6 +469,26 @@ class ResumeTests(unittest.TestCase):
                 html,
                 "resume education must not claim degree or major %r" % token,
             )
+
+    def test_resume_carries_meta_unit_growth_figures(self):
+        html = _strip_html_comments(_read_page("resume"))
+        for token in ("Facebook / Meta", "Portal", "Oculus", "300%", "450%"):
+            with self.subTest(token=token):
+                self.assertIn(
+                    token,
+                    html,
+                    "resume must carry Meta tenure token %r" % token,
+                )
+        self.assertRegex(
+            html,
+            r"units.{0,20}300%|300%.{0,20}units",
+            "resume must mention units near 300% figure",
+        )
+        self.assertRegex(
+            html,
+            r"units.{0,20}450%|450%.{0,20}units",
+            "resume must mention units near 450% figure",
+        )
 
 
 class SelectedWorkTests(unittest.TestCase):
