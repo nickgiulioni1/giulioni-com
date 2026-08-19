@@ -230,7 +230,7 @@ class HomeTests(unittest.TestCase):
 
     def test_home_has_hero_lede(self):
         html = _strip_html_comments(_read_page("home"))
-        self.assertIn("operator who builds his own tools", html.lower())
+        self.assertIn("operator who doesn't accept the status quo", html.lower())
 
     def test_home_has_approved_hero_thesis(self):
         html = _strip_html_comments(_read_page("home"))
