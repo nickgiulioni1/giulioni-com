@@ -1,6 +1,6 @@
 # giulioni.com
 
-Personal site for Nick Giulioni. Static — no build step.
+Personal site for Nick Giulioni. Static. No build step.
 
 ## Design system
 
