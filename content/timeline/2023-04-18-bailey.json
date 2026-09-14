@@ -1,0 +1,19 @@
+{
+  "date": "2023-04-18",
+  "title": "Bailey arrives",
+  "place": "Carmel",
+  "coords": null,
+  "people": [
+    "Bailey",
+    "Diane"
+  ],
+  "tags": [
+    "personal"
+  ],
+  "kind": "milestone",
+  "chapter": "Family",
+  "photo_original": null,
+  "photo_styled": null,
+  "blurb": "Our family grew by one. A warm, quiet milestone.",
+  "visibility": "public"
+}

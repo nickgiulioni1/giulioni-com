@@ -84,3 +84,14 @@
   .tm-entry, .tm-entry-inner, .tm-card { transition: none; }
   .tm-entry.tm-reveal:not(.is-revealed) .tm-card { opacity: 1; transform: none; }
 }
+
+.tm-subtitle { color: var(--ink-soft); font-size: .95rem; margin: -.35rem 0 .85rem; font-style: italic; }
+.tm-kind--milestone .tm-entry-inner::before { background: var(--ink); }
+.tm-kind--period .tm-entry-inner::before { border-radius: 2px; }
+.tm-metrics { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; gap: .35rem; }
+.tm-metrics li { font-size: .85rem; color: var(--ink-soft); }
+.tm-metric-label { font-weight: 600; color: var(--ink); }
+.tm-metric-value { color: var(--ink); }
+.tm-links { margin: 1rem 0 0; font-size: .9rem; }
+.tm-entry-link { color: var(--ink); }
+.tm-date { white-space: pre-line; }

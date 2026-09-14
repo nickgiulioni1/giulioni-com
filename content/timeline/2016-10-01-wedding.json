@@ -1,0 +1,18 @@
+{
+  "date": "2016-10-01",
+  "title": "Wedding",
+  "place": null,
+  "coords": null,
+  "people": [
+    "Diane"
+  ],
+  "tags": [
+    "personal"
+  ],
+  "kind": "milestone",
+  "chapter": "Family",
+  "photo_original": null,
+  "photo_styled": null,
+  "blurb": "A day that started a life together. Short notes only for now.",
+  "visibility": "public"
+}
