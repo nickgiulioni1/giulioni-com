@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Timeline mock | Nick Giulioni</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Newsreader:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="timeline-mock.css">
+  <script src="entries.js" defer></script>
+  <script src="timeline-mock.js" defer></script>
+</head>
+<body class="timeline-page">
+  <a class="tm-skip" href="#entries">Skip to timeline</a>
+  <header class="tm-header tm-wrap">
+    <a class="tm-name" href="../index.html">Nick Giulioni</a>
+    <nav aria-label="Primary"><a href="../career/index.html">Resume</a><a href="../work/index.html">Selected work</a><a href="mailto:nick@giulioni.com">Get in touch ↗</a></nav>
+  </header>
+  <main>
+    <section class="tm-hero tm-wrap" aria-labelledby="headline">
+      <div><p class="tm-eyebrow">The timeline · Mock preview</p><h1 id="headline">Work, life.<br>A little more <em>in the open.</em></h1><p class="tm-intro">I'm Nick. I build AI products and run businesses.<br>Here are a few moments along the way.</p></div>
+      <aside class="tm-latest" aria-label="Latest timeline update"><p class="tm-eyebrow">Last updated</p><p id="last-updated">Loading entries…</p><p class="tm-eyebrow">Last entry</p><a id="last-entry" href="#entries">See the timeline ↓</a></aside>
+      <p class="tm-target">Open to AI product, solutions, enablement, and forward-deployed roles.<br><span>Construction tech / field-service · Remote or Indianapolis</span></p>
+    </section>
+    <div class="tm-filter-bar"><div class="tm-wrap tm-filter-inner">
+      <fieldset><legend>Show entries</legend><label><input type="checkbox" value="personal" checked> Personal</label><label><input type="checkbox" value="professional" checked> Professional</label></fieldset>
+      <p id="entry-count" role="status" aria-live="polite" aria-atomic="true">Loading…</p>
+    </div></div>
+    <section class="tm-wrap tm-feed" id="entries" aria-label="Timeline" tabindex="-1">
+      <p class="tm-note">Sample timeline. Dates are illustrative; personal stories are marked [PLACEHOLDER].</p>
+      <div id="timeline"></div>
+      <div id="empty-state" hidden><h2>No entries selected.</h2><p>Check Personal or Professional to bring the timeline back.</p></div>
+      <noscript>This mock needs JavaScript to show entries and filters. The production site remains JavaScript-free.</noscript>
+    </section>
+  </main>
+  <footer class="tm-wrap tm-footer"><span>Nick Giulioni</span><span>A timeline in progress · Local mock only</span><a href="mailto:nick@giulioni.com">Say hello ↗</a></footer>
+</body>
+</html>
