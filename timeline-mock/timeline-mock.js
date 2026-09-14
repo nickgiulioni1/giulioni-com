@@ -3,9 +3,25 @@
   const count = document.querySelector('#entry-count');
   const empty = document.querySelector('#empty-state');
   const filters = [...document.querySelectorAll('fieldset input')];
-  const formatDate = value => new Intl.DateTimeFormat('en-US', {
-    month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'
-  }).format(new Date(`${value}T00:00:00Z`));
+  const formatPart = (value, precision) => {
+    const date = new Date(`${value}T00:00:00Z`);
+    if (precision === 'year') {
+      return new Intl.DateTimeFormat('en-US', { year: 'numeric', timeZone: 'UTC' }).format(date);
+    }
+    if (precision === 'month') {
+      return new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(date);
+    }
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'
+    }).format(date);
+  };
+  const formatDateLabel = entry => {
+    const precision = entry.date_precision || 'day';
+    const start = formatPart(entry.date, precision);
+    if (!entry.date_end) return start;
+    const end = formatPart(entry.date_end, precision);
+    return start === end ? start : `${start} – ${end}`;
+  };
   const element = (tag, className, text) => {
     const node = document.createElement(tag);
     if (className) node.className = className;
@@ -24,13 +40,15 @@
   const entries = window.TIMELINE_ENTRIES.filter(entry => entry.visibility === 'public')
     .sort((a, b) => b.date.localeCompare(a.date));
   const cards = entries.map((entry, index) => {
-    const article = element('article', `tm-entry tm-entry--${index % 2 ? 'right' : 'left'}`);
+    const kind = entry.kind || 'moment';
+    const article = element('article', `tm-entry tm-entry--${index % 2 ? 'right' : 'left'} tm-kind--${kind}`);
     const inner = element('div', 'tm-entry-inner');
     article.append(inner);
     article.id = `entry-${index}`;
     article.dataset.tags = entry.tags.join(' ');
-    const date = element('time', 'tm-date', formatDate(entry.date));
-    date.dateTime = entry.date;
+    if (entry.chapter) article.dataset.chapter = entry.chapter;
+    const date = element('time', 'tm-date', formatDateLabel(entry));
+    date.dateTime = entry.date_end ? `${entry.date}/${entry.date_end}` : entry.date;
     inner.append(date);
     const card = element('div', 'tm-card');
     if (entry.photo_original || entry.photo_styled) {
@@ -51,10 +69,41 @@
       card.append(figure);
     }
     const copy = element('div', 'tm-copy');
-    copy.append(element('p', 'tm-tags', entry.tags.join(' / ')), element('h2', '', entry.title));
-    const context = [entry.place, entry.people.length ? `With ${entry.people.join(' & ')}` : null].filter(Boolean);
+    const metaBits = [];
+    if (entry.chapter) metaBits.push(entry.chapter);
+    metaBits.push(...entry.tags);
+    if (kind !== 'moment') metaBits.push(kind);
+    copy.append(element('p', 'tm-tags', metaBits.join(' / ')));
+    copy.append(element('h2', '', entry.title));
+    if (entry.subtitle) copy.append(element('p', 'tm-subtitle', entry.subtitle));
+    const people = Array.isArray(entry.people) ? entry.people : [];
+    const context = [entry.place, people.length ? `With ${people.join(' & ')}` : null].filter(Boolean);
     if (context.length) copy.append(element('p', 'tm-context', context.join(' · ')));
     copy.append(element('p', 'tm-blurb', entry.blurb));
+    if (Array.isArray(entry.metrics) && entry.metrics.length) {
+      const list = element('ul', 'tm-metrics');
+      entry.metrics.forEach(({ label, value }) => {
+        if (!label || value == null || value === '') return;
+        const item = element('li', '');
+        item.append(element('span', 'tm-metric-label', label), document.createTextNode(': '));
+        item.append(element('span', 'tm-metric-value', String(value)));
+        list.append(item);
+      });
+      if (list.childNodes.length) copy.append(list);
+    }
+    if (Array.isArray(entry.links) && entry.links.length) {
+      const nav = element('p', 'tm-links');
+      entry.links.forEach(({ label, url }, i) => {
+        if (!label || !url) return;
+        if (i) nav.append(document.createTextNode(' · '));
+        const a = element('a', 'tm-entry-link', label);
+        a.href = url;
+        a.rel = 'noopener noreferrer';
+        if (/^https?:\/\//i.test(url)) a.target = '_blank';
+        nav.append(a);
+      });
+      if (nav.childNodes.length) copy.append(nav);
+    }
     if (entry.blurb.includes('ballpark.build')) {
       const link = element('a', 'tm-product-link', 'Explore Ballpark ↗');
       link.href = 'https://ballpark.build';
@@ -66,7 +115,7 @@
     return article;
   });
   if (entries.length) {
-    document.querySelector('#last-updated').textContent = formatDate(entries[0].date);
+    document.querySelector('#last-updated').textContent = formatDateLabel(entries[0]);
     const latest = document.querySelector('#last-entry');
     latest.textContent = entries[0].title + ' ↓';
     latest.href = '#entry-0';

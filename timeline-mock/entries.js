@@ -12,7 +12,14 @@ window.TIMELINE_ENTRIES = [
     "photo_original": "/assets/portrait-nick.jpg",
     "photo_styled": null,
     "blurb": "[PLACEHOLDER] A quiet afternoon around Carmel. This is fictional sample copy; the portrait is an existing site asset, not a photo of this outing.",
-    "visibility": "public"
+    "visibility": "public",
+    "date_end": null,
+    "date_precision": "day",
+    "subtitle": null,
+    "chapter": null,
+    "kind": "moment",
+    "links": [],
+    "metrics": []
   },
   {
     "date": "2026-09-12",
@@ -29,7 +36,14 @@ window.TIMELINE_ENTRIES = [
     "photo_original": null,
     "photo_styled": null,
     "blurb": "[PLACEHOLDER] A little time together, with nowhere urgent to be. Fictional family check-in for this preview.",
-    "visibility": "public"
+    "visibility": "public",
+    "date_end": null,
+    "date_precision": "day",
+    "subtitle": null,
+    "chapter": null,
+    "kind": "moment",
+    "links": [],
+    "metrics": []
   },
   {
     "date": "2026-09-10",
@@ -44,7 +58,14 @@ window.TIMELINE_ENTRIES = [
     "photo_original": null,
     "photo_styled": null,
     "blurb": "The Wilds and Laural Mill are part of my operating context. This sample entry brings venue work into the timeline alongside life and product work.",
-    "visibility": "public"
+    "visibility": "public",
+    "date_end": null,
+    "date_precision": "day",
+    "subtitle": null,
+    "chapter": null,
+    "kind": "moment",
+    "links": [],
+    "metrics": []
   },
   {
     "date": "2025-01-01",
@@ -58,7 +79,14 @@ window.TIMELINE_ENTRIES = [
     "photo_original": "/assets/ballpark-estimate.png",
     "photo_styled": null,
     "blurb": "Ballpark is AI estimating at ballpark.build. The product grew out of the estimating work inside a construction business.",
-    "visibility": "public"
+    "visibility": "public",
+    "date_end": null,
+    "date_precision": "day",
+    "subtitle": null,
+    "chapter": null,
+    "kind": "moment",
+    "links": [],
+    "metrics": []
   },
   {
     "date": "2024-10-01",
@@ -72,7 +100,38 @@ window.TIMELINE_ENTRIES = [
     "photo_original": null,
     "photo_styled": null,
     "blurb": "Off Leash Construction reached $3M+ in year one, with a maintenance department covering 3,000+ doors.",
-    "visibility": "public"
+    "visibility": "public",
+    "date_end": null,
+    "date_precision": "day",
+    "subtitle": null,
+    "chapter": null,
+    "kind": "moment",
+    "links": [],
+    "metrics": []
+  },
+  {
+    "date": "2023-04-18",
+    "title": "Bailey arrives",
+    "place": "Carmel",
+    "coords": null,
+    "people": [
+      "Bailey",
+      "Diane"
+    ],
+    "tags": [
+      "personal"
+    ],
+    "kind": "milestone",
+    "chapter": "Family",
+    "photo_original": null,
+    "photo_styled": null,
+    "blurb": "Our family grew by one. A warm, quiet milestone.",
+    "visibility": "public",
+    "date_end": null,
+    "date_precision": "day",
+    "subtitle": null,
+    "links": [],
+    "metrics": []
   },
   {
     "date": "2022-03-01",
@@ -86,7 +145,14 @@ window.TIMELINE_ENTRIES = [
     "photo_original": null,
     "photo_styled": null,
     "blurb": "Portal units grew 300% and Oculus units grew 450% during my tenure.",
-    "visibility": "public"
+    "visibility": "public",
+    "date_end": null,
+    "date_precision": "day",
+    "subtitle": null,
+    "chapter": null,
+    "kind": "moment",
+    "links": [],
+    "metrics": []
   },
   {
     "date": "2019-11-01",
@@ -100,7 +166,14 @@ window.TIMELINE_ENTRIES = [
     "photo_original": null,
     "photo_styled": null,
     "blurb": "#1 NPD share and more than 50% year-over-year growth. Rookie of the Year in 2018, followed by the President's Award in 2019.",
-    "visibility": "public"
+    "visibility": "public",
+    "date_end": null,
+    "date_precision": "day",
+    "subtitle": null,
+    "chapter": null,
+    "kind": "moment",
+    "links": [],
+    "metrics": []
   },
   {
     "date": "2017-10-01",
@@ -114,6 +187,36 @@ window.TIMELINE_ENTRIES = [
     "photo_original": null,
     "photo_styled": null,
     "blurb": "A $150M budget and a team of six. 70% year-over-year growth and Amazon Gold.",
-    "visibility": "public"
+    "visibility": "public",
+    "date_end": null,
+    "date_precision": "day",
+    "subtitle": null,
+    "chapter": null,
+    "kind": "moment",
+    "links": [],
+    "metrics": []
+  },
+  {
+    "date": "2016-10-01",
+    "title": "Wedding",
+    "place": null,
+    "coords": null,
+    "people": [
+      "Diane"
+    ],
+    "tags": [
+      "personal"
+    ],
+    "kind": "milestone",
+    "chapter": "Family",
+    "photo_original": null,
+    "photo_styled": null,
+    "blurb": "A day that started a life together. Short notes only for now.",
+    "visibility": "public",
+    "date_end": null,
+    "date_precision": "day",
+    "subtitle": null,
+    "links": [],
+    "metrics": []
   }
 ];
