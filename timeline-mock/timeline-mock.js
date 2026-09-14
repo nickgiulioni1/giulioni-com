@@ -24,12 +24,14 @@
   const entries = window.TIMELINE_ENTRIES.filter(entry => entry.visibility === 'public')
     .sort((a, b) => b.date.localeCompare(a.date));
   const cards = entries.map((entry, index) => {
-    const article = element('article', 'tm-entry');
+    const article = element('article', `tm-entry tm-entry--${index % 2 ? 'right' : 'left'}`);
+    const inner = element('div', 'tm-entry-inner');
+    article.append(inner);
     article.id = `entry-${index}`;
     article.dataset.tags = entry.tags.join(' ');
     const date = element('time', 'tm-date', formatDate(entry.date));
     date.dateTime = entry.date;
-    article.append(date);
+    inner.append(date);
     const card = element('div', 'tm-card');
     if (entry.photo_original || entry.photo_styled) {
       const figure = element('figure', 'tm-photo');
@@ -59,7 +61,7 @@
       copy.append(link);
     }
     card.append(copy);
-    article.append(card);
+    inner.append(card);
     timeline.append(article);
     return article;
   });
@@ -75,12 +77,46 @@
   } else {
     document.querySelector('#last-updated').textContent = 'No entries yet';
   }
+  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const observer = 'IntersectionObserver' in window ? new IntersectionObserver(records => {
+    records.forEach(({ target, isIntersecting }) => {
+      if (isIntersecting && !target.classList.contains('is-filtered-out')) {
+        target.classList.add('is-revealed');
+        observer.unobserve(target);
+      }
+    });
+  }, { threshold: 0, rootMargin: '0px 0px -24px 0px' }) : null;
+  cards.forEach(card => {
+    if (observer && !motion.matches) {
+      card.classList.add('tm-reveal');
+      observer.observe(card);
+    } else card.classList.add('is-revealed');
+  });
+  motion.addEventListener('change', () => {
+    if (motion.matches) cards.forEach(card => {
+      card.classList.add('is-revealed');
+      observer?.unobserve(card);
+    });
+  });
+  // Keyboard navigation must never land on an unrevealed link.
+  timeline.addEventListener('focusin', event => {
+    event.target.closest('.tm-entry')?.classList.add('is-revealed');
+  });
   function applyFilters() {
     const selected = filters.filter(input => input.checked).map(input => input.value);
     let visible = 0;
     cards.forEach(card => {
-      card.hidden = !card.dataset.tags.split(' ').some(tag => selected.includes(tag));
-      if (!card.hidden) visible += 1;
+      const matches = card.dataset.tags.split(' ').some(tag => selected.includes(tag));
+      card.classList.toggle('is-filtered-out', !matches);
+      card.inert = !matches;
+      card.setAttribute('aria-hidden', String(!matches));
+      if (matches) {
+        visible += 1;
+        if (observer && !card.classList.contains('is-revealed')) {
+          observer.unobserve(card);
+          observer.observe(card);
+        }
+      }
     });
     count.textContent = `${visible} ${visible === 1 ? 'entry' : 'entries'}`;
     empty.hidden = visible !== 0;
