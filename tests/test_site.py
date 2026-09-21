@@ -232,8 +232,34 @@ class HomeTests(unittest.TestCase):
         html = _strip_html_comments(_read_page("home"))
         self.assertIn("operator who doesn't accept the status quo", html.lower())
 
-    def test_home_has_approved_hero_thesis(self):
+    def test_home_hero_is_lede_targeting_and_one_primary_cta(self):
+        """First screen stays skimmable: no career narrative, one primary CTA."""
         html = _strip_html_comments(_read_page("home"))
+        hero = html[html.index('<section class="home-hero"') : html.index("</section>")]
+        self.assertIn("hero-targeting", hero, "hero must carry a targeting line")
+        self.assertEqual(
+            hero.count("btn-primary"),
+            1,
+            "hero must offer exactly one primary CTA",
+        )
+        self.assertNotIn(
+            "btn-secondary",
+            hero,
+            "hero secondary buttons must be demoted to quiet links",
+        )
+        self.assertNotIn(
+            "expensive problem",
+            hero,
+            "career narrative must move out of the first screen",
+        )
+
+    def test_home_keeps_career_narrative_in_more_expand(self):
+        """The long Razer/Corsair/Meta paragraph stays on the page, below the
+        fold, inside a no-JavaScript <details> expand."""
+        html = _strip_html_comments(_read_page("home"))
+        start = html.index('<details class="track-more"')
+        expand = html[start : html.index("</details>", start)]
+        self.assertIn("<summary>", expand, "expand must have a summary control")
         for phrase in (
             "expensive problem",
             "$150M annual budget",
@@ -245,8 +271,8 @@ class HomeTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertIn(
                     phrase,
-                    html,
-                    "hero thesis must contain approved phrase %r" % phrase,
+                    expand,
+                    "career expand must contain approved phrase %r" % phrase,
                 )
 
     def test_home_carries_target_role_language(self):
@@ -319,6 +345,56 @@ class HomeTests(unittest.TestCase):
             r"units.{0,20}450%|450%.{0,20}units",
             "home must mention units near 450% figure",
         )
+
+
+class ShareCardTests(unittest.TestCase):
+    """Home, Resume, and Selected work ship portrait+title share cards.
+
+    Cards carry Nick's portrait only: no child faces in any public media."""
+
+    CARDS = {
+        "home": "og-home.png",
+        "resume": "og-career.png",
+        "work": "og-work.png",
+    }
+
+    def test_share_card_images_exist_at_1200x630(self):
+        for card in sorted(set(self.CARDS.values())):
+            path = os.path.join(REPO_ROOT, "assets", card)
+            with self.subTest(card=card):
+                self.assertTrue(os.path.isfile(path), "missing share card %r" % card)
+                with open(path, "rb") as handle:
+                    header = handle.read(24)
+                self.assertEqual(
+                    header[:8], b"\x89PNG\r\n\x1a\n", "%r must be PNG" % card
+                )
+                width = int.from_bytes(header[16:20], "big")
+                height = int.from_bytes(header[20:24], "big")
+                self.assertEqual((width, height), (1200, 630))
+
+    def test_pages_declare_absolute_card_urls_and_twitter_equivalents(self):
+        for name, card in self.CARDS.items():
+            html = _strip_html_comments(_read_page(name))
+            url = "https://giulioni.com/assets/%s" % card
+            with self.subTest(page=name):
+                for tag in (
+                    '<meta property="og:image" content="%s">' % url,
+                    '<meta property="og:image:width" content="1200">',
+                    '<meta property="og:image:height" content="630">',
+                    '<meta name="twitter:card" content="summary_large_image">',
+                    '<meta name="twitter:image" content="%s">' % url,
+                ):
+                    self.assertIn(tag, html, "%s missing %r" % (name, tag))
+                self.assertRegex(
+                    html,
+                    r'<meta property="og:image:alt" content="[^"]{10,}">',
+                    "%s needs og:image:alt text" % name,
+                )
+
+    def test_media_page_ships_no_share_card(self):
+        """Earlier media stays card-free rather than reusing a mismatched one."""
+        html = _strip_html_comments(_read_page("media"))
+        self.assertNotIn("og:image", html)
 
 
 class MixedSignalTests(unittest.TestCase):
