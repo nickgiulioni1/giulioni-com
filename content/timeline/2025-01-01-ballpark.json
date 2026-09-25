@@ -1,0 +1,14 @@
+{
+  "date": "2025-01-01",
+  "title": "Building Ballpark",
+  "place": null,
+  "coords": null,
+  "people": [],
+  "tags": [
+    "professional"
+  ],
+  "photo_original": "/assets/ballpark-estimate.png",
+  "photo_styled": null,
+  "blurb": "Ballpark is AI estimating at ballpark.build. The product grew out of the estimating work inside a construction business.",
+  "visibility": "public"
+}
