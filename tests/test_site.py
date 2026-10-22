@@ -270,6 +270,21 @@ class CanonicalUrlTests(unittest.TestCase):
             vercel = json.load(fh)
         self.assertIs(vercel.get("trailingSlash"), True)
 
+    def test_vercel_redirects_www_to_apex(self):
+        with open(_path("vercel.json"), encoding="utf-8") as fh:
+            vercel = json.load(fh)
+        self.assertEqual(
+            vercel.get("redirects"),
+            [
+                {
+                    "source": "/(.*)",
+                    "has": [{"type": "host", "value": "www.giulioni.com"}],
+                    "destination": "https://giulioni.com/$1",
+                    "permanent": True,
+                }
+            ],
+        )
+
 
 class NavigationTests(unittest.TestCase):
     """Approved primary nav: Home, Resume, Selected work, Contact."""

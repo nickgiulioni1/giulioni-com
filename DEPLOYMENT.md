@@ -2,6 +2,9 @@
 
 Backed by GitHub; deploys from `main`.
 
+The `www.giulioni.com` to `giulioni.com` redirect is defined in `vercel.json`,
+not in the Vercel dashboard's domain settings.
+
 - GitHub: `https://github.com/nickgiulioni1/giulioni-com`
 - Vercel project: `giulioni-com` (under nick-giulionis-projects)
 - Vercel project ID: `prj_v6dRhb9H3UQQ5CGzQLM8nblLIuib`
