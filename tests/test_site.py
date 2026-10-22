@@ -17,6 +17,7 @@ Run:
 """
 
 import hashlib
+import json
 import os
 import re
 import subprocess
@@ -143,6 +144,38 @@ class StructureTests(unittest.TestCase):
                     os.path.isfile(_path(rel)),
                     "required page %r is missing" % rel,
                 )
+
+
+class CanonicalUrlTests(unittest.TestCase):
+    """Each page names its public URL, with trailing slashes enforced by Vercel."""
+
+    def test_each_page_has_self_referencing_canonical_in_head(self):
+        urls = {
+            "home": "https://giulioni.com/",
+            "resume": "https://giulioni.com/career/",
+            "work": "https://giulioni.com/work/",
+            "media": "https://giulioni.com/media/",
+        }
+        for name, url in urls.items():
+            with self.subTest(page=name):
+                html = _strip_html_comments(_read_page(name))
+                head = re.search(r"<head\b[^>]*>(.*?)</head>", html, re.S | re.I)
+                self.assertIsNotNone(head, "%s must have a head element" % name)
+                canonicals = re.findall(
+                    r'<link\b[^>]*\brel="canonical"[^>]*>',
+                    head.group(1),
+                    flags=re.I,
+                )
+                self.assertEqual(
+                    ['<link rel="canonical" href="%s">' % url],
+                    canonicals,
+                    "%s must have exactly one self-referencing canonical" % name,
+                )
+
+    def test_vercel_enforces_trailing_slashes(self):
+        with open(_path("vercel.json"), encoding="utf-8") as fh:
+            vercel = json.load(fh)
+        self.assertIs(vercel.get("trailingSlash"), True)
 
 
 class NavigationTests(unittest.TestCase):
