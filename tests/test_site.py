@@ -1216,6 +1216,91 @@ class CspTests(unittest.TestCase):
         self.assertNotIn("'unsafe-inline'", vercel, "CSP must not allow 'unsafe-inline'")
         self.assertNotIn("'unsafe-eval'", vercel, "CSP must not allow 'unsafe-eval'")
 
+    def test_styles_and_fonts_are_same_origin_only(self):
+        with open(_path("vercel.json"), encoding="utf-8") as fh:
+            vercel = json.load(fh)
+        policies = [
+            header["value"]
+            for rule in vercel["headers"]
+            for header in rule["headers"]
+            if header["key"].lower() == "content-security-policy"
+        ]
+        self.assertTrue(policies, "a CSP must be configured")
+        for policy in policies:
+            directives = dict(
+                (parts[0], parts[1:])
+                for directive in policy.split(";")
+                if (parts := directive.split())
+            )
+            self.assertEqual(["'self'"], directives.get("style-src"))
+            self.assertEqual(["'self'"], directives.get("font-src"))
+
+
+class FontTests(unittest.TestCase):
+    """The existing typefaces load locally without a third-party CSS request."""
+
+    FACES = {
+        "instrument-sans-latin-wght.woff2": ("Instrument Sans", "normal", "400 600"),
+        "newsreader-latin-normal.woff2": ("Newsreader", "normal", "400"),
+        "newsreader-latin-italic.woff2": ("Newsreader", "italic", "400"),
+    }
+
+    def test_no_google_font_references_in_any_page_css_or_csp(self):
+        paths = ["styles.css", "vercel.json"]
+        for directory, dirs, files in os.walk(REPO_ROOT):
+            dirs[:] = [d for d in dirs if not d.startswith(".")]
+            paths.extend(
+                os.path.relpath(os.path.join(directory, name), REPO_ROOT)
+                for name in files if name.endswith(".html")
+            )
+        for path in paths:
+            with self.subTest(path=path), open(_path(path), encoding="utf-8") as fh:
+                self.assertNotRegex(fh.read(), r"(?i)(?:googleapis|gstatic)\.com")
+
+    def test_font_faces_reference_real_woff2_files_with_original_styles(self):
+        faces = re.findall(r"@font-face\s*\{([^}]+)\}", _read_css())
+        self.assertEqual(len(self.FACES), len(faces))
+        referenced = set()
+        for face in faces:
+            match = re.search(r'url\("(/assets/fonts/([^"/]+))"\)', face)
+            self.assertIsNotNone(match, "font sources must be root-relative")
+            url, filename = match.groups()
+            self.assertIn(filename, self.FACES)
+            referenced.add(filename)
+            family, style, weight = self.FACES[filename]
+            self.assertIn('font-family: "%s";' % family, face)
+            self.assertIn("font-style: %s;" % style, face)
+            self.assertIn("font-weight: %s;" % weight, face)
+            self.assertIn("font-display: swap;", face)
+            with open(_path(url.lstrip("/")), "rb") as fh:
+                self.assertEqual(b"wOF2", fh.read(4), "must be a WOFF2 file")
+        self.assertEqual(set(self.FACES), referenced)
+
+    def test_each_page_preloads_only_the_two_above_fold_faces(self):
+        expected = {
+            "/assets/fonts/instrument-sans-latin-wght.woff2",
+            "/assets/fonts/newsreader-latin-normal.woff2",
+        }
+        for name, path in {**PAGES, "not_found": "404.html"}.items():
+            with self.subTest(page=name):
+                with open(_path(path), encoding="utf-8") as fh:
+                    head = fh.read().split("</head>", 1)[0]
+                links = re.findall(r'<link\b[^>]*\brel="preload"[^>]*>', head)
+                self.assertEqual(2, len(links))
+                urls = set()
+                for link in links:
+                    attrs = dict(re.findall(r'(\w+)="([^"]*)"', link))
+                    self.assertEqual("font", attrs.get("as"))
+                    self.assertEqual("font/woff2", attrs.get("type"))
+                    self.assertRegex(link, r"\bcrossorigin(?:\s|=|>)")
+                    urls.add(attrs.get("href"))
+                self.assertEqual(expected, urls)
+
+    def test_both_font_licenses_ship_with_the_fonts(self):
+        for family in ("instrumentsans", "newsreader"):
+            with open(_path("assets/fonts/%s-OFL.txt" % family), encoding="utf-8") as fh:
+                self.assertIn("SIL OPEN FONT LICENSE Version 1.1", fh.read())
+
 
 if __name__ == "__main__":
     unittest.main()
