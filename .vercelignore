@@ -1,0 +1,15 @@
+# Deny repo internals; new site pages and assets remain deployable by default.
+# Root-anchored gitignore patterns: https://vercel.com/docs/deployments/vercel-ignore
+/*.md
+/PLAN*
+/docs
+/tests
+/tools
+/.github
+/.git
+/.gitignore
+/.vercel
+/.vercelignore
+
+# Unreferenced design preview; keep all other assets and vercel.json.
+/assets/favicon-preview.png
