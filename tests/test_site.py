@@ -16,6 +16,7 @@ Run:
     python3 -m unittest discover -s tests -v
 """
 
+import glob
 import hashlib
 import json
 import os
@@ -87,6 +88,45 @@ def _read_page(name):
         raise AssertionError("required page %r is missing (%s)" % (rel, path))
     with open(path, encoding="utf-8") as fh:
         return fh.read()
+
+
+def _image_chunks(path):
+    """(chunk id, payload) pairs of a PNG or RIFF WebP file, by content not extension."""
+    with open(path, "rb") as fh:
+        data = fh.read()
+    chunks = []
+    if data[:8] == b"\x89PNG\r\n\x1a\n":
+        i = 8
+        while i + 8 <= len(data):
+            n = int.from_bytes(data[i:i + 4], "big")
+            chunks.append((data[i + 4:i + 8].decode("latin-1"), data[i + 8:i + 8 + n]))
+            i += 12 + n
+    elif data[:4] == b"RIFF" and data[8:12] == b"WEBP":
+        i = 12
+        while i + 8 <= len(data):
+            n = int.from_bytes(data[i + 4:i + 8], "little")
+            chunks.append((data[i:i + 4].decode("latin-1"), data[i + 8:i + 8 + n]))
+            i += 8 + n + (n & 1)
+    else:
+        raise AssertionError("%s is neither PNG nor WebP" % path)
+    return dict(chunks)
+
+
+def _image_size(path):
+    """(width, height) of a PNG or WebP (VP8, VP8L, or VP8X) file."""
+    chunks = _image_chunks(path)
+    if "IHDR" in chunks:
+        ihdr = chunks["IHDR"]
+        return int.from_bytes(ihdr[0:4], "big"), int.from_bytes(ihdr[4:8], "big")
+    if "VP8X" in chunks:
+        x = chunks["VP8X"]
+        return int.from_bytes(x[4:7], "little") + 1, int.from_bytes(x[7:10], "little") + 1
+    if "VP8L" in chunks:
+        bits = int.from_bytes(chunks["VP8L"][1:5], "little")
+        return (bits & 0x3FFF) + 1, ((bits >> 14) & 0x3FFF) + 1
+    frame = chunks["VP8 "]
+    return (int.from_bytes(frame[6:8], "little") & 0x3FFF,
+            int.from_bytes(frame[8:10], "little") & 0x3FFF)
 
 
 def _strip_html_comments(html):
@@ -433,6 +473,24 @@ class ResponsiveImageTests(unittest.TestCase):
                                  ("636", "954") if name == "portrait-nick" else ("1280", "800"))
                 self.assertEqual(fallback.get("loading"),
                                  "lazy" if page == "home" and name == "ballpark-estimate" else None)
+
+    def test_ballpark_variants_match_master_ratio_and_carry_no_metadata(self):
+        """Every Ballpark size is regenerated from one master (#26)."""
+        master_w, master_h = _image_size(_path("assets/ballpark-estimate.png"))
+        self.assertEqual((master_w, master_h), (1280, 800))
+        for width in (360, 480, 600, 720, 960, 1200, 1280):
+            for ext in ("png", "webp"):
+                path = _path("assets/ballpark-estimate-%d.%s" % (width, ext))
+                with self.subTest(file=os.path.basename(path)):
+                    w, h = _image_size(path)
+                    self.assertEqual(w, width)
+                    self.assertEqual(w * master_h, h * master_w)
+        for path in sorted(glob.glob(_path("assets/ballpark-estimate*"))):
+            with self.subTest(file=os.path.basename(path)):
+                self.assertFalse(
+                    set(_image_chunks(path)) & {"eXIf", "tEXt", "iTXt", "zTXt", "EXIF", "XMP "},
+                    "%s carries metadata" % path,
+                )
 
 
 class ShareCardTests(unittest.TestCase):
