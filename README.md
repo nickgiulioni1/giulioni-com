@@ -44,7 +44,7 @@ Open `http://127.0.0.1:8791/`, `http://127.0.0.1:8791/career/`,
 | `media/index.html` | Earlier media archive (seven incumbent podcast appearances) |
 | `styles.css` | Cream/forest/rust editorial design system |
 | `assets/portrait-nick.jpg` | Hero portrait |
-| `assets/ballpark-estimate.png` | Ballpark estimate screenshot |
+| `assets/ballpark-estimate.png` | Cropped Ballpark.build page, customer details redacted; lossless 1176×646 PNG master. Responsive PNG/WebP widths: 360, 480, 600, 720, 960, 1176. |
 | `assets/nick-giulioni-resume.pdf` | Downloadable resume (PDF) |
 | `vercel.json` | Security headers (CSP allows Google Fonts) |
 

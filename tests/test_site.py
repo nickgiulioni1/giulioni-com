@@ -479,7 +479,7 @@ class ResponsiveImageTests(unittest.TestCase):
     def test_variants_exist_and_are_referenced(self):
         expected = {
             "portrait-nick": ("jpg", [160, 200, 320, 348, 400, 636]),
-            "ballpark-estimate": ("png", [360, 480, 600, 720, 960, 1200, 1280]),
+            "ballpark-estimate": ("png", [360, 480, 600, 720, 960, 1176]),
         }
         for page, names in (("home", list(expected)), ("work", ["ballpark-estimate"])):
             pictures = re.findall(r"<picture>.*?</picture>", _read_page(page), re.S)
@@ -508,26 +508,53 @@ class ResponsiveImageTests(unittest.TestCase):
                 ])
                 self.assertTrue(fallback["alt"])
                 self.assertEqual((fallback["width"], fallback["height"]),
-                                 ("636", "954") if name == "portrait-nick" else ("1280", "800"))
+                                 ("636", "954") if name == "portrait-nick" else ("1176", "646"))
                 self.assertEqual(fallback.get("loading"),
                                  "lazy" if page == "home" and name == "ballpark-estimate" else None)
 
     def test_ballpark_variants_match_master_ratio_and_carry_no_metadata(self):
         """Every Ballpark size is regenerated from one master (#26)."""
         master_w, master_h = _image_size(_path("assets/ballpark-estimate.png"))
-        self.assertEqual((master_w, master_h), (1280, 800))
-        for width in (360, 480, 600, 720, 960, 1200, 1280):
+        self.assertEqual((master_w, master_h), (1176, 646))
+        master_chunks = _image_chunks(_path("assets/ballpark-estimate.png"))
+        self.assertIn("IHDR", master_chunks, "master must be a real lossless PNG")
+        self.assertEqual(master_chunks["IHDR"][8:10], b"\x08\x02", "master must retain RGB pixels")
+        widths = (360, 480, 600, 720, 960, master_w)
+        expected_files = {_path("assets/ballpark-estimate.png")}
+        for width in widths:
             for ext in ("png", "webp"):
                 path = _path("assets/ballpark-estimate-%d.%s" % (width, ext))
+                expected_files.add(path)
                 with self.subTest(file=os.path.basename(path)):
                     w, h = _image_size(path)
                     self.assertEqual(w, width)
-                    self.assertEqual(w * master_h, h * master_w)
+                    self.assertLessEqual(w, master_w, "variants must not upscale")
+                    self.assertEqual(h, round(w * master_h / master_w))
+        self.assertEqual(set(glob.glob(_path("assets/ballpark-estimate*"))), expected_files)
         for path in sorted(glob.glob(_path("assets/ballpark-estimate*"))):
             with self.subTest(file=os.path.basename(path)):
-                self.assertFalse(
-                    set(_image_chunks(path)) & {"eXIf", "tEXt", "iTXt", "zTXt", "EXIF", "XMP "},
+                self.assertLessEqual(
+                    set(_image_chunks(path)),
+                    {"IHDR", "PLTE", "IDAT", "IEND", "tRNS", "VP8 ", "VP8L", "VP8X", "ALPH"},
                     "%s carries metadata" % path,
+                )
+
+    def test_ballpark_caption_and_alt_describe_the_redacted_image(self):
+        for page in ("home", "work"):
+            with self.subTest(page=page):
+                figure = next(block for block in re.findall(
+                    r"<figure\b.*?</figure>", _read_page(page), re.S
+                ) if "ballpark-estimate" in block)
+                caption = re.search(r"<figcaption>(.*?)</figcaption>", figure, re.S).group(1)
+                self.assertEqual(caption, "Real estimate, customer details redacted.")
+                self.assertNotIn("sanitized", caption.lower())
+                self.assertNotIn("no personal data", caption.lower())
+                alt = re.search(r'\balt="([^"]*)"', figure).group(1)
+                self.assertEqual(
+                    alt,
+                    "Ballpark.build home page with the headline 'Turn messy property evidence "
+                    "into a contractor-ready estimate' and a sample estimate card showing Good, "
+                    "Better and Best tiers, with customer details blocked out.",
                 )
 
 
