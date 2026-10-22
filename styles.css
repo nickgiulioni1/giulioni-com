@@ -31,9 +31,11 @@
   --ink-soft: #4a544e;
   --ink-mute: #6e695e;
   --rust: #b8501f;
+  --rust-text: #a7471c;
   --rust-on-dark: #d97a45;
-  --rule: #e0dbd0;
+  --rule: #d8d2c5;
   --dark-band: #16211c;
+  --section-space: clamp(3rem, 5vw, 4.5rem);
   --heading: "Newsreader", Georgia, serif;
   --sans: "Instrument Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --mono: ui-monospace, "SF Mono", Menlo, Monaco, monospace;
@@ -44,7 +46,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-html { background: var(--paper); }
+html { background: var(--paper); scroll-padding-top: 8rem; }
 body {
   margin: 0;
   background: var(--paper);
@@ -56,9 +58,11 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 img { display: block; max-width: 100%; height: auto; }
-a { color: var(--rust); text-decoration-thickness: 1px; text-underline-offset: .2em; }
+a { color: var(--rust-text); text-decoration-thickness: 1px; text-underline-offset: .2em; }
 a:hover { color: var(--ink); text-decoration-thickness: 2px; }
-:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--rust-text); outline-offset: 4px; }
+.product-band :focus-visible { outline-color: var(--rust-on-dark); }
+h1, h2 { text-wrap: balance; }
 
 /* Sticky header */
 .site-header {
@@ -76,17 +80,17 @@ a:hover { color: var(--ink); text-decoration-thickness: 2px; }
   gap: 1.5rem;
   max-width: 1160px;
   margin: 0 auto;
-  min-height: 56px;
+  min-height: 68px;
 }
 .site-name {
   margin: 0;
   font-family: var(--heading);
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 400;
   letter-spacing: -.02em;
 }
 .site-name a { color: var(--ink); text-decoration: none; }
-.site-name a:hover { color: var(--rust); }
+.site-name a:hover { color: var(--rust-text); }
 .site-nav {
   display: flex;
   flex-wrap: wrap;
@@ -102,11 +106,17 @@ a:hover { color: var(--ink); text-decoration-thickness: 2px; }
   font-weight: 500;
   color: var(--ink-soft);
   text-decoration: none;
-  border-radius: 6px;
+  border-radius: 4px;
 }
 .site-nav a:hover { color: var(--ink); background: var(--paper-band); }
-.site-nav a[aria-current="page"] { color: var(--ink); background: var(--paper-band); }
-.site-nav a.contact-link { color: var(--rust); }
+.site-nav a[aria-current="page"] {
+  color: var(--ink);
+  background: var(--paper-band);
+  text-decoration: underline;
+  text-decoration-color: var(--rust-text);
+  text-underline-offset: .45em;
+}
+.site-nav a.contact-link { color: var(--rust-text); }
 .site-nav a.contact-link:hover { color: var(--ink); background: var(--paper-band); }
 
 /* Main content wrapper */
@@ -151,7 +161,7 @@ a:hover { color: var(--ink); text-decoration-thickness: 2px; }
   text-decoration: none;
   border-bottom: 1px solid var(--rule);
 }
-.hero-link:hover { color: var(--rust); border-bottom-color: var(--rust); }
+.hero-link:hover { color: var(--rust-text); border-bottom-color: var(--rust-text); }
 .track-more-body { max-width: 60ch; padding-top: .5rem; }
 .track-more-body p {
   margin: 0 0 1rem;
@@ -165,7 +175,7 @@ a:hover { color: var(--ink); text-decoration-thickness: 2px; }
   font-size: .9375rem;
   color: var(--ink-soft);
 }
-.hero-location a { color: var(--rust); }
+.hero-location a { color: var(--rust-text); }
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
@@ -188,13 +198,13 @@ a:hover { color: var(--ink); text-decoration-thickness: 2px; }
   align-items: center;
   justify-content: center;
   min-height: 44px;
-  padding: .625rem 1.25rem;
+  padding: .875rem 1.375rem;
   font-family: var(--sans);
   font-size: .9375rem;
   font-weight: 500;
   line-height: 1.2;
   text-decoration: none;
-  border-radius: 6px;
+  border-radius: 4px;
   border: 1px solid transparent;
   cursor: pointer;
 }
@@ -222,7 +232,7 @@ a:hover { color: var(--ink); text-decoration-thickness: 2px; }
 .btn-ghost {
   color: var(--ink-soft);
   background: transparent;
-  border-color: var(--rule);
+  border-color: var(--ink-mute);
 }
 .btn-ghost:hover {
   color: var(--ink);
@@ -251,13 +261,13 @@ a:hover { color: var(--ink); text-decoration-thickness: 2px; }
   min-height: 44px;
   font-size: .9375rem;
   font-weight: 500;
-  color: var(--rust);
+  color: var(--rust-text);
   cursor: pointer;
 }
 .track-more summary::after { content: "+"; margin-left: .4rem; }
 .track-more[open] summary::after { content: "\2013"; }
 .track-more summary:hover { color: var(--ink); }
-.product-band .section-label { color: rgba(246, 243, 236, .55); margin-bottom: .75rem; }
+.product-band .section-label { color: rgba(246, 243, 236, .68); margin-bottom: .75rem; }
 .track-record-grid {
   display: grid;
   gap: 1px;
@@ -298,7 +308,7 @@ a:hover { color: var(--ink); text-decoration-thickness: 2px; }
 .track-did { color: var(--ink-soft); }
 .track-outcome { color: var(--ink-soft); }
 .track-outcome strong { color: var(--ink); font-weight: 600; }
-.track-outcome a { color: var(--rust); font-weight: 500; }
+.track-outcome a { color: var(--rust-text); font-weight: 500; }
 
 /* Dark product band */
 .product-band {
@@ -334,7 +344,7 @@ a:hover { color: var(--ink); text-decoration-thickness: 2px; }
   border-color: var(--paper);
 }
 .product-band a.btn:hover {
-  color: var(--paper);
+  color: var(--ink);
   background: var(--rust-on-dark);
   border-color: var(--rust-on-dark);
 }
@@ -382,7 +392,7 @@ a:hover { color: var(--ink); text-decoration-thickness: 2px; }
   color: var(--ink-soft);
   font-weight: 500;
 }
-.contact-line a:hover { color: var(--rust); }
+.contact-line a:hover { color: var(--rust-text); }
 
 /* Page header */
 .page-header {
@@ -396,7 +406,7 @@ a:hover { color: var(--ink); text-decoration-thickness: 2px; }
   font-weight: 500;
   letter-spacing: .08em;
   text-transform: uppercase;
-  color: var(--rust);
+  color: var(--rust-text);
 }
 .page-title {
   margin: 0;
@@ -436,7 +446,7 @@ a:hover { color: var(--ink); text-decoration-thickness: 2px; }
   font-weight: 500;
   text-decoration: none;
 }
-.resume-contact a:hover { color: var(--rust); text-decoration: underline; }
+.resume-contact a:hover { color: var(--rust-text); text-decoration: underline; }
 
 .resume-section {
   padding: 1.75rem 0;
@@ -450,7 +460,7 @@ a:hover { color: var(--ink); text-decoration-thickness: 2px; }
   font-weight: 500;
   letter-spacing: .12em;
   text-transform: uppercase;
-  color: var(--rust);
+  color: var(--rust-text);
 }
 .resume-section > p {
   margin: 0 0 .75rem;
@@ -527,7 +537,7 @@ a:hover { color: var(--ink); text-decoration-thickness: 2px; }
   font-weight: 500;
   letter-spacing: .1em;
   text-transform: uppercase;
-  color: var(--rust);
+  color: var(--rust-text);
 }
 .case-fact dd {
   margin: .35rem 0 0;
@@ -562,7 +572,7 @@ a:hover { color: var(--ink); text-decoration-thickness: 2px; }
   color: var(--ink-mute);
 }
 .also-shipped p { margin: 0; color: var(--ink-soft); }
-.also-shipped .destination-link { font-weight: 500; color: var(--rust); }
+.also-shipped .destination-link { font-weight: 500; color: var(--rust-text); }
 
 /* Receipts */
 .receipts {
@@ -593,7 +603,7 @@ a:hover { color: var(--ink); text-decoration-thickness: 2px; }
   font-family: var(--heading);
   font-size: clamp(1.5rem, 3vw, 2.25rem);
   font-weight: 400;
-  color: var(--rust);
+  color: var(--rust-text);
   margin-bottom: .5rem;
 }
 .receipt p { margin: 0; color: var(--ink-soft); font-size: .9375rem; }
@@ -619,14 +629,14 @@ a:hover { color: var(--ink); text-decoration-thickness: 2px; }
   margin: 0 0 .5rem;
   font-weight: 500;
 }
-.media-entry .episode-title a { color: var(--rust); }
+.media-entry .episode-title a { color: var(--rust-text); }
 .media-entry .episode-title a:hover { color: var(--ink); }
 .media-entry .entry-detail p { margin: 0; color: var(--ink-soft); }
 
 /* Footer */
 .site-footer {
-  margin-top: 3rem;
-  padding: 1.25rem 0;
+  margin-top: 2rem;
+  padding: 1.5rem 0;
   border-top: 1px solid var(--rule);
   display: flex;
   flex-wrap: wrap;
@@ -636,8 +646,8 @@ a:hover { color: var(--ink); text-decoration-thickness: 2px; }
   color: var(--ink-mute);
 }
 .site-footer p { margin: 0; }
-.site-footer a { color: var(--ink-mute); text-decoration: none; }
-.site-footer a:hover { color: var(--rust); text-decoration: underline; }
+.site-footer a { color: var(--ink-soft); text-decoration: underline; }
+.site-footer a:hover { color: var(--rust-text); text-decoration: underline; }
 
 /* Responsive */
 @media (max-width: 900px) {
