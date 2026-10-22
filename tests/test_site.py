@@ -21,6 +21,7 @@ import hashlib
 import json
 import os
 import re
+import struct
 import subprocess
 import unittest
 
@@ -188,9 +189,18 @@ class StructureTests(unittest.TestCase):
     def test_favicon_links_and_assets_exist(self):
         self.assertTrue(os.path.isfile(_path("favicon.svg")))
         self.assertTrue(os.path.isfile(_path("favicon.ico")))
-        for name in PAGES:
+        touch_icon_path = _path("apple-touch-icon.png")
+        self.assertTrue(os.path.isfile(touch_icon_path))
+        with open(touch_icon_path, "rb") as touch_icon:
+            png_header = touch_icon.read(24)
+        self.assertEqual(png_header[:8], b"\x89PNG\r\n\x1a\n")
+        self.assertEqual(png_header[12:16], b"IHDR")
+        self.assertEqual((180, 180), struct.unpack(">II", png_header[16:24]))
+        icon_pages = {**PAGES, "404": "404.html"}
+        for name, rel in icon_pages.items():
             with self.subTest(page=name):
-                html = _read_page(name)
+                with open(_path(rel), encoding="utf-8") as page_file:
+                    html = page_file.read()
                 self.assertRegex(
                     html,
                     r'<link rel="icon" href="/favicon\.svg" type="image/svg\+xml">',
@@ -198,6 +208,10 @@ class StructureTests(unittest.TestCase):
                 self.assertRegex(
                     html,
                     r'<link rel="icon" href="/favicon\.ico" sizes="any">',
+                )
+                self.assertRegex(
+                    html,
+                    r'<link rel="apple-touch-icon" href="/apple-touch-icon\.png">',
                 )
 
 
