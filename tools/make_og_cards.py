@@ -42,6 +42,12 @@ CARDS = (
         "Ballpark: AI estimating\nbuilt inside the job.",
         "Shipped from the company that needed it",
     ),
+    (
+        "og-media.png",
+        "Earlier media",
+        "Podcast and interview\nappearances.",
+        "A record of past media coverage",
+    ),
 )
 
 
