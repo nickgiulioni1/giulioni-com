@@ -156,9 +156,11 @@ class StructureTests(unittest.TestCase):
         self.assertEqual(png_header[:8], b"\x89PNG\r\n\x1a\n")
         self.assertEqual(png_header[12:16], b"IHDR")
         self.assertEqual((180, 180), struct.unpack(">II", png_header[16:24]))
-        for name in PAGES:
+        icon_pages = {**PAGES, "404": "404.html"}
+        for name, rel in icon_pages.items():
             with self.subTest(page=name):
-                html = _read_page(name)
+                with open(_path(rel), encoding="utf-8") as page_file:
+                    html = page_file.read()
                 self.assertRegex(
                     html,
                     r'<link rel="icon" href="/favicon\.svg" type="image/svg\+xml">',
