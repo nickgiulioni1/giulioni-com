@@ -389,6 +389,7 @@ a:hover { color: var(--ink); text-decoration-thickness: 2px; }
   color: var(--ink-soft);
 }
 .page-deck strong { color: var(--ink); font-weight: 600; }
+.page-header .hero-actions { margin-top: 1.75rem; }
 
 /* Resume page */
 .resume-topbar {
