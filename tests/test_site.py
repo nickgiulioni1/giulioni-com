@@ -199,9 +199,9 @@ class CanonicalUrlTests(unittest.TestCase):
             vercel.get("redirects"),
             [
                 {
-                    "source": "/:path*",
+                    "source": "/(.*)",
                     "has": [{"type": "host", "value": "www.giulioni.com"}],
-                    "destination": "https://giulioni.com/:path*",
+                    "destination": "https://giulioni.com/$1",
                     "permanent": True,
                 }
             ],
