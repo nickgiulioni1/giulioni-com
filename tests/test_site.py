@@ -144,6 +144,21 @@ class StructureTests(unittest.TestCase):
                     "required page %r is missing" % rel,
                 )
 
+    def test_favicon_links_and_assets_exist(self):
+        self.assertTrue(os.path.isfile(_path("favicon.svg")))
+        self.assertTrue(os.path.isfile(_path("favicon.ico")))
+        for name in PAGES:
+            with self.subTest(page=name):
+                html = _read_page(name)
+                self.assertRegex(
+                    html,
+                    r'<link rel="icon" href="/favicon\.svg" type="image/svg\+xml">',
+                )
+                self.assertRegex(
+                    html,
+                    r'<link rel="icon" href="/favicon\.ico" sizes="any">',
+                )
+
 
 class NavigationTests(unittest.TestCase):
     """Approved primary nav: Home, Resume, Selected work, Contact."""
