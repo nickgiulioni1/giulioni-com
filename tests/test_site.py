@@ -960,6 +960,41 @@ class OpenDesignArtifactTests(unittest.TestCase):
         )
 
 
+class NotFoundPageTests(unittest.TestCase):
+    """Root 404.html: Vercel serves it for unknown paths with status 404."""
+
+    def setUp(self):
+        path = _path("404.html")
+        self.assertTrue(os.path.isfile(path), "404.html is missing at repo root")
+        with open(path, encoding="utf-8") as fh:
+            self.html = _strip_html_comments(fh.read())
+
+    def test_links_back_to_main_pages(self):
+        hrefs = {h for _q, h in _anchor_pairs(self.html)}
+        for href in ("/", "/career/", "/work/"):
+            with self.subTest(href=href):
+                self.assertIn(href, hrefs, "404.html missing link to %r" % href)
+
+    def test_is_noindex(self):
+        self.assertRegex(
+            self.html,
+            r'<meta\s+name="robots"\s+content="noindex"\s*>',
+            "404.html must carry <meta name=\"robots\" content=\"noindex\">",
+        )
+
+    def test_uses_shared_stylesheet_and_csp_safe_markup(self):
+        self.assertIn('<link rel="stylesheet" href="/styles.css">', self.html)
+        self.assertNotRegex(self.html, r"<script\b|<style\b")
+        self.assertNotRegex(self.html, r'(?<![A-Za-z-])(style|on[a-z]+)\s*=\s*["\']')
+        bad = sorted(r for r in _local_refs(self.html) if not r.startswith("/"))
+        self.assertEqual(bad, [], "404.html has non-root-relative references")
+
+    def test_unknown_paths_are_not_rewritten_to_200(self):
+        with open(_path("vercel.json"), encoding="utf-8") as fh:
+            vercel = fh.read()
+        self.assertNotIn('"rewrites"', vercel, "rewrites would serve 404.html as 200")
+
+
 class CspTests(unittest.TestCase):
     """The deployed CSP never grants inline or eval execution."""
 
