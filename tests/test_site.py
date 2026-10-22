@@ -21,8 +21,10 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import struct
 import subprocess
+import tempfile
 import unittest
 import xml.etree.ElementTree as ET
 
@@ -926,6 +928,103 @@ class ResumePdfTests(unittest.TestCase):
                     normalized,
                     "resume PDF must contain %r" % token,
                 )
+
+
+class ResumePdfRegenTests(unittest.TestCase):
+    @staticmethod
+    def _tiny_pdf(text, pages=1):
+        objects = [
+            b"<< /Type /Catalog /Pages 2 0 R >>",
+            ("<< /Type /Pages /Kids [%s] /Count %d >>" % (
+                " ".join("%d 0 R" % (5 + i) for i in range(pages)), pages
+            )).encode(),
+            b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+        ]
+        content = ("BT /F1 12 Tf 40 750 Td (%s) Tj ET" % text).encode()
+        objects.append(b"<< /Length %d >>\nstream\n" % len(content)
+                       + content + b"\nendstream")
+        objects.extend([b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] "
+                        b"/Resources << /Font << /F1 3 0 R >> >> /Contents 4 0 R >>"] * pages)
+        pdf = b"%PDF-1.4\n"
+        offsets = [0]
+        for number, obj in enumerate(objects, 1):
+            offsets.append(len(pdf))
+            pdf += b"%d 0 obj\n" % number + obj + b"\nendobj\n"
+        xref = len(pdf)
+        pdf += b"xref\n0 %d\n0000000000 65535 f \n" % len(offsets)
+        for offset in offsets[1:]:
+            pdf += b"%010d 00000 n \n" % offset
+        pdf += ("trailer\n<< /Size %d /Root 1 0 R >>\nstartxref\n%d\n%%%%EOF\n"
+                % (len(offsets), xref)).encode()
+        return pdf
+
+    def test_chrome_exit_requires_a_fresh_valid_pdf(self):
+        valid = self._tiny_pdf(
+            "Resume nick@giulioni.com linkedin.com/in/nickgiulioni Ballpark"
+        )
+        cases = (
+            ("missing", None, 2, False, "no fresh, non-empty PDF"),
+            ("empty", b"", 0, False, "no fresh, non-empty PDF"),
+            ("valid_teardown", valid, 2, True, "Chrome exited 2"),
+            ("valid", valid, 0, True, "Wrote"),
+            ("invalid", b"not a PDF", 2, False, "pdfinfo"),
+            ("missing_text", self._tiny_pdf("Resume"), 2, False, "missing required token"),
+            ("too_many_pages", self._tiny_pdf("Resume", pages=3), 2, False, "page count"),
+            ("stale", valid, 2, False, "no fresh, non-empty PDF"),
+        )
+        for name, payload, chrome_status, success, message in cases:
+            with self.subTest(case=name), tempfile.TemporaryDirectory() as root:
+                os.makedirs(os.path.join(root, "tools"))
+                os.makedirs(os.path.join(root, "career"))
+                os.makedirs(os.path.join(root, "assets"))
+                script = os.path.join(root, "tools", "regen_resume_pdf.sh")
+                shutil.copyfile(_path("tools/regen_resume_pdf.sh"), script)
+                for page in ("index.html", "career/index.html"):
+                    with open(os.path.join(root, page), "w") as handle:
+                        handle.write("<html>Resume</html>")
+                default_output = os.path.join(root, "assets", "nick-giulioni-resume.pdf")
+                output_dir = os.path.join(root, "output with spaces")
+                os.mkdir(output_dir)
+                output = os.path.join(output_dir, "resume.pdf")
+                original = b"existing PDF must survive a failed render"
+                for path in (default_output, output):
+                    with open(path, "wb") as handle:
+                        handle.write(original)
+                fixture = os.path.join(root, "fixture.pdf")
+                if payload is not None:
+                    with open(fixture, "wb") as handle:
+                        handle.write(payload)
+                chrome = os.path.join(root, "fake-chrome")
+                with open(chrome, "w") as handle:
+                    handle.write("""#!/usr/bin/env python3
+import os
+import shutil
+import sys
+output = next(arg.split('=', 1)[1] for arg in sys.argv[1:]
+              if arg.startswith('--print-to-pdf='))
+if os.path.exists(os.environ['FAKE_PDF']):
+    shutil.copyfile(os.environ['FAKE_PDF'], output)
+    if os.environ['FAKE_MODE'] == 'stale':
+        os.utime(output, (1, 1))
+sys.exit(int(os.environ['FAKE_STATUS']))
+""")
+                os.chmod(chrome, 0o755)
+                env = dict(os.environ, CHROME_BIN=chrome, OUT=output,
+                           FAKE_PDF=fixture, FAKE_MODE=name,
+                           FAKE_STATUS=str(chrome_status), RESUME_PDF_PORT="0")
+                result = subprocess.run(
+                    ["bash", script], env=env, capture_output=True, text=True, timeout=30
+                )
+                logs = result.stdout + result.stderr
+                self.assertEqual(result.returncode == 0, success, logs)
+                self.assertIn(message, logs)
+                with open(output, "rb") as handle:
+                    self.assertEqual(handle.read(), payload if success else original)
+                with open(default_output, "rb") as handle:
+                    self.assertEqual(handle.read(), original)
+                self.assertEqual(os.listdir(output_dir), ["resume.pdf"])
+                if not success:
+                    self.assertNotIn("Wrote", result.stdout)
 
 
 class ResponsiveAndA11yTests(unittest.TestCase):
