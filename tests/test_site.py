@@ -18,6 +18,7 @@ Run:
 
 import glob
 import hashlib
+import html
 import json
 import os
 import re
@@ -186,6 +187,17 @@ class StructureTests(unittest.TestCase):
                     os.path.isfile(_path(rel)),
                     "required page %r is missing" % rel,
                 )
+    def test_every_track_record_label_has_a_year_range(self):
+        home = _read_page("home")
+        labels = re.findall(
+            r'<div class="track-label">(.*?)</div>', home, flags=re.S | re.I
+        )
+
+        self.assertTrue(labels, "home page needs Track record labels")
+        for label in labels:
+            with self.subTest(label=html.unescape(re.sub(r"<[^>]+>", "", label))):
+                text = html.unescape(re.sub(r"<[^>]+>", "", label))
+                self.assertRegex(text, r"\d{4}–(?:\d{4}|present)")
 
     def test_favicon_links_and_assets_exist(self):
         self.assertTrue(os.path.isfile(_path("favicon.svg")))
