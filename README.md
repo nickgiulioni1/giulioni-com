@@ -12,7 +12,7 @@ Cream / forest / rust editorial identity:
 | paper-band | #f1ede4 | Subtle bands |
 | ink | #16211c | Primary text |
 | ink-soft | #4a544e | Body text |
-| ink-mute | #8a8478 | Secondary text |
+| ink-mute | #6e695e | Secondary text |
 | rust | #b8501f | Accent, links |
 | rust-on-dark | #d97a45 | Accent on dark |
 | rule | #e0dbd0 | Borders |
