@@ -360,7 +360,7 @@ class HomeTests(unittest.TestCase):
 
     def test_home_has_estimate_image(self):
         html = _strip_html_comments(_read_page("home"))
-        self.assertIn('src="/assets/ballpark-estimate.png"', html)
+        self.assertIn('src="/assets/ballpark-estimate-600.png"', html)
 
     def test_home_btn_classes_meet_coarse_pointer_44px_rule(self):
         css = _read_css()
@@ -393,6 +393,46 @@ class HomeTests(unittest.TestCase):
             r"units.{0,20}450%|450%.{0,20}units",
             "home must mention units near 450% figure",
         )
+
+
+class ResponsiveImageTests(unittest.TestCase):
+    """Each picture has local WebP candidates and a resized legacy fallback."""
+
+    def test_variants_exist_and_are_referenced(self):
+        expected = {
+            "portrait-nick": ("jpg", [160, 200, 320, 348, 400, 636]),
+            "ballpark-estimate": ("png", [360, 480, 600, 720, 960, 1200, 1280]),
+        }
+        for page, names in (("home", list(expected)), ("work", ["ballpark-estimate"])):
+            pictures = re.findall(r"<picture>.*?</picture>", _read_page(page), re.S)
+            self.assertEqual(len(pictures), len(names))
+            for picture, name in zip(pictures, names):
+                ext, widths = expected[name]
+                tags = re.findall(r"<(?:source|img)\b[^>]*>", picture)
+                self.assertEqual(len(tags), 2)
+                attrs = [dict(re.findall(r'([\w-]+)="([^"]*)"', tag)) for tag in tags]
+                source, fallback = attrs
+                self.assertEqual(source["type"], "image/webp")
+                self.assertEqual(source["sizes"], fallback["sizes"])
+                self.assertTrue(source["sizes"])
+                for attributes, fmt in ((source, "webp"), (fallback, ext)):
+                    candidates = [value.strip() for value in attributes["srcset"].split(",")]
+                    self.assertEqual(candidates, [
+                        "/assets/%s-%s.%s %sw" % (name, width, fmt, width)
+                        for width in widths
+                    ])
+                    for candidate in candidates:
+                        path = _path(candidate.split()[0].lstrip("/"))
+                        self.assertTrue(os.path.isfile(path), path)
+                        self.assertGreater(os.path.getsize(path), 0)
+                self.assertIn(fallback["src"], [
+                    candidate.split()[0] for candidate in fallback["srcset"].split(", ")
+                ])
+                self.assertTrue(fallback["alt"])
+                self.assertEqual((fallback["width"], fallback["height"]),
+                                 ("636", "954") if name == "portrait-nick" else ("1280", "800"))
+                self.assertEqual(fallback.get("loading"),
+                                 "lazy" if page == "home" and name == "ballpark-estimate" else None)
 
 
 class ShareCardTests(unittest.TestCase):
@@ -658,7 +698,7 @@ class SelectedWorkTests(unittest.TestCase):
 
     def test_ballpark_case_has_estimate_image(self):
         html = _read_page("work")
-        self.assertIn('src="/assets/ballpark-estimate.png"', html)
+        self.assertIn('src="/assets/ballpark-estimate-600.png"', html)
 
     def test_a_little_true_is_compact_also_shipped_with_one_link(self):
         html = _strip_html_comments(_read_page("work"))
