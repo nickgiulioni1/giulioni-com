@@ -3,9 +3,9 @@
   "trailingSlash": true,
   "redirects": [
     {
-      "source": "/:path*",
+      "source": "/(.*)",
       "has": [{ "type": "host", "value": "www.giulioni.com" }],
-      "destination": "https://giulioni.com/:path*",
+      "destination": "https://giulioni.com/$1",
       "permanent": true
     }
   ],
