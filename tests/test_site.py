@@ -24,6 +24,7 @@ import re
 import struct
 import subprocess
 import unittest
+import xml.etree.ElementTree as ET
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -213,6 +214,29 @@ class StructureTests(unittest.TestCase):
                     html,
                     r'<link rel="apple-touch-icon" href="/apple-touch-icon\.png">',
                 )
+
+
+class SitemapTests(unittest.TestCase):
+    def test_sitemap_lists_every_page_canonical(self):
+        sitemap = ET.parse(_path("sitemap.xml"))
+        locations = [
+            node.text
+            for node in sitemap.findall(
+                ".//{http://www.sitemaps.org/schemas/sitemap/0.9}loc"
+            )
+        ]
+        canonicals = []
+        for name in PAGES:
+            html = _read_page(name)
+            matches = re.findall(
+                r'<link\b[^>]*\brel="canonical"[^>]*\bhref="([^"]+)"',
+                html,
+                flags=re.I,
+            )
+            self.assertEqual(len(matches), 1, "%s needs one canonical URL" % name)
+            canonicals.extend(matches)
+        self.assertCountEqual(locations, canonicals)
+        self.assertEqual(len(locations), 4)
 
 
 class CanonicalUrlTests(unittest.TestCase):
@@ -508,7 +532,7 @@ class ResponsiveImageTests(unittest.TestCase):
 
 
 class ShareCardTests(unittest.TestCase):
-    """Home, Resume, and Selected work ship portrait+title share cards.
+    """All four pages ship portrait+title share cards.
 
     Cards carry Nick's portrait only: no child faces in any public media."""
 
@@ -516,6 +540,14 @@ class ShareCardTests(unittest.TestCase):
         "home": "og-home.png",
         "resume": "og-career.png",
         "work": "og-work.png",
+        "media": "og-media.png",
+    }
+
+    PAGE_URLS = {
+        "home": "https://giulioni.com/",
+        "resume": "https://giulioni.com/career/",
+        "work": "https://giulioni.com/work/",
+        "media": "https://giulioni.com/media/",
     }
 
     def test_share_card_images_exist_at_1200x630(self):
@@ -539,6 +571,7 @@ class ShareCardTests(unittest.TestCase):
             with self.subTest(page=name):
                 for tag in (
                     '<meta property="og:image" content="%s">' % url,
+                    '<meta property="og:url" content="%s">' % self.PAGE_URLS[name],
                     '<meta property="og:image:width" content="1200">',
                     '<meta property="og:image:height" content="630">',
                     '<meta name="twitter:card" content="summary_large_image">',
@@ -551,10 +584,12 @@ class ShareCardTests(unittest.TestCase):
                     "%s needs og:image:alt text" % name,
                 )
 
-    def test_media_page_ships_no_share_card(self):
-        """Earlier media stays card-free rather than reusing a mismatched one."""
+    def test_media_page_ships_share_card(self):
         html = _strip_html_comments(_read_page("media"))
-        self.assertNotIn("og:image", html)
+        self.assertIn(
+            '<meta property="og:image" content="https://giulioni.com/assets/og-media.png">',
+            html,
+        )
 
 
 class MixedSignalTests(unittest.TestCase):
