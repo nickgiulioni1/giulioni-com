@@ -1500,9 +1500,7 @@ class VercelIgnoreTests(unittest.TestCase):
         self.assertEqual(paths, self.ignored_paths(paths))
 
     def test_font_assets_and_licenses_are_kept(self):
-        # PR #39 adds these files; root-only exclusions must not match them.
         paths = {
-            "assets/fonts/README.md",
             "assets/fonts/instrument-sans-latin-wght.woff2",
             "assets/fonts/instrumentsans-OFL.txt",
             "assets/fonts/newsreader-OFL.txt",
@@ -1510,6 +1508,13 @@ class VercelIgnoreTests(unittest.TestCase):
             "assets/fonts/newsreader-latin-normal.woff2",
         }
         self.assertEqual(set(), self.ignored_paths(paths))
+
+    def test_nested_markdown_is_excluded(self):
+        paths = {
+            "assets/fonts/README.md", "future/notes.md",
+            "future/deep/nested/notes.md",
+        }
+        self.assertEqual(paths, self.ignored_paths(paths))
 
     def test_site_files_and_references_are_kept(self):
         root = Path(REPO_ROOT)
@@ -1520,6 +1525,7 @@ class VercelIgnoreTests(unittest.TestCase):
         paths.update(
             str(path.relative_to(root)) for path in (root / "assets").rglob("*")
             if path.is_file() and path.name != "favicon-preview.png"
+            and path.suffix != ".md"
         )
         urls = []
         for page in pages:
