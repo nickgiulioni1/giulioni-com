@@ -1,0 +1,2011 @@
+[
+  {
+    "width": 412,
+    "page": "career",
+    "variant": "before",
+    "fallback_fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loading"
+      }
+    ],
+    "shifts": [
+      {
+        "value": 0.00027106669720542944,
+        "sources": [
+          {
+            "node": null,
+            "previous": {
+              "x": 16,
+              "y": 274.515625,
+              "width": 380,
+              "height": 49.140625,
+              "top": 274.515625,
+              "right": 396,
+              "bottom": 323.65625,
+              "left": 16
+            },
+            "current": {
+              "x": 16,
+              "y": 274.515625,
+              "width": 380,
+              "height": 49.140625,
+              "top": 274.515625,
+              "right": 396,
+              "bottom": 323.65625,
+              "left": 16
+            }
+          }
+        ]
+      }
+    ],
+    "cls": 0.00027106669720542944,
+    "font_metrics": {
+      "Instrument Sans": {
+        "xHeight": 0.51,
+        "width": 0.551
+      },
+      "Helvetica Neue": {
+        "xHeight": 0.517,
+        "width": 0.518
+      },
+      "Newsreader": {
+        "xHeight": 0.4405,
+        "width": 0.5070000305175781
+      },
+      "Georgia": {
+        "xHeight": 0.4814453125,
+        "width": 0.5048828125
+      }
+    }
+  },
+  {
+    "width": 412,
+    "page": "career",
+    "variant": "current",
+    "fallback_fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loading"
+      }
+    ],
+    "shifts": [
+      {
+        "value": 0.0004278199791250289,
+        "sources": [
+          {
+            "node": null,
+            "previous": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            },
+            "current": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            }
+          },
+          {
+            "node": "",
+            "previous": {
+              "x": 168.453125,
+              "y": 456.671875,
+              "width": 195,
+              "height": 44,
+              "top": 456.671875,
+              "right": 363.453125,
+              "bottom": 500.671875,
+              "left": 168.453125
+            },
+            "current": {
+              "x": 172.765625,
+              "y": 456.671875,
+              "width": 201.671875,
+              "height": 44,
+              "top": 456.671875,
+              "right": 374.4375,
+              "bottom": 500.671875,
+              "left": 172.765625
+            }
+          }
+        ]
+      }
+    ],
+    "cls": 0.0004278199791250289,
+    "font_metrics": {
+      "Instrument Sans": {
+        "xHeight": 0.51,
+        "width": 0.551
+      },
+      "Helvetica Neue": {
+        "xHeight": 0.517,
+        "width": 0.518
+      },
+      "Newsreader": {
+        "xHeight": 0.4405,
+        "width": 0.5070000305175781
+      },
+      "Georgia": {
+        "xHeight": 0.4814453125,
+        "width": 0.5048828125
+      }
+    }
+  },
+  {
+    "width": 412,
+    "page": "career",
+    "variant": "native-sans",
+    "fallback_fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loading"
+      }
+    ],
+    "shifts": [
+      {
+        "value": 0.0004430192440503773,
+        "sources": [
+          {
+            "node": null,
+            "previous": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            },
+            "current": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            }
+          },
+          {
+            "node": "",
+            "previous": {
+              "x": 171.03125,
+              "y": 456.671875,
+              "width": 199,
+              "height": 44,
+              "top": 456.671875,
+              "right": 370.03125,
+              "bottom": 500.671875,
+              "left": 171.03125
+            },
+            "current": {
+              "x": 175.46875,
+              "y": 456.671875,
+              "width": 205.78125,
+              "height": 44,
+              "top": 456.671875,
+              "right": 381.25,
+              "bottom": 500.671875,
+              "left": 175.46875
+            }
+          }
+        ]
+      }
+    ],
+    "cls": 0.0004430192440503773,
+    "font_metrics": {
+      "Instrument Sans": {
+        "xHeight": 0.51,
+        "width": 0.551
+      },
+      "Helvetica Neue": {
+        "xHeight": 0.517,
+        "width": 0.518
+      },
+      "Newsreader": {
+        "xHeight": 0.4405,
+        "width": 0.5070000305175781
+      },
+      "Georgia": {
+        "xHeight": 0.4814453125,
+        "width": 0.5048828125
+      }
+    }
+  },
+  {
+    "width": 412,
+    "page": "career",
+    "variant": "body-none",
+    "fallback_fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loading"
+      }
+    ],
+    "shifts": [
+      {
+        "value": 0.00027106669720542944,
+        "sources": [
+          {
+            "node": null,
+            "previous": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            },
+            "current": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            }
+          }
+        ]
+      }
+    ],
+    "cls": 0.00027106669720542944,
+    "font_metrics": {
+      "Instrument Sans": {
+        "xHeight": 0.51,
+        "width": 0.551
+      },
+      "Helvetica Neue": {
+        "xHeight": 0.517,
+        "width": 0.518
+      },
+      "Newsreader": {
+        "xHeight": 0.4405,
+        "width": 0.5070000305175781
+      },
+      "Georgia": {
+        "xHeight": 0.4814453125,
+        "width": 0.5048828125
+      }
+    }
+  },
+  {
+    "width": 412,
+    "page": "career",
+    "variant": "deck-native",
+    "fallback_fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loading"
+      }
+    ],
+    "shifts": [
+      {
+        "value": 0.0009559465064424171,
+        "sources": [
+          {
+            "node": null,
+            "previous": {
+              "x": 16,
+              "y": 306.25,
+              "width": 380,
+              "height": 77.28125,
+              "top": 306.25,
+              "right": 396,
+              "bottom": 383.53125,
+              "left": 16
+            },
+            "current": {
+              "x": 16,
+              "y": 306.25,
+              "width": 380,
+              "height": 77.28125,
+              "top": 306.25,
+              "right": 396,
+              "bottom": 383.53125,
+              "left": 16
+            }
+          },
+          {
+            "node": null,
+            "previous": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            },
+            "current": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            }
+          },
+          {
+            "node": "",
+            "previous": {
+              "x": 168.453125,
+              "y": 456.671875,
+              "width": 195,
+              "height": 44,
+              "top": 456.671875,
+              "right": 363.453125,
+              "bottom": 500.671875,
+              "left": 168.453125
+            },
+            "current": {
+              "x": 172.765625,
+              "y": 456.671875,
+              "width": 201.671875,
+              "height": 44,
+              "top": 456.671875,
+              "right": 374.4375,
+              "bottom": 500.671875,
+              "left": 172.765625
+            }
+          }
+        ]
+      }
+    ],
+    "cls": 0.0009559465064424171,
+    "font_metrics": {
+      "Instrument Sans": {
+        "xHeight": 0.51,
+        "width": 0.551
+      },
+      "Helvetica Neue": {
+        "xHeight": 0.517,
+        "width": 0.518
+      },
+      "Newsreader": {
+        "xHeight": 0.4405,
+        "width": 0.5070000305175781
+      },
+      "Georgia": {
+        "xHeight": 0.4814453125,
+        "width": 0.5048828125
+      }
+    }
+  },
+  {
+    "width": 412,
+    "page": "career",
+    "variant": "deck-more-leading",
+    "fallback_fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loading"
+      }
+    ],
+    "shifts": [
+      {
+        "value": 0.00043956478421587635,
+        "sources": [
+          {
+            "node": null,
+            "previous": {
+              "x": 16,
+              "y": 280.875,
+              "width": 380,
+              "height": 50.90625,
+              "top": 280.875,
+              "right": 396,
+              "bottom": 331.78125,
+              "left": 16
+            },
+            "current": {
+              "x": 16,
+              "y": 280.875,
+              "width": 380,
+              "height": 50.90625,
+              "top": 280.875,
+              "right": 396,
+              "bottom": 331.78125,
+              "left": 16
+            }
+          },
+          {
+            "node": "",
+            "previous": {
+              "x": 168.453125,
+              "y": 465.5,
+              "width": 195,
+              "height": 44,
+              "top": 465.5,
+              "right": 363.453125,
+              "bottom": 509.5,
+              "left": 168.453125
+            },
+            "current": {
+              "x": 172.765625,
+              "y": 465.5,
+              "width": 201.671875,
+              "height": 44,
+              "top": 465.5,
+              "right": 374.4375,
+              "bottom": 509.5,
+              "left": 172.765625
+            }
+          }
+        ]
+      }
+    ],
+    "cls": 0.00043956478421587635,
+    "font_metrics": {
+      "Instrument Sans": {
+        "xHeight": 0.51,
+        "width": 0.551
+      },
+      "Helvetica Neue": {
+        "xHeight": 0.517,
+        "width": 0.518
+      },
+      "Newsreader": {
+        "xHeight": 0.4405,
+        "width": 0.5070000305175781
+      },
+      "Georgia": {
+        "xHeight": 0.4814453125,
+        "width": 0.5048828125
+      }
+    }
+  },
+  {
+    "width": 412,
+    "page": "career",
+    "variant": "summary-36rem",
+    "fallback_fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loading"
+      }
+    ],
+    "shifts": [
+      {
+        "value": 0.0004278199791250289,
+        "sources": [
+          {
+            "node": null,
+            "previous": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            },
+            "current": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            }
+          },
+          {
+            "node": "",
+            "previous": {
+              "x": 168.453125,
+              "y": 456.671875,
+              "width": 195,
+              "height": 44,
+              "top": 456.671875,
+              "right": 363.453125,
+              "bottom": 500.671875,
+              "left": 168.453125
+            },
+            "current": {
+              "x": 172.765625,
+              "y": 456.671875,
+              "width": 201.671875,
+              "height": 44,
+              "top": 456.671875,
+              "right": 374.4375,
+              "bottom": 500.671875,
+              "left": 172.765625
+            }
+          }
+        ]
+      }
+    ],
+    "cls": 0.0004278199791250289,
+    "font_metrics": {
+      "Instrument Sans": {
+        "xHeight": 0.51,
+        "width": 0.551
+      },
+      "Helvetica Neue": {
+        "xHeight": 0.517,
+        "width": 0.518
+      },
+      "Newsreader": {
+        "xHeight": 0.4405,
+        "width": 0.5070000305175781
+      },
+      "Georgia": {
+        "xHeight": 0.4814453125,
+        "width": 0.5048828125
+      }
+    }
+  },
+  {
+    "width": 412,
+    "page": "career",
+    "variant": "summary-38rem",
+    "fallback_fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loading"
+      }
+    ],
+    "shifts": [
+      {
+        "value": 0.0004278199791250289,
+        "sources": [
+          {
+            "node": null,
+            "previous": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            },
+            "current": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            }
+          },
+          {
+            "node": "",
+            "previous": {
+              "x": 168.453125,
+              "y": 456.671875,
+              "width": 195,
+              "height": 44,
+              "top": 456.671875,
+              "right": 363.453125,
+              "bottom": 500.671875,
+              "left": 168.453125
+            },
+            "current": {
+              "x": 172.765625,
+              "y": 456.671875,
+              "width": 201.671875,
+              "height": 44,
+              "top": 456.671875,
+              "right": 374.4375,
+              "bottom": 500.671875,
+              "left": 172.765625
+            }
+          }
+        ]
+      }
+    ],
+    "cls": 0.0004278199791250289,
+    "font_metrics": {
+      "Instrument Sans": {
+        "xHeight": 0.51,
+        "width": 0.551
+      },
+      "Helvetica Neue": {
+        "xHeight": 0.517,
+        "width": 0.518
+      },
+      "Newsreader": {
+        "xHeight": 0.4405,
+        "width": 0.5070000305175781
+      },
+      "Georgia": {
+        "xHeight": 0.4814453125,
+        "width": 0.5048828125
+      }
+    }
+  },
+  {
+    "width": 412,
+    "page": "career",
+    "variant": "summary-40rem",
+    "fallback_fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loading"
+      }
+    ],
+    "shifts": [
+      {
+        "value": 0.0004278199791250289,
+        "sources": [
+          {
+            "node": null,
+            "previous": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            },
+            "current": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            }
+          },
+          {
+            "node": "",
+            "previous": {
+              "x": 168.453125,
+              "y": 456.671875,
+              "width": 195,
+              "height": 44,
+              "top": 456.671875,
+              "right": 363.453125,
+              "bottom": 500.671875,
+              "left": 168.453125
+            },
+            "current": {
+              "x": 172.765625,
+              "y": 456.671875,
+              "width": 201.671875,
+              "height": 44,
+              "top": 456.671875,
+              "right": 374.4375,
+              "bottom": 500.671875,
+              "left": 172.765625
+            }
+          }
+        ]
+      }
+    ],
+    "cls": 0.0004278199791250289,
+    "font_metrics": {
+      "Instrument Sans": {
+        "xHeight": 0.51,
+        "width": 0.551
+      },
+      "Helvetica Neue": {
+        "xHeight": 0.517,
+        "width": 0.518
+      },
+      "Newsreader": {
+        "xHeight": 0.4405,
+        "width": 0.5070000305175781
+      },
+      "Georgia": {
+        "xHeight": 0.4814453125,
+        "width": 0.5048828125
+      }
+    }
+  },
+  {
+    "width": 412,
+    "page": "career",
+    "variant": "summary-42rem",
+    "fallback_fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loading"
+      }
+    ],
+    "shifts": [
+      {
+        "value": 0.0004278199791250289,
+        "sources": [
+          {
+            "node": null,
+            "previous": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            },
+            "current": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            }
+          },
+          {
+            "node": "",
+            "previous": {
+              "x": 168.453125,
+              "y": 456.671875,
+              "width": 195,
+              "height": 44,
+              "top": 456.671875,
+              "right": 363.453125,
+              "bottom": 500.671875,
+              "left": 168.453125
+            },
+            "current": {
+              "x": 172.765625,
+              "y": 456.671875,
+              "width": 201.671875,
+              "height": 44,
+              "top": 456.671875,
+              "right": 374.4375,
+              "bottom": 500.671875,
+              "left": 172.765625
+            }
+          }
+        ]
+      }
+    ],
+    "cls": 0.0004278199791250289,
+    "font_metrics": {
+      "Instrument Sans": {
+        "xHeight": 0.51,
+        "width": 0.551
+      },
+      "Helvetica Neue": {
+        "xHeight": 0.517,
+        "width": 0.518
+      },
+      "Newsreader": {
+        "xHeight": 0.4405,
+        "width": 0.5070000305175781
+      },
+      "Georgia": {
+        "xHeight": 0.4814453125,
+        "width": 0.5048828125
+      }
+    }
+  },
+  {
+    "width": 412,
+    "page": "career",
+    "variant": "desktop-deck",
+    "fallback_fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loading"
+      }
+    ],
+    "shifts": [
+      {
+        "value": 0.0004278199791250289,
+        "sources": [
+          {
+            "node": null,
+            "previous": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            },
+            "current": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            }
+          },
+          {
+            "node": "",
+            "previous": {
+              "x": 168.453125,
+              "y": 456.671875,
+              "width": 195,
+              "height": 44,
+              "top": 456.671875,
+              "right": 363.453125,
+              "bottom": 500.671875,
+              "left": 168.453125
+            },
+            "current": {
+              "x": 172.765625,
+              "y": 456.671875,
+              "width": 201.671875,
+              "height": 44,
+              "top": 456.671875,
+              "right": 374.4375,
+              "bottom": 500.671875,
+              "left": 172.765625
+            }
+          }
+        ]
+      }
+    ],
+    "cls": 0.0004278199791250289,
+    "font_metrics": {
+      "Instrument Sans": {
+        "xHeight": 0.51,
+        "width": 0.551
+      },
+      "Helvetica Neue": {
+        "xHeight": 0.517,
+        "width": 0.518
+      },
+      "Newsreader": {
+        "xHeight": 0.4405,
+        "width": 0.5070000305175781
+      },
+      "Georgia": {
+        "xHeight": 0.4814453125,
+        "width": 0.5048828125
+      }
+    }
+  },
+  {
+    "width": 412,
+    "page": "career",
+    "variant": "summary-none",
+    "fallback_fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loading"
+      }
+    ],
+    "shifts": [
+      {
+        "value": 0.0004278199791250289,
+        "sources": [
+          {
+            "node": null,
+            "previous": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            },
+            "current": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            }
+          },
+          {
+            "node": "",
+            "previous": {
+              "x": 168.453125,
+              "y": 456.671875,
+              "width": 195,
+              "height": 44,
+              "top": 456.671875,
+              "right": 363.453125,
+              "bottom": 500.671875,
+              "left": 168.453125
+            },
+            "current": {
+              "x": 172.765625,
+              "y": 456.671875,
+              "width": 201.671875,
+              "height": 44,
+              "top": 456.671875,
+              "right": 374.4375,
+              "bottom": 500.671875,
+              "left": 172.765625
+            }
+          }
+        ]
+      }
+    ],
+    "cls": 0.0004278199791250289,
+    "font_metrics": {
+      "Instrument Sans": {
+        "xHeight": 0.51,
+        "width": 0.551
+      },
+      "Helvetica Neue": {
+        "xHeight": 0.517,
+        "width": 0.518
+      },
+      "Newsreader": {
+        "xHeight": 0.4405,
+        "width": 0.5070000305175781
+      },
+      "Georgia": {
+        "xHeight": 0.4814453125,
+        "width": 0.5048828125
+      }
+    }
+  },
+  {
+    "width": 412,
+    "page": "career",
+    "variant": "summary-native",
+    "fallback_fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loading"
+      }
+    ],
+    "shifts": [
+      {
+        "value": 0.0004278199791250289,
+        "sources": [
+          {
+            "node": null,
+            "previous": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            },
+            "current": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            }
+          },
+          {
+            "node": "",
+            "previous": {
+              "x": 168.453125,
+              "y": 456.671875,
+              "width": 195,
+              "height": 44,
+              "top": 456.671875,
+              "right": 363.453125,
+              "bottom": 500.671875,
+              "left": 168.453125
+            },
+            "current": {
+              "x": 172.765625,
+              "y": 456.671875,
+              "width": 201.671875,
+              "height": 44,
+              "top": 456.671875,
+              "right": 374.4375,
+              "bottom": 500.671875,
+              "left": 172.765625
+            }
+          }
+        ]
+      }
+    ],
+    "cls": 0.0004278199791250289,
+    "font_metrics": {
+      "Instrument Sans": {
+        "xHeight": 0.51,
+        "width": 0.551
+      },
+      "Helvetica Neue": {
+        "xHeight": 0.517,
+        "width": 0.518
+      },
+      "Newsreader": {
+        "xHeight": 0.4405,
+        "width": 0.5070000305175781
+      },
+      "Georgia": {
+        "xHeight": 0.4814453125,
+        "width": 0.5048828125
+      }
+    }
+  },
+  {
+    "width": 412,
+    "page": "career",
+    "variant": "article-native",
+    "fallback_fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loading"
+      }
+    ],
+    "shifts": [
+      {
+        "value": 0.0004278199791250289,
+        "sources": [
+          {
+            "node": null,
+            "previous": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            },
+            "current": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            }
+          },
+          {
+            "node": "",
+            "previous": {
+              "x": 168.453125,
+              "y": 456.671875,
+              "width": 195,
+              "height": 44,
+              "top": 456.671875,
+              "right": 363.453125,
+              "bottom": 500.671875,
+              "left": 168.453125
+            },
+            "current": {
+              "x": 172.765625,
+              "y": 456.671875,
+              "width": 201.671875,
+              "height": 44,
+              "top": 456.671875,
+              "right": 374.4375,
+              "bottom": 500.671875,
+              "left": 172.765625
+            }
+          }
+        ]
+      }
+    ],
+    "cls": 0.0004278199791250289,
+    "font_metrics": {
+      "Instrument Sans": {
+        "xHeight": 0.51,
+        "width": 0.551
+      },
+      "Helvetica Neue": {
+        "xHeight": 0.517,
+        "width": 0.518
+      },
+      "Newsreader": {
+        "xHeight": 0.4405,
+        "width": 0.5070000305175781
+      },
+      "Georgia": {
+        "xHeight": 0.4814453125,
+        "width": 0.5048828125
+      }
+    }
+  },
+  {
+    "width": 412,
+    "page": "career",
+    "variant": "native-metrics",
+    "fallback_fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loading"
+      }
+    ],
+    "shifts": [
+      {
+        "value": 0.0004430192440503773,
+        "sources": [
+          {
+            "node": null,
+            "previous": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            },
+            "current": {
+              "x": 16,
+              "y": 278.109375,
+              "width": 380,
+              "height": 49.140625,
+              "top": 278.109375,
+              "right": 396,
+              "bottom": 327.25,
+              "left": 16
+            }
+          },
+          {
+            "node": "",
+            "previous": {
+              "x": 171.03125,
+              "y": 456.671875,
+              "width": 199,
+              "height": 44,
+              "top": 456.671875,
+              "right": 370.03125,
+              "bottom": 500.671875,
+              "left": 171.03125
+            },
+            "current": {
+              "x": 175.46875,
+              "y": 456.671875,
+              "width": 205.78125,
+              "height": 44,
+              "top": 456.671875,
+              "right": 381.25,
+              "bottom": 500.671875,
+              "left": 175.46875
+            }
+          }
+        ]
+      }
+    ],
+    "cls": 0.0004430192440503773,
+    "font_metrics": {
+      "Instrument Sans": {
+        "xHeight": 0.51,
+        "width": 0.551
+      },
+      "Helvetica Neue": {
+        "xHeight": 0.517,
+        "width": 0.518
+      },
+      "Newsreader": {
+        "xHeight": 0.4405,
+        "width": 0.5070000305175781
+      },
+      "Georgia": {
+        "xHeight": 0.4814453125,
+        "width": 0.5048828125
+      }
+    }
+  },
+  {
+    "width": 412,
+    "page": "career",
+    "variant": "title-baseline",
+    "fallback_fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loading"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loading"
+      }
+    ],
+    "shifts": [
+      {
+        "value": 0.0004278199791250289,
+        "sources": [
+          {
+            "node": null,
+            "previous": {
+              "x": 16,
+              "y": 264.90625,
+              "width": 380,
+              "height": 49.140625,
+              "top": 264.90625,
+              "right": 396,
+              "bottom": 314.046875,
+              "left": 16
+            },
+            "current": {
+              "x": 16,
+              "y": 264.90625,
+              "width": 380,
+              "height": 49.140625,
+              "top": 264.90625,
+              "right": 396,
+              "bottom": 314.046875,
+              "left": 16
+            }
+          },
+          {
+            "node": "",
+            "previous": {
+              "x": 168.453125,
+              "y": 443.46875,
+              "width": 195,
+              "height": 44,
+              "top": 443.46875,
+              "right": 363.453125,
+              "bottom": 487.46875,
+              "left": 168.453125
+            },
+            "current": {
+              "x": 172.765625,
+              "y": 443.46875,
+              "width": 201.671875,
+              "height": 44,
+              "top": 443.46875,
+              "right": 374.4375,
+              "bottom": 487.46875,
+              "left": 172.765625
+            }
+          }
+        ]
+      }
+    ],
+    "cls": 0.0004278199791250289,
+    "font_metrics": {
+      "Instrument Sans": {
+        "xHeight": 0.51,
+        "width": 0.551
+      },
+      "Helvetica Neue": {
+        "xHeight": 0.517,
+        "width": 0.518
+      },
+      "Newsreader": {
+        "xHeight": 0.4405,
+        "width": 0.5070000305175781
+      },
+      "Georgia": {
+        "xHeight": 0.4814453125,
+        "width": 0.5048828125
+      }
+    }
+  }
+]

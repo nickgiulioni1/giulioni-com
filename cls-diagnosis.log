@@ -1,0 +1,248 @@
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+[heavy-slot] all 3 slots busy, waiting 30s
+/Users/nickgiulioni/bin/heavy-slot: line 7: 24126 Terminated: 15          sleep 30
+[heavy-slot] got slot 1
+127.0.0.1 - - [22/Oct/2026 20:59:26] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 20:59:26] "GET /assets/portrait-nick-320.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 20:59:26] "GET /favicon.svg HTTP/1.1" 200 -
+412 home before 0
+127.0.0.1 - - [22/Oct/2026 20:59:29] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 20:59:29] "GET /assets/portrait-nick-320.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 20:59:30] "GET /favicon.svg HTTP/1.1" 200 -
+412 home current 0.0003921743612943858
+127.0.0.1 - - [22/Oct/2026 20:59:32] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 20:59:32] "GET /assets/portrait-nick-320.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 20:59:33] "GET /favicon.svg HTTP/1.1" 200 -
+412 home wrap 0.0003921743612943858
+127.0.0.1 - - [22/Oct/2026 20:59:35] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 20:59:35] "GET /assets/portrait-nick-320.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 20:59:36] "GET /favicon.svg HTTP/1.1" 200 -
+412 home heading-line 0.0003921743612943858
+127.0.0.1 - - [22/Oct/2026 20:59:38] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 20:59:38] "GET /assets/portrait-nick-320.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 20:59:38] "GET /favicon.svg HTTP/1.1" 200 -
+412 home heading-adjust 0.0003921743612943858
+127.0.0.1 - - [22/Oct/2026 20:59:41] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 20:59:41] "GET /assets/portrait-nick-320.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 20:59:41] "GET /favicon.svg HTTP/1.1" 200 -
+412 home body-adjust 0
+127.0.0.1 - - [22/Oct/2026 20:59:44] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 20:59:44] "GET /assets/portrait-nick-320.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 20:59:44] "GET /favicon.svg HTTP/1.1" 200 -
+412 home inline-block 0.0003962595108912023
+127.0.0.1 - - [22/Oct/2026 20:59:47] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 20:59:47] "GET /assets/portrait-nick-320.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 20:59:47] "GET /favicon.svg HTTP/1.1" 200 -
+412 home fixed-heading 0.0003921743612943858
+127.0.0.1 - - [22/Oct/2026 20:59:50] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 20:59:50] "GET /assets/portrait-nick-320.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 20:59:50] "GET /favicon.svg HTTP/1.1" 200 -
+412 home baseline-type 0
+127.0.0.1 - - [22/Oct/2026 20:59:53] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 20:59:53] "GET /assets/portrait-nick-320.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 20:59:53] "GET /favicon.svg HTTP/1.1" 200 -
+412 home text-box 0.0003921743612943858
+127.0.0.1 - - [22/Oct/2026 20:59:56] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 20:59:56] "GET /assets/portrait-nick-320.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 20:59:57] "GET /favicon.svg HTTP/1.1" 200 -
+412 home center-cap 0.0003921743612943858
+127.0.0.1 - - [22/Oct/2026 20:59:59] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 20:59:59] "GET /assets/portrait-nick-320.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:00] "GET /favicon.svg HTTP/1.1" 200 -
+412 home modest-type 0.0003921743612943858
+127.0.0.1 - - [22/Oct/2026 21:00:02] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:02] "GET /assets/portrait-nick-320.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:02] "GET /favicon.svg HTTP/1.1" 200 -
+412 home modest-type-wrap 0.0003921743612943858
+127.0.0.1 - - [22/Oct/2026 21:00:05] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:05] "GET /favicon.svg HTTP/1.1" 200 -
+412 career before 0
+127.0.0.1 - - [22/Oct/2026 21:00:07] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:08] "GET /favicon.svg HTTP/1.1" 200 -
+412 career current 0.0001920020310503764
+127.0.0.1 - - [22/Oct/2026 21:00:10] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:10] "GET /favicon.svg HTTP/1.1" 200 -
+412 career wrap 0.0001920020310503764
+127.0.0.1 - - [22/Oct/2026 21:00:13] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:13] "GET /favicon.svg HTTP/1.1" 200 -
+412 career heading-line 0.0001920020310503764
+127.0.0.1 - - [22/Oct/2026 21:00:16] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:16] "GET /favicon.svg HTTP/1.1" 200 -
+412 career heading-adjust 0.0011998424794983184
+127.0.0.1 - - [22/Oct/2026 21:00:19] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:20] "GET /favicon.svg HTTP/1.1" 200 -
+412 career body-adjust 0
+127.0.0.1 - - [22/Oct/2026 21:00:22] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:22] "GET /favicon.svg HTTP/1.1" 200 -
+412 career inline-block 0.0001920020310503764
+127.0.0.1 - - [22/Oct/2026 21:00:25] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:25] "GET /favicon.svg HTTP/1.1" 200 -
+412 career fixed-heading 0.00018791688145355985
+127.0.0.1 - - [22/Oct/2026 21:00:28] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:28] "GET /favicon.svg HTTP/1.1" 200 -
+412 career baseline-type 0
+127.0.0.1 - - [22/Oct/2026 21:00:30] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:31] "GET /favicon.svg HTTP/1.1" 200 -
+412 career text-box 0.00048613280202116575
+127.0.0.1 - - [22/Oct/2026 21:00:33] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:33] "GET /favicon.svg HTTP/1.1" 200 -
+412 career center-cap 0.0005310694475861474
+127.0.0.1 - - [22/Oct/2026 21:00:35] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:35] "GET /favicon.svg HTTP/1.1" 200 -
+412 career modest-type 0.0001756614326631103
+127.0.0.1 - - [22/Oct/2026 21:00:37] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:37] "GET /favicon.svg HTTP/1.1" 200 -
+412 career modest-type-wrap 0.0001756614326631103
+127.0.0.1 - - [22/Oct/2026 21:00:39] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:39] "GET /assets/portrait-nick-348.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:39] "GET /assets/ballpark-estimate-480.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:40] "GET /favicon.svg HTTP/1.1" 200 -
+1350 home before 0.002575853499036862
+127.0.0.1 - - [22/Oct/2026 21:00:41] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:41] "GET /assets/portrait-nick-348.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:42] "GET /assets/ballpark-estimate-480.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:42] "GET /favicon.svg HTTP/1.1" 200 -
+1350 home current 0.0026479802830312585
+127.0.0.1 - - [22/Oct/2026 21:00:43] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:43] "GET /assets/portrait-nick-348.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:44] "GET /assets/ballpark-estimate-480.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:44] "GET /favicon.svg HTTP/1.1" 200 -
+1350 home wrap 0.0026479802830312585
+127.0.0.1 - - [22/Oct/2026 21:00:45] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:45] "GET /assets/portrait-nick-348.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:46] "GET /assets/ballpark-estimate-480.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:46] "GET /favicon.svg HTTP/1.1" 200 -
+1350 home heading-line 0.0026479802830312585
+127.0.0.1 - - [22/Oct/2026 21:00:47] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:47] "GET /assets/portrait-nick-348.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:48] "GET /assets/ballpark-estimate-480.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:48] "GET /favicon.svg HTTP/1.1" 200 -
+1350 home heading-adjust 0.00862750909326387
+127.0.0.1 - - [22/Oct/2026 21:00:49] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:49] "GET /assets/portrait-nick-348.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:50] "GET /assets/ballpark-estimate-480.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:50] "GET /favicon.svg HTTP/1.1" 200 -
+1350 home body-adjust 0.003109329561042524
+127.0.0.1 - - [22/Oct/2026 21:00:51] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:51] "GET /assets/portrait-nick-348.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:51] "GET /assets/ballpark-estimate-480.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:51] "GET /favicon.svg HTTP/1.1" 200 -
+1350 home inline-block 0.002679865571097102
+127.0.0.1 - - [22/Oct/2026 21:00:53] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:53] "GET /assets/portrait-nick-348.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:53] "GET /assets/ballpark-estimate-480.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:53] "GET /favicon.svg HTTP/1.1" 200 -
+1350 home fixed-heading 0.002628168824606719
+127.0.0.1 - - [22/Oct/2026 21:00:55] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:55] "GET /assets/portrait-nick-348.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:55] "GET /assets/ballpark-estimate-480.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:55] "GET /favicon.svg HTTP/1.1" 200 -
+1350 home baseline-type 0.0025771633668242714
+127.0.0.1 - - [22/Oct/2026 21:00:57] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:57] "GET /assets/portrait-nick-348.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:58] "GET /assets/ballpark-estimate-480.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:00:58] "GET /favicon.svg HTTP/1.1" 200 -
+1350 home text-box 0.003022018786664916
+127.0.0.1 - - [22/Oct/2026 21:01:00] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:01:00] "GET /assets/portrait-nick-348.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:01:00] "GET /assets/ballpark-estimate-480.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:01:00] "GET /favicon.svg HTTP/1.1" 200 -
+1350 home center-cap 0.003022018786664916
+127.0.0.1 - - [22/Oct/2026 21:01:02] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:01:02] "GET /assets/portrait-nick-348.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:01:02] "GET /assets/ballpark-estimate-480.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:01:02] "GET /favicon.svg HTTP/1.1" 200 -
+1350 home modest-type 0.0026479802830312585
+127.0.0.1 - - [22/Oct/2026 21:01:04] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:01:04] "GET /assets/portrait-nick-348.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:01:04] "GET /assets/ballpark-estimate-480.webp HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:01:04] "GET /favicon.svg HTTP/1.1" 200 -
+1350 home modest-type-wrap 0.0026479802830312585
+127.0.0.1 - - [22/Oct/2026 21:01:06] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:01:07] "GET /favicon.svg HTTP/1.1" 200 -
+1350 career before 0.01730044829699676
+127.0.0.1 - - [22/Oct/2026 21:01:08] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:01:09] "GET /favicon.svg HTTP/1.1" 200 -
+1350 career current 0.01747876960934536
+127.0.0.1 - - [22/Oct/2026 21:01:10] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:01:11] "GET /favicon.svg HTTP/1.1" 200 -
+1350 career wrap 0.01747876960934536
+127.0.0.1 - - [22/Oct/2026 21:01:12] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:01:12] "GET /favicon.svg HTTP/1.1" 200 -
+1350 career heading-line 0.01747876960934536
+127.0.0.1 - - [22/Oct/2026 21:01:14] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:01:14] "GET /favicon.svg HTTP/1.1" 200 -
+1350 career heading-adjust 0.01721808023596883
+127.0.0.1 - - [22/Oct/2026 21:01:16] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:01:16] "GET /favicon.svg HTTP/1.1" 200 -
+1350 career body-adjust 0.010393642139479905
+127.0.0.1 - - [22/Oct/2026 21:01:18] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:01:18] "GET /favicon.svg HTTP/1.1" 200 -
+1350 career inline-block 0.01747876960934536
+127.0.0.1 - - [22/Oct/2026 21:01:20] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:01:20] "GET /favicon.svg HTTP/1.1" 200 -
+1350 career fixed-heading 0.017471998456790126
+127.0.0.1 - - [22/Oct/2026 21:01:22] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:01:22] "GET /favicon.svg HTTP/1.1" 200 -
+1350 career baseline-type 0.014045877477161954
+127.0.0.1 - - [22/Oct/2026 21:01:24] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:01:24] "GET /favicon.svg HTTP/1.1" 200 -
+1350 career text-box 0.019667629312231854
+127.0.0.1 - - [22/Oct/2026 21:01:26] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:01:26] "GET /favicon.svg HTTP/1.1" 200 -
+1350 career center-cap 0.017910388265038088
+127.0.0.1 - - [22/Oct/2026 21:01:28] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:01:28] "GET /favicon.svg HTTP/1.1" 200 -
+1350 career modest-type 0.0179224987960774
+127.0.0.1 - - [22/Oct/2026 21:01:30] "GET /career/ HTTP/1.1" 200 -
+127.0.0.1 - - [22/Oct/2026 21:01:30] "GET /favicon.svg HTTP/1.1" 200 -
+1350 career modest-type-wrap 0.0179224987960774

@@ -1,0 +1,642 @@
+{
+  "home-1280": {
+    "raw_origins": [
+      "http://127.0.0.1:65127",
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "origins": [
+      "LOCAL",
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "failed_requests": [],
+    "overflow": false,
+    "fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loaded"
+      }
+    ]
+  },
+  "career-1280": {
+    "raw_origins": [
+      "http://127.0.0.1:65127",
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "origins": [
+      "LOCAL",
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "failed_requests": [],
+    "overflow": false,
+    "fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loaded"
+      }
+    ]
+  },
+  "work-1280": {
+    "raw_origins": [
+      "http://127.0.0.1:65127",
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "origins": [
+      "LOCAL",
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "failed_requests": [],
+    "overflow": false,
+    "fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loaded"
+      }
+    ]
+  },
+  "media-1280": {
+    "raw_origins": [
+      "http://127.0.0.1:65127",
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "origins": [
+      "LOCAL",
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "failed_requests": [],
+    "overflow": false,
+    "fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loaded"
+      }
+    ]
+  },
+  "404-1280": {
+    "raw_origins": [
+      "http://127.0.0.1:65127",
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "origins": [
+      "LOCAL",
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "failed_requests": [],
+    "overflow": false,
+    "fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loaded"
+      }
+    ]
+  },
+  "home-375": {
+    "raw_origins": [
+      "http://127.0.0.1:65127",
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "origins": [
+      "LOCAL",
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "failed_requests": [],
+    "overflow": false,
+    "fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loaded"
+      }
+    ]
+  },
+  "career-375": {
+    "raw_origins": [
+      "http://127.0.0.1:65127",
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "origins": [
+      "LOCAL",
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "failed_requests": [],
+    "overflow": false,
+    "fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loaded"
+      }
+    ]
+  },
+  "work-375": {
+    "raw_origins": [
+      "http://127.0.0.1:65127",
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "origins": [
+      "LOCAL",
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "failed_requests": [],
+    "overflow": false,
+    "fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loaded"
+      }
+    ]
+  },
+  "media-375": {
+    "raw_origins": [
+      "http://127.0.0.1:65127",
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "origins": [
+      "LOCAL",
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "failed_requests": [],
+    "overflow": false,
+    "fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loaded"
+      }
+    ]
+  },
+  "404-375": {
+    "raw_origins": [
+      "http://127.0.0.1:65127",
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "origins": [
+      "LOCAL",
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "failed_requests": [],
+    "overflow": false,
+    "fonts": [
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "loaded"
+      }
+    ]
+  }
+}

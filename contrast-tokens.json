@@ -1,0 +1,92 @@
+[
+  {
+    "foreground": "ink",
+    "background": "paper",
+    "ratio": 14.94,
+    "minimum": 4.5
+  },
+  {
+    "foreground": "ink",
+    "background": "paper-band",
+    "ratio": 14.17,
+    "minimum": 4.5
+  },
+  {
+    "foreground": "ink-soft",
+    "background": "paper",
+    "ratio": 7.099,
+    "minimum": 4.5
+  },
+  {
+    "foreground": "ink-soft",
+    "background": "paper-band",
+    "ratio": 6.734,
+    "minimum": 4.5
+  },
+  {
+    "foreground": "ink-mute",
+    "background": "paper",
+    "ratio": 4.928,
+    "minimum": 4.5
+  },
+  {
+    "foreground": "ink-mute",
+    "background": "paper-band",
+    "ratio": 4.674,
+    "minimum": 4.5
+  },
+  {
+    "foreground": "rust-text",
+    "background": "paper",
+    "ratio": 5.321,
+    "minimum": 4.5
+  },
+  {
+    "foreground": "rust-text",
+    "background": "paper-band",
+    "ratio": 5.047,
+    "minimum": 4.5
+  },
+  {
+    "foreground": "paper",
+    "background": "dark-band",
+    "ratio": 14.94,
+    "minimum": 4.5
+  },
+  {
+    "foreground": "paper",
+    "background": "rust",
+    "ratio": 4.506,
+    "minimum": 4.5
+  },
+  {
+    "foreground": "ink",
+    "background": "rust-on-dark",
+    "ratio": 5.377,
+    "minimum": 4.5
+  },
+  {
+    "foreground": "ink",
+    "background": "paper",
+    "ratio": 14.94,
+    "minimum": 4.5
+  },
+  {
+    "foreground": "rust-on-dark",
+    "background": "dark-band",
+    "ratio": 5.377,
+    "minimum": 4.5
+  },
+  {
+    "foreground": "paper at 0.68",
+    "background": "dark-band",
+    "ratio": 7.551,
+    "minimum": 4.5
+  },
+  {
+    "foreground": "paper at 0.8",
+    "background": "dark-band",
+    "ratio": 9.954,
+    "minimum": 4.5
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "base": "71c1b57692df923467d9dae3d5738b4557482f51",
+  "files": {
+    "index.html": "34dabdbe0a6458b7aa2f5b33f1dae8f5b056e8779ab4fb73b73ca1d20087996e",
+    "career/index.html": "a44e27d07399d43effb1bf3e91221d08dea17ce73f21b26e267f46d1dfbd305c",
+    "work/index.html": "f59f49392caeaab6e971c5a68d80749bf797300f51dc2f77eb73b73fc814eb4c",
+    "media/index.html": "c6e61d45f722aeb131b3392fa7e33bd2d5288b5bb553e89ec47eaf2ed512ee21",
+    "404.html": "c8b6efb6ed628500c1eb1e97d3704680d157caf17a0a634388db5ea151ae7b0d",
+    "tests/test_site.py": "5a78162d2955bf8267d035fb73f76e61a13b7fd013591454e76262321f9776fc",
+    "assets/ballpark-estimate-960.webp": "1b988697e99495b5a1399a2e2d7dc92dc8890f37fdbbb40a41adfdd55e0ebe5a",
+    "assets/ballpark-estimate-720.webp": "c492805e0d351806513dd3a969142d5650e2ea4adbdc2dadc50852902ab61598",
+    "assets/ballpark-estimate-720.png": "4ec9ca00bac843949244cc15736ea6699cc4ddf09a47b42663d662d3c4c89a01",
+    "assets/ballpark-estimate-480.png": "77afeaa7a7e5069e943351b671e7c64f35dff21ce3d57ce8c542c296c0184dca",
+    "assets/ballpark-estimate-1280.png": "bb116970f44a24c764507f0de99bb5eca0417037bc9e0000698fb8186322fd7e",
+    "assets/ballpark-estimate-1280.webp": "a6e01624884decfc4b6734b18c5fa96a0daaf4badaaab1103a155537fd2addca",
+    "assets/ballpark-estimate-360.webp": "581c89ce43e29ad9570270bb44cc62a6666a4bbe527a57d523c8f0a4a1bb61bd",
+    "assets/ballpark-estimate-960.png": "cbe456ba3690bc443a9760ec0611f6e5ba8e52ce3faa0f9774f6c8fa987c091f",
+    "assets/ballpark-estimate-480.webp": "303d5e8e718ad09579d964d60ee292030d229d1d0aee8f9526e457d85c0e01ee",
+    "assets/ballpark-estimate-360.png": "8fddc4109966b57838ef4980bcf2d46e80797ffaefc7e62721ba7b0b75e704f1",
+    "assets/ballpark-estimate-600.webp": "8ce37735cbe741c127499b0c0776452087bcc0ba0b35d2a175bf095e3bf99ec6",
+    "assets/ballpark-estimate-1200.webp": "16d344a0c4d7955711c0b9f747275bcb2b40f6dcab7140c184213faeeb0f4014",
+    "assets/ballpark-estimate-600.png": "7ea2e023a4831e2dab490379fb83805aa38a951302b527149c3e8089f53b27f2",
+    "assets/ballpark-estimate-1200.png": "242add77731b37bf241db2021f503defb1cbab5761eac8161ec7f4bfe073da1a"
+  }
+}
