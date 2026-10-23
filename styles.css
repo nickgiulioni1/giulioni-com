@@ -111,7 +111,6 @@ h1, h2 { text-wrap: balance; }
 .site-nav a:hover { color: var(--ink); background: var(--paper-band); }
 .site-nav a[aria-current="page"] {
   color: var(--ink);
-  background: var(--paper-band);
   text-decoration: underline;
   text-decoration-color: var(--rust-text);
   text-underline-offset: .45em;
@@ -419,7 +418,6 @@ h1, h2 { text-wrap: balance; }
 .page-title {
   margin: 0;
   font-family: var(--heading);
-  font-size-adjust: .5;
   font-size: clamp(2.75rem, 6vw, 4.5rem);
   font-weight: 400;
   letter-spacing: -.02em;
@@ -430,7 +428,6 @@ h1, h2 { text-wrap: balance; }
   margin: 1rem 0 0;
   max-width: 60ch;
   font-size: 1.1rem;
-  font-size-adjust: none;
   color: var(--ink-soft);
 }
 .page-deck strong { color: var(--ink); font-weight: 600; }
@@ -532,7 +529,7 @@ h1, h2 { text-wrap: balance; }
 }
 .case-story {
   margin-top: 2rem;
-  max-width: 84ch;
+  max-width: 68ch;
 }
 .case-facts {
   display: grid;
@@ -637,8 +634,11 @@ h1, h2 { text-wrap: balance; }
 }
 .media-meta .show-name {
   margin: 0;
-  font-size: .875rem;
-  font-weight: 600;
+  font-family: var(--mono);
+  font-size: .75rem;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
   color: var(--ink-mute);
   line-height: 1.4;
 }
@@ -650,8 +650,11 @@ h1, h2 { text-wrap: balance; }
   font-weight: 400;
   text-wrap: pretty;
 }
-.media-entry .episode-title a { color: var(--rust-text); }
-.media-entry .episode-title a:hover { color: var(--ink); }
+.media-entry .episode-title a {
+  color: var(--rust-text);
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+}
+.media-entry .episode-title a:hover { color: var(--ink); text-decoration-color: currentColor; }
 .media-entry .entry-detail p:not(.episode-title) { margin: 0; color: var(--ink-soft); }
 
 /* Footer */
@@ -707,18 +710,13 @@ h1, h2 { text-wrap: balance; }
 }
 
 @media (max-width: 520px) {
-  /* Match fallback text height while the existing web fonts load. */
-  body { font-size-adjust: .5; }
-  h1, h2, .page-title, .site-name { font-size-adjust: .46; }
-  .media-entry { font-size-adjust: none; }
-  .resume-topbar { font-size-adjust: none; }
   .site-header { padding: 0 calc(1rem + var(--safe-right)) 0 calc(1rem + var(--safe-left)); }
   .site-header-inner { flex-direction: column; align-items: flex-start; gap: .25rem; padding: .625rem 0; }
   .site-nav { width: 100%; justify-content: space-between; gap: .125rem .25rem; }
   .site-nav a { padding: .5rem .375rem; font-size: .875rem; }
   .page-main { padding: 1.5rem calc(1rem + var(--safe-right)) calc(1.5rem + var(--safe-bottom)) calc(1rem + var(--safe-left)); }
   .product-band { margin: 0 calc(-1rem - var(--safe-right)) 0 calc(-1rem - var(--safe-left)); padding-left: calc(1rem + var(--safe-left)); padding-right: calc(1rem + var(--safe-right)); }
-  .hero-lede { font-size: clamp(2.25rem, 8.5vw, 2.5rem); }
+  .hero-lede { font-size: clamp(2rem, 8vw, 2.25rem); }
   .hero-actions { gap: .5rem 1.25rem; }
   .track-row { padding: 1.25rem; }
   .receipt { padding: 1.5rem; }
