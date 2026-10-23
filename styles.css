@@ -711,6 +711,7 @@ h1, h2 { text-wrap: balance; }
   body { font-size-adjust: .5; }
   h1, h2, .page-title, .site-name { font-size-adjust: .46; }
   .media-entry { font-size-adjust: none; }
+  .resume-topbar { font-size-adjust: none; }
   .site-header { padding: 0 calc(1rem + var(--safe-right)) 0 calc(1rem + var(--safe-left)); }
   .site-header-inner { flex-direction: column; align-items: flex-start; gap: .25rem; padding: .625rem 0; }
   .site-nav { width: 100%; justify-content: space-between; gap: .125rem .25rem; }
