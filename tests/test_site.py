@@ -843,6 +843,30 @@ class ResumeTests(unittest.TestCase):
         )
 
 
+class JobTitleTests(unittest.TestCase):
+    """Home and career job titles consistently abbreviate Senior as Sr."""
+
+    def test_job_titles_do_not_spell_out_senior(self):
+        for page in ("home", "resume"):
+            with self.subTest(page=page):
+                html = _strip_html_comments(_read_page(page))
+                titles = re.findall(
+                    r'<(?:p|span)\b[^>]*\bclass="(?:role|track-years)"[^>]*>'
+                    r'(.*?)</(?:p|span)>',
+                    html,
+                    flags=re.S,
+                )
+                self.assertTrue(titles, "%s must contain job titles" % page)
+                for title in titles:
+                    self.assertNotRegex(title, r"\bSenior\s")
+
+    def test_corsair_and_razer_use_approved_abbreviated_titles(self):
+        for page in ("home", "resume"):
+            for title in ("Sr. Ecommerce Sales Manager", "Sr. Ecommerce Manager"):
+                with self.subTest(page=page, title=title):
+                    self.assertIn(title, _read_page(page))
+
+
 class SelectedWorkTests(unittest.TestCase):
     """/work/ renders one Ballpark case + one Also shipped + three receipts."""
 
