@@ -6,6 +6,7 @@
 #   print emulation, writes the PDF, and tears the server down.
 # - Validates the PDF: pdfinfo page count <= 2, pdftotext must contain the
 #   resume headline, the contact email, the LinkedIn URL, and "Ballpark".
+#   Link targets must be absolute and must not contain a local origin.
 #
 # Set OUT to write elsewhere. The destination is replaced only after validation.
 # The server and temporary files are cleaned up on EXIT/INT/TERM.
@@ -58,12 +59,47 @@ if [[ "${PORT}" == "0" ]]; then
   PORT="$(python3 -c 'import socket; s=socket.socket(); s.bind(("127.0.0.1",0)); print(s.getsockname()[1]); s.close()')"
 fi
 
-# Start the local server. Use python3 http.server so we don't introduce
-# other build dependencies. Background it, redirect output to a temp log.
+# Rewrite only anchors in the print response. A <base> would also send
+# stylesheet and font requests to the live site.
 (
   cd "${REPO_ROOT}"
-  exec python3 -m http.server "${PORT}" --bind 127.0.0.1
-) </dev/null >"${SERVER_LOG}" 2>&1 &
+  exec python3 - "${PORT}" <<'PYTHON'
+import io
+import re
+import sys
+from html import escape, unescape
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+from urllib.parse import urljoin, urlsplit
+
+
+class PrintHandler(SimpleHTTPRequestHandler):
+    def send_head(self):
+        if urlsplit(self.path).path != "/career/":
+            return super().send_head()
+        html = Path("career/index.html").read_text(encoding="utf-8")
+
+        def absolute_anchor(match):
+            return re.sub(
+                r'''(\bhref\s*=\s*)(["'])(.*?)\2''',
+                lambda href: href[1] + href[2] + escape(urljoin(
+                    "https://giulioni.com/career/", unescape(href[3])
+                ), quote=True) + href[2],
+                match[0], count=1, flags=re.I | re.S,
+            )
+
+        content = re.sub(r"<a\b[^>]*>", absolute_anchor, html,
+                         flags=re.I | re.S).encode("utf-8")
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(content)))
+        self.end_headers()
+        return io.BytesIO(content)
+
+
+ThreadingHTTPServer(("127.0.0.1", int(sys.argv[1])), PrintHandler).serve_forever()
+PYTHON
+) >"${SERVER_LOG}" 2>&1 &
 SERVER_PID=$!
 
 # Wait for the server to accept connections (max ~10s).
@@ -134,6 +170,29 @@ for needle in "resume" "nick@giulioni.com" "linkedin.com/in/nickgiulioni" "ballp
     exit 6
   fi
 done
+
+if ! URLS="$("${PDFINFO_BIN}" -url "${TMP_PDF}")"; then
+  echo "pdfinfo could not read PDF links; destination unchanged." >&2
+  exit 7
+fi
+if ! python3 - "${URLS}" <<'PYTHON'
+import sys
+from urllib.parse import urlsplit
+
+urls = [line.split(None, 2)[2] for line in sys.argv[1].splitlines()
+        if line.strip() and line.split()[0].isdigit()]
+if not urls:
+    sys.exit("PDF has no link targets")
+for url in urls:
+    if (not urlsplit(url).scheme or any(
+        host in url.lower() for host in ("127.0.0.1", "localhost", "0.0.0.0")
+    )):
+        sys.exit("PDF has a local or relative link: " + url)
+PYTHON
+then
+  echo "PDF link validation failed; destination unchanged." >&2
+  exit 7
+fi
 
 if [[ "${CHROME_STATUS}" -ne 0 ]]; then
   echo "Chrome exited ${CHROME_STATUS}, but the fresh PDF passed all checks; accepting it." >&2
