@@ -221,6 +221,39 @@ class StructureTests(unittest.TestCase):
                 )
 
 
+class LcpImagePriorityTests(unittest.TestCase):
+    """Desktop LCP images stay eager and receive high fetch priority."""
+
+    @staticmethod
+    def _image_in_figure(html, figure_class):
+        figure = re.search(
+            r'<figure class="' + re.escape(figure_class) + r'">.*?</figure>',
+            html,
+            flags=re.S,
+        )
+        if figure is None:
+            raise AssertionError("figure %r is missing" % figure_class)
+        image = re.search(r"<img\b[^>]*>", figure.group(0), flags=re.I)
+        if image is None:
+            raise AssertionError("figure %r has no image" % figure_class)
+        return image.group(0)
+
+    def test_desktop_lcp_images_are_eager_and_prioritized(self):
+        home = _read_page("home")
+        portrait = self._image_in_figure(home, "portrait")
+        self.assertIn('fetchpriority="high"', portrait)
+        self.assertNotRegex(portrait, r'\bloading\s*=\s*["\']lazy["\']')
+
+        work = _read_page("work")
+        ballpark_work = self._image_in_figure(work, "work-image")
+        self.assertIn('fetchpriority="high"', ballpark_work)
+        self.assertNotRegex(ballpark_work, r'\bloading\s*=\s*["\']lazy["\']')
+
+        ballpark_home = self._image_in_figure(home, "product-image")
+        self.assertRegex(ballpark_home, r'\bloading\s*=\s*["\']lazy["\']')
+        self.assertNotRegex(ballpark_home, r'\bfetchpriority\s*=')
+
+
 class SitemapTests(unittest.TestCase):
     def test_sitemap_lists_every_page_canonical(self):
         sitemap = ET.parse(_path("sitemap.xml"))
