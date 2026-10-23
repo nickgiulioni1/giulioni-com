@@ -27,6 +27,7 @@ import subprocess
 import tempfile
 import unittest
 import xml.etree.ElementTree as ET
+import zlib
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urljoin, urlsplit
@@ -954,6 +955,31 @@ class MediaArchiveTests(unittest.TestCase):
         )
 
 
+def _pdf_link_urls(data):
+    """Read literal URI annotations, including Flate-compressed object streams."""
+    chunks = [data]
+    for stream in re.finditer(rb"stream\r?\n(.*?)\r?\nendstream", data, re.S):
+        try:
+            chunks.append(zlib.decompress(stream[1]))
+        except zlib.error:
+            continue
+    urls = []
+    for chunk in chunks:
+        for uri in re.finditer(rb"/URI\s*\(((?:\\.|[^\\)])*)\)", chunk, re.S):
+            value = re.sub(
+                rb"\\([0-7]{1,3}|\r\n|[\s\S])",
+                lambda match: (
+                    bytes([int(match[1], 8)]) if match[1][:1] in b"01234567"
+                    else {b"n": b"\n", b"r": b"\r", b"t": b"\t",
+                          b"b": b"\b", b"f": b"\f", b"\n": b"",
+                          b"\r": b"", b"\r\n": b""}.get(match[1], match[1])
+                ),
+                uri[1],
+            )
+            urls.append(value.decode("utf-8"))
+    return urls
+
+
 class ResumePdfTests(unittest.TestCase):
     """The downloadable resume PDF is generated, two pages, and contains
     the required tokens."""
@@ -974,6 +1000,26 @@ class ResumePdfTests(unittest.TestCase):
             os.path.isfile(self._pdf_path()),
             "resume PDF must be committed at assets/nick-giulioni-resume.pdf",
         )
+
+    def test_pdf_links_are_absolute_and_public(self):
+        urls = _pdf_link_urls(Path(self._pdf_path()).read_bytes())
+        self.assertTrue(urls, "resume PDF must contain readable link annotations")
+        for url in urls:
+            with self.subTest(url=url):
+                self.assertTrue(urlsplit(url).scheme, "PDF links must be absolute")
+                self.assertNotRegex(url.lower(), r"127\.0\.0\.1|localhost|0\.0\.0\.0")
+        self.assertIn("https://giulioni.com/work/", urls)
+        for contact in SOCIAL_HREFS:
+            self.assertIn(contact, urls)
+
+    def test_pdf_link_reader_handles_compressed_and_escaped_uris(self):
+        annotations = (rb"<< /URI (http://local\150ost/work/) >>"
+                       rb"<< /URI (https://giulioni.com/work/\(example\)) >>")
+        for payload in (annotations, b"<< /Filter /FlateDecode >>\nstream\n"
+                        + zlib.compress(annotations) + b"\nendstream"):
+            self.assertEqual(_pdf_link_urls(payload), [
+                "http://localhost/work/", "https://giulioni.com/work/(example)",
+            ])
 
     def test_pdf_is_at_most_two_pages(self):
         if not os.path.isfile(self._pdf_path()):
@@ -1010,7 +1056,7 @@ class ResumePdfTests(unittest.TestCase):
 
 class ResumePdfRegenTests(unittest.TestCase):
     @staticmethod
-    def _tiny_pdf(text, pages=1):
+    def _tiny_pdf(text, pages=1, uri="https://giulioni.com/work/"):
         objects = [
             b"<< /Type /Catalog /Pages 2 0 R >>",
             ("<< /Type /Pages /Kids [%s] /Count %d >>" % (
@@ -1022,7 +1068,10 @@ class ResumePdfRegenTests(unittest.TestCase):
         objects.append(b"<< /Length %d >>\nstream\n" % len(content)
                        + content + b"\nendstream")
         objects.extend([b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] "
-                        b"/Resources << /Font << /F1 3 0 R >> >> /Contents 4 0 R >>"] * pages)
+                        b"/Resources << /Font << /F1 3 0 R >> >> /Contents 4 0 R "
+                        + ("/Annots [%d 0 R] >>" % (5 + pages)).encode()] * pages)
+        objects.append(("<< /Type /Annot /Subtype /Link /Rect [40 730 200 750] "
+                        "/A << /S /URI /URI (%s) >> >>" % uri).encode())
         pdf = b"%PDF-1.4\n"
         offsets = [0]
         for number, obj in enumerate(objects, 1):
@@ -1049,6 +1098,16 @@ class ResumePdfRegenTests(unittest.TestCase):
             ("missing_text", self._tiny_pdf("Resume"), 2, False, "missing required token"),
             ("too_many_pages", self._tiny_pdf("Resume", pages=3), 2, False, "page count"),
             ("stale", valid, 2, False, "no fresh, non-empty PDF"),
+        ) + tuple(
+            ("bad_link_%d" % i, self._tiny_pdf(
+                "Resume nick@giulioni.com linkedin.com/in/nickgiulioni Ballpark",
+                uri=url,
+            ), 0, False, "PDF link validation failed")
+            for i, url in enumerate((
+                "http://127.0.0.1:58890/work/", "http://localhost/work/",
+                "http://0.0.0.0/work/", "/work/", "work/",
+                "//giulioni.com/work/",
+            ))
         )
         for name, payload, chrome_status, success, message in cases:
             with self.subTest(case=name), tempfile.TemporaryDirectory() as root:
@@ -1059,7 +1118,14 @@ class ResumePdfRegenTests(unittest.TestCase):
                 shutil.copyfile(_path("tools/regen_resume_pdf.sh"), script)
                 for page in ("index.html", "career/index.html"):
                     with open(os.path.join(root, page), "w") as handle:
-                        handle.write("<html>Resume</html>")
+                        handle.write('<html><link href="/styles.css">Resume '
+                                     '<a href="/work/">Selected work</a>'
+                                     '<a href="../media/">Media</a>'
+                                     '<a href="mailto:nick@giulioni.com">Email</a>'
+                                     '<a href="https://www.linkedin.com/in/nickgiulioni">'
+                                     'LinkedIn</a></html>')
+                Path(root, "styles.css").write_text("/* local styles */")
+                source_html = Path(root, "career/index.html").read_bytes()
                 default_output = os.path.join(root, "assets", "nick-giulioni-resume.pdf")
                 output_dir = os.path.join(root, "output with spaces")
                 os.mkdir(output_dir)
@@ -1078,6 +1144,18 @@ class ResumePdfRegenTests(unittest.TestCase):
 import os
 import shutil
 import sys
+from urllib.parse import urljoin
+from urllib.request import urlopen
+url = sys.argv[-1]
+with urlopen(url) as response:
+    html = response.read().decode()
+assert '<a href="https://giulioni.com/work/">' in html
+assert '<a href="https://giulioni.com/media/">' in html
+assert '<a href="mailto:nick@giulioni.com">' in html
+assert '<a href="https://www.linkedin.com/in/nickgiulioni">' in html
+assert '<link href="/styles.css">' in html
+with urlopen(urljoin(url, '/styles.css')) as response:
+    assert response.read() == b'/* local styles */'
 output = next(arg.split('=', 1)[1] for arg in sys.argv[1:]
               if arg.startswith('--print-to-pdf='))
 if os.path.exists(os.environ['FAKE_PDF']):
@@ -1101,6 +1179,7 @@ sys.exit(int(os.environ['FAKE_STATUS']))
                 with open(default_output, "rb") as handle:
                     self.assertEqual(handle.read(), original)
                 self.assertEqual(os.listdir(output_dir), ["resume.pdf"])
+                self.assertEqual(Path(root, "career/index.html").read_bytes(), source_html)
                 if not success:
                     self.assertNotIn("Wrote", result.stdout)
 
