@@ -18,13 +18,20 @@ Run:
 
 import glob
 import hashlib
+import html
 import json
 import os
 import re
+import shutil
 import struct
 import subprocess
+import tempfile
 import unittest
 import xml.etree.ElementTree as ET
+import zlib
+from html.parser import HTMLParser
+from pathlib import Path
+from urllib.parse import unquote, urljoin, urlsplit
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -187,6 +194,18 @@ class StructureTests(unittest.TestCase):
                     "required page %r is missing" % rel,
                 )
 
+    def test_every_track_record_label_has_a_year_range(self):
+        home = _read_page("home")
+        labels = re.findall(
+            r'<div class="track-label">(.*?)</div>', home, flags=re.S | re.I
+        )
+
+        self.assertTrue(labels, "home page needs Track record labels")
+        for label in labels:
+            text = html.unescape(re.sub(r"<[^>]+>", "", label))
+            with self.subTest(label=text):
+                self.assertRegex(text, r"\d{4}–(?:\d{4}|present)")
+
     def test_favicon_links_and_assets_exist(self):
         self.assertTrue(os.path.isfile(_path("favicon.svg")))
         self.assertTrue(os.path.isfile(_path("favicon.ico")))
@@ -214,6 +233,39 @@ class StructureTests(unittest.TestCase):
                     html,
                     r'<link rel="apple-touch-icon" href="/apple-touch-icon\.png">',
                 )
+
+
+class LcpImagePriorityTests(unittest.TestCase):
+    """Desktop LCP images stay eager and receive high fetch priority."""
+
+    @staticmethod
+    def _image_in_figure(html, figure_class):
+        figure = re.search(
+            r'<figure class="' + re.escape(figure_class) + r'">.*?</figure>',
+            html,
+            flags=re.S,
+        )
+        if figure is None:
+            raise AssertionError("figure %r is missing" % figure_class)
+        image = re.search(r"<img\b[^>]*>", figure.group(0), flags=re.I)
+        if image is None:
+            raise AssertionError("figure %r has no image" % figure_class)
+        return image.group(0)
+
+    def test_desktop_lcp_images_are_eager_and_prioritized(self):
+        home = _read_page("home")
+        portrait = self._image_in_figure(home, "portrait")
+        self.assertIn('fetchpriority="high"', portrait)
+        self.assertNotRegex(portrait, r'\bloading\s*=\s*["\']lazy["\']')
+
+        work = _read_page("work")
+        ballpark_work = self._image_in_figure(work, "work-image")
+        self.assertIn('fetchpriority="high"', ballpark_work)
+        self.assertNotRegex(ballpark_work, r'\bloading\s*=\s*["\']lazy["\']')
+
+        ballpark_home = self._image_in_figure(home, "product-image")
+        self.assertRegex(ballpark_home, r'\bloading\s*=\s*["\']lazy["\']')
+        self.assertNotRegex(ballpark_home, r'\bfetchpriority\s*=')
 
 
 class SitemapTests(unittest.TestCase):
@@ -269,6 +321,21 @@ class CanonicalUrlTests(unittest.TestCase):
         with open(_path("vercel.json"), encoding="utf-8") as fh:
             vercel = json.load(fh)
         self.assertIs(vercel.get("trailingSlash"), True)
+
+    def test_vercel_redirects_www_to_apex(self):
+        with open(_path("vercel.json"), encoding="utf-8") as fh:
+            vercel = json.load(fh)
+        self.assertEqual(
+            vercel.get("redirects"),
+            [
+                {
+                    "source": "/(.*)",
+                    "has": [{"type": "host", "value": "www.giulioni.com"}],
+                    "destination": "https://giulioni.com/$1",
+                    "permanent": True,
+                }
+            ],
+        )
 
 
 class NavigationTests(unittest.TestCase):
@@ -389,7 +456,7 @@ class HomeTests(unittest.TestCase):
         for phrase in (
             "expensive problem",
             "$150M annual budget",
-            "$3M in its first year",
+            "$3M+ in its first year",
             "3,000+ doors",
             "Estimating was the thing that kept breaking",
             "Ballpark",
@@ -479,7 +546,7 @@ class ResponsiveImageTests(unittest.TestCase):
     def test_variants_exist_and_are_referenced(self):
         expected = {
             "portrait-nick": ("jpg", [160, 200, 320, 348, 400, 636]),
-            "ballpark-estimate": ("png", [360, 480, 600, 720, 960, 1200, 1280]),
+            "ballpark-estimate": ("png", [360, 480, 600, 720, 960, 1176]),
         }
         for page, names in (("home", list(expected)), ("work", ["ballpark-estimate"])):
             pictures = re.findall(r"<picture>.*?</picture>", _read_page(page), re.S)
@@ -508,26 +575,53 @@ class ResponsiveImageTests(unittest.TestCase):
                 ])
                 self.assertTrue(fallback["alt"])
                 self.assertEqual((fallback["width"], fallback["height"]),
-                                 ("636", "954") if name == "portrait-nick" else ("1280", "800"))
+                                 ("636", "954") if name == "portrait-nick" else ("1176", "646"))
                 self.assertEqual(fallback.get("loading"),
                                  "lazy" if page == "home" and name == "ballpark-estimate" else None)
 
     def test_ballpark_variants_match_master_ratio_and_carry_no_metadata(self):
         """Every Ballpark size is regenerated from one master (#26)."""
         master_w, master_h = _image_size(_path("assets/ballpark-estimate.png"))
-        self.assertEqual((master_w, master_h), (1280, 800))
-        for width in (360, 480, 600, 720, 960, 1200, 1280):
+        self.assertEqual((master_w, master_h), (1176, 646))
+        master_chunks = _image_chunks(_path("assets/ballpark-estimate.png"))
+        self.assertIn("IHDR", master_chunks, "master must be a real lossless PNG")
+        self.assertEqual(master_chunks["IHDR"][8:10], b"\x08\x02", "master must retain RGB pixels")
+        widths = (360, 480, 600, 720, 960, master_w)
+        expected_files = {_path("assets/ballpark-estimate.png")}
+        for width in widths:
             for ext in ("png", "webp"):
                 path = _path("assets/ballpark-estimate-%d.%s" % (width, ext))
+                expected_files.add(path)
                 with self.subTest(file=os.path.basename(path)):
                     w, h = _image_size(path)
                     self.assertEqual(w, width)
-                    self.assertEqual(w * master_h, h * master_w)
+                    self.assertLessEqual(w, master_w, "variants must not upscale")
+                    self.assertEqual(h, round(w * master_h / master_w))
+        self.assertEqual(set(glob.glob(_path("assets/ballpark-estimate*"))), expected_files)
         for path in sorted(glob.glob(_path("assets/ballpark-estimate*"))):
             with self.subTest(file=os.path.basename(path)):
-                self.assertFalse(
-                    set(_image_chunks(path)) & {"eXIf", "tEXt", "iTXt", "zTXt", "EXIF", "XMP "},
+                self.assertLessEqual(
+                    set(_image_chunks(path)),
+                    {"IHDR", "PLTE", "IDAT", "IEND", "tRNS", "VP8 ", "VP8L", "VP8X", "ALPH"},
                     "%s carries metadata" % path,
+                )
+
+    def test_ballpark_caption_and_alt_describe_the_redacted_image(self):
+        for page in ("home", "work"):
+            with self.subTest(page=page):
+                figure = next(block for block in re.findall(
+                    r"<figure\b.*?</figure>", _read_page(page), re.S
+                ) if "ballpark-estimate" in block)
+                caption = re.search(r"<figcaption>(.*?)</figcaption>", figure, re.S).group(1)
+                self.assertEqual(caption, "Real estimate, customer details redacted.")
+                self.assertNotIn("sanitized", caption.lower())
+                self.assertNotIn("no personal data", caption.lower())
+                alt = re.search(r'\balt="([^"]*)"', figure).group(1)
+                self.assertEqual(
+                    alt,
+                    "Ballpark.build home page with the headline 'Turn messy property evidence "
+                    "into a contractor-ready estimate' and a sample estimate card showing Good, "
+                    "Better and Best tiers, with customer details blocked out.",
                 )
 
 
@@ -698,7 +792,7 @@ class ResumeTests(unittest.TestCase):
             "$150 million",
             "team of six",
             "$3 million",
-            "3,000 doors",
+            "3,000+ doors",
             "Oct 2023",
             "Jul 2026",
             "Nov 2019",
@@ -760,6 +854,30 @@ class ResumeTests(unittest.TestCase):
             r"units.{0,20}450%|450%.{0,20}units",
             "resume must mention units near 450% figure",
         )
+
+
+class JobTitleTests(unittest.TestCase):
+    """Home and career job titles consistently abbreviate Senior as Sr."""
+
+    def test_job_titles_do_not_spell_out_senior(self):
+        for page in ("home", "resume"):
+            with self.subTest(page=page):
+                html = _strip_html_comments(_read_page(page))
+                titles = re.findall(
+                    r'<(?:p|span)\b[^>]*\bclass="(?:role|track-years)"[^>]*>'
+                    r'(.*?)</(?:p|span)>',
+                    html,
+                    flags=re.S,
+                )
+                self.assertTrue(titles, "%s must contain job titles" % page)
+                for title in titles:
+                    self.assertNotRegex(title, r"\bSenior\s")
+
+    def test_corsair_and_razer_use_approved_abbreviated_titles(self):
+        for page in ("home", "resume"):
+            for title in ("Sr. Ecommerce Sales Manager", "Sr. Ecommerce Manager"):
+                with self.subTest(page=page, title=title):
+                    self.assertIn(title, _read_page(page))
 
 
 class SelectedWorkTests(unittest.TestCase):
@@ -886,6 +1004,31 @@ class MediaArchiveTests(unittest.TestCase):
         )
 
 
+def _pdf_link_urls(data):
+    """Read literal URI annotations, including Flate-compressed object streams."""
+    chunks = [data]
+    for stream in re.finditer(rb"stream\r?\n(.*?)\r?\nendstream", data, re.S):
+        try:
+            chunks.append(zlib.decompress(stream[1]))
+        except zlib.error:
+            continue
+    urls = []
+    for chunk in chunks:
+        for uri in re.finditer(rb"/URI\s*\(((?:\\.|[^\\)])*)\)", chunk, re.S):
+            value = re.sub(
+                rb"\\([0-7]{1,3}|\r\n|[\s\S])",
+                lambda match: (
+                    bytes([int(match[1], 8)]) if match[1][:1] in b"01234567"
+                    else {b"n": b"\n", b"r": b"\r", b"t": b"\t",
+                          b"b": b"\b", b"f": b"\f", b"\n": b"",
+                          b"\r": b"", b"\r\n": b""}.get(match[1], match[1])
+                ),
+                uri[1],
+            )
+            urls.append(value.decode("utf-8"))
+    return urls
+
+
 class ResumePdfTests(unittest.TestCase):
     """The downloadable resume PDF is generated, two pages, and contains
     the required tokens."""
@@ -906,6 +1049,26 @@ class ResumePdfTests(unittest.TestCase):
             os.path.isfile(self._pdf_path()),
             "resume PDF must be committed at assets/nick-giulioni-resume.pdf",
         )
+
+    def test_pdf_links_are_absolute_and_public(self):
+        urls = _pdf_link_urls(Path(self._pdf_path()).read_bytes())
+        self.assertTrue(urls, "resume PDF must contain readable link annotations")
+        for url in urls:
+            with self.subTest(url=url):
+                self.assertTrue(urlsplit(url).scheme, "PDF links must be absolute")
+                self.assertNotRegex(url.lower(), r"127\.0\.0\.1|localhost|0\.0\.0\.0")
+        self.assertIn("https://giulioni.com/work/", urls)
+        for contact in SOCIAL_HREFS:
+            self.assertIn(contact, urls)
+
+    def test_pdf_link_reader_handles_compressed_and_escaped_uris(self):
+        annotations = (rb"<< /URI (http://local\150ost/work/) >>"
+                       rb"<< /URI (https://giulioni.com/work/\(example\)) >>")
+        for payload in (annotations, b"<< /Filter /FlateDecode >>\nstream\n"
+                        + zlib.compress(annotations) + b"\nendstream"):
+            self.assertEqual(_pdf_link_urls(payload), [
+                "http://localhost/work/", "https://giulioni.com/work/(example)",
+            ])
 
     def test_pdf_is_at_most_two_pages(self):
         if not os.path.isfile(self._pdf_path()):
@@ -938,6 +1101,136 @@ class ResumePdfTests(unittest.TestCase):
                     normalized,
                     "resume PDF must contain %r" % token,
                 )
+
+
+class ResumePdfRegenTests(unittest.TestCase):
+    @staticmethod
+    def _tiny_pdf(text, pages=1, uri="https://giulioni.com/work/"):
+        objects = [
+            b"<< /Type /Catalog /Pages 2 0 R >>",
+            ("<< /Type /Pages /Kids [%s] /Count %d >>" % (
+                " ".join("%d 0 R" % (5 + i) for i in range(pages)), pages
+            )).encode(),
+            b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+        ]
+        content = ("BT /F1 12 Tf 40 750 Td (%s) Tj ET" % text).encode()
+        objects.append(b"<< /Length %d >>\nstream\n" % len(content)
+                       + content + b"\nendstream")
+        objects.extend([b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] "
+                        b"/Resources << /Font << /F1 3 0 R >> >> /Contents 4 0 R "
+                        + ("/Annots [%d 0 R] >>" % (5 + pages)).encode()] * pages)
+        objects.append(("<< /Type /Annot /Subtype /Link /Rect [40 730 200 750] "
+                        "/A << /S /URI /URI (%s) >> >>" % uri).encode())
+        pdf = b"%PDF-1.4\n"
+        offsets = [0]
+        for number, obj in enumerate(objects, 1):
+            offsets.append(len(pdf))
+            pdf += b"%d 0 obj\n" % number + obj + b"\nendobj\n"
+        xref = len(pdf)
+        pdf += b"xref\n0 %d\n0000000000 65535 f \n" % len(offsets)
+        for offset in offsets[1:]:
+            pdf += b"%010d 00000 n \n" % offset
+        pdf += ("trailer\n<< /Size %d /Root 1 0 R >>\nstartxref\n%d\n%%%%EOF\n"
+                % (len(offsets), xref)).encode()
+        return pdf
+
+    def test_chrome_exit_requires_a_fresh_valid_pdf(self):
+        valid = self._tiny_pdf(
+            "Resume nick@giulioni.com linkedin.com/in/nickgiulioni Ballpark"
+        )
+        cases = (
+            ("missing", None, 2, False, "no fresh, non-empty PDF"),
+            ("empty", b"", 0, False, "no fresh, non-empty PDF"),
+            ("valid_teardown", valid, 2, True, "Chrome exited 2"),
+            ("valid", valid, 0, True, "Wrote"),
+            ("invalid", b"not a PDF", 2, False, "pdfinfo"),
+            ("missing_text", self._tiny_pdf("Resume"), 2, False, "missing required token"),
+            ("too_many_pages", self._tiny_pdf("Resume", pages=3), 2, False, "page count"),
+            ("stale", valid, 2, False, "no fresh, non-empty PDF"),
+        ) + tuple(
+            ("bad_link_%d" % i, self._tiny_pdf(
+                "Resume nick@giulioni.com linkedin.com/in/nickgiulioni Ballpark",
+                uri=url,
+            ), 0, False, "PDF link validation failed")
+            for i, url in enumerate((
+                "http://127.0.0.1:58890/work/", "http://localhost/work/",
+                "http://0.0.0.0/work/", "/work/", "work/",
+                "//giulioni.com/work/",
+            ))
+        )
+        for name, payload, chrome_status, success, message in cases:
+            with self.subTest(case=name), tempfile.TemporaryDirectory() as root:
+                os.makedirs(os.path.join(root, "tools"))
+                os.makedirs(os.path.join(root, "career"))
+                os.makedirs(os.path.join(root, "assets"))
+                script = os.path.join(root, "tools", "regen_resume_pdf.sh")
+                shutil.copyfile(_path("tools/regen_resume_pdf.sh"), script)
+                for page in ("index.html", "career/index.html"):
+                    with open(os.path.join(root, page), "w") as handle:
+                        handle.write('<html><link href="/styles.css">Resume '
+                                     '<a href="/work/">Selected work</a>'
+                                     '<a href="../media/">Media</a>'
+                                     '<a href="mailto:nick@giulioni.com">Email</a>'
+                                     '<a href="https://www.linkedin.com/in/nickgiulioni">'
+                                     'LinkedIn</a></html>')
+                Path(root, "styles.css").write_text("/* local styles */")
+                source_html = Path(root, "career/index.html").read_bytes()
+                default_output = os.path.join(root, "assets", "nick-giulioni-resume.pdf")
+                output_dir = os.path.join(root, "output with spaces")
+                os.mkdir(output_dir)
+                output = os.path.join(output_dir, "resume.pdf")
+                original = b"existing PDF must survive a failed render"
+                for path in (default_output, output):
+                    with open(path, "wb") as handle:
+                        handle.write(original)
+                fixture = os.path.join(root, "fixture.pdf")
+                if payload is not None:
+                    with open(fixture, "wb") as handle:
+                        handle.write(payload)
+                chrome = os.path.join(root, "fake-chrome")
+                with open(chrome, "w") as handle:
+                    handle.write("""#!/usr/bin/env python3
+import os
+import shutil
+import sys
+from urllib.parse import urljoin
+from urllib.request import urlopen
+url = sys.argv[-1]
+with urlopen(url) as response:
+    html = response.read().decode()
+assert '<a href="https://giulioni.com/work/">' in html
+assert '<a href="https://giulioni.com/media/">' in html
+assert '<a href="mailto:nick@giulioni.com">' in html
+assert '<a href="https://www.linkedin.com/in/nickgiulioni">' in html
+assert '<link href="/styles.css">' in html
+with urlopen(urljoin(url, '/styles.css')) as response:
+    assert response.read() == b'/* local styles */'
+output = next(arg.split('=', 1)[1] for arg in sys.argv[1:]
+              if arg.startswith('--print-to-pdf='))
+if os.path.exists(os.environ['FAKE_PDF']):
+    shutil.copyfile(os.environ['FAKE_PDF'], output)
+    if os.environ['FAKE_MODE'] == 'stale':
+        os.utime(output, (1, 1))
+sys.exit(int(os.environ['FAKE_STATUS']))
+""")
+                os.chmod(chrome, 0o755)
+                env = dict(os.environ, CHROME_BIN=chrome, OUT=output,
+                           FAKE_PDF=fixture, FAKE_MODE=name,
+                           FAKE_STATUS=str(chrome_status), RESUME_PDF_PORT="0")
+                result = subprocess.run(
+                    ["bash", script], env=env, capture_output=True, text=True, timeout=30
+                )
+                logs = result.stdout + result.stderr
+                self.assertEqual(result.returncode == 0, success, logs)
+                self.assertIn(message, logs)
+                with open(output, "rb") as handle:
+                    self.assertEqual(handle.read(), payload if success else original)
+                with open(default_output, "rb") as handle:
+                    self.assertEqual(handle.read(), original)
+                self.assertEqual(os.listdir(output_dir), ["resume.pdf"])
+                self.assertEqual(Path(root, "career/index.html").read_bytes(), source_html)
+                if not success:
+                    self.assertNotIn("Wrote", result.stdout)
 
 
 class ResponsiveAndA11yTests(unittest.TestCase):
@@ -1202,6 +1495,121 @@ class NotFoundPageTests(unittest.TestCase):
         self.assertNotIn('"rewrites"', vercel, "rewrites would serve 404.html as 200")
 
 
+class DeploymentReferences(HTMLParser):
+    """URLs used by markup, including responsive images and share cards."""
+
+    def __init__(self):
+        super().__init__()
+        self.urls = []
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        self.urls.extend(attrs[key] for key in ("href", "src") if attrs.get(key))
+        for candidate in attrs.get("srcset", "").split(","):
+            if candidate.strip():
+                self.urls.append(candidate.split()[0])
+        if tag == "meta" and attrs.get("property", attrs.get("name")) in (
+            "og:image", "twitter:image",
+        ):
+            self.urls.append(attrs["content"])
+
+
+class VercelIgnoreTests(unittest.TestCase):
+    """Internal files stay out; pages and their dependencies remain deployable."""
+
+    def ignored_paths(self, paths):
+        # Let Git parse its own syntax, isolated from repo/global ignore rules.
+        with tempfile.TemporaryDirectory() as directory:
+            subprocess.run(["git", "init", "-q", directory], check=True)
+            Path(directory, ".gitignore").write_text(
+                Path(_path(".vercelignore")).read_text(encoding="utf-8"),
+                encoding="utf-8",
+            )
+            result = subprocess.run(
+                ["git", "-c", "core.excludesFile=/dev/null", "check-ignore",
+                 "--no-index", "-z", "--stdin"],
+                cwd=directory, input="\0".join(sorted(paths)) + "\0",
+                text=True, capture_output=True,
+            )
+            self.assertIn(result.returncode, (0, 1), result.stderr)
+            return set(result.stdout.split("\0")) - {""}
+
+    def test_internal_paths_are_excluded(self):
+        paths = {
+            "AGENTS.md", "DEPLOYMENT.md", "README.md", "NOTES.md",
+            "PLAN", "PLAN.txt", "PLAN-release.json", ".github/workflows/check.yml",
+            ".gitignore", ".vercelignore", "assets/favicon-preview.png",
+            "docs/future/note.txt", "tests/future/test.py", "tools/future/script.sh",
+        }
+        for directory in ("docs", "tests", "tools"):
+            paths.update(
+                str(path.relative_to(REPO_ROOT))
+                for path in Path(_path(directory)).rglob("*") if path.is_file()
+            )
+        self.assertEqual(paths, self.ignored_paths(paths))
+
+    def test_font_assets_and_licenses_are_kept(self):
+        paths = {
+            "assets/fonts/instrument-sans-latin-wght.woff2",
+            "assets/fonts/instrumentsans-OFL.txt",
+            "assets/fonts/newsreader-OFL.txt",
+            "assets/fonts/newsreader-latin-italic.woff2",
+            "assets/fonts/newsreader-latin-normal.woff2",
+        }
+        self.assertEqual(set(), self.ignored_paths(paths))
+
+    def test_nested_markdown_is_excluded(self):
+        paths = {
+            "assets/fonts/README.md", "future/notes.md",
+            "future/deep/nested/notes.md",
+        }
+        self.assertEqual(paths, self.ignored_paths(paths))
+
+    def test_site_files_and_references_are_kept(self):
+        root = Path(REPO_ROOT)
+        pages = sorted(root.rglob("*.html"))
+        paths = {"styles.css", "robots.txt", "sitemap.xml", "vercel.json",
+                 "favicon.ico", "favicon.svg", "apple-touch-icon.png"}
+        paths.update(str(page.relative_to(root)) for page in pages)
+        paths.update(
+            str(path.relative_to(root)) for path in (root / "assets").rglob("*")
+            if path.is_file() and path.name != "favicon-preview.png"
+            and path.suffix != ".md"
+        )
+        urls = []
+        for page in pages:
+            parser = DeploymentReferences()
+            parser.feed(page.read_text(encoding="utf-8"))
+            base = "https://giulioni.com/" + str(page.relative_to(root))
+            urls.extend((base, url) for url in parser.urls)
+        urls.extend(
+            ("https://giulioni.com/", node.text)
+            for node in ET.parse(_path("sitemap.xml")).iter()
+            if node.tag.endswith("}loc")
+        )
+        urls.extend(
+            ("https://giulioni.com/", url)
+            for url in re.findall(r"(?im)^Sitemap:\s*(\S+)",
+                                  Path(_path("robots.txt")).read_text())
+        )
+        urls.extend(
+            ("https://giulioni.com/styles.css", url.strip("\"' "))
+            for url in re.findall(r"url\(([^)]+)\)", _read_css())
+        )
+        for base, reference in urls:
+            url = urlsplit(urljoin(base, reference))
+            if url.scheme not in ("http", "https") or url.hostname not in (
+                "giulioni.com", "www.giulioni.com",
+            ):
+                continue
+            path = unquote(url.path).lstrip("/")
+            if not path or url.path.endswith("/") or (root / path).is_dir():
+                path += "index.html"
+            self.assertTrue((root / path).is_file(), "missing site reference: " + path)
+            paths.add(path)
+        self.assertEqual(set(), self.ignored_paths(paths))
+
+
 class CspTests(unittest.TestCase):
     """The deployed CSP never grants inline or eval execution."""
 
@@ -1212,6 +1620,91 @@ class CspTests(unittest.TestCase):
             vercel = fh.read()
         self.assertNotIn("'unsafe-inline'", vercel, "CSP must not allow 'unsafe-inline'")
         self.assertNotIn("'unsafe-eval'", vercel, "CSP must not allow 'unsafe-eval'")
+
+    def test_styles_and_fonts_are_same_origin_only(self):
+        with open(_path("vercel.json"), encoding="utf-8") as fh:
+            vercel = json.load(fh)
+        policies = [
+            header["value"]
+            for rule in vercel["headers"]
+            for header in rule["headers"]
+            if header["key"].lower() == "content-security-policy"
+        ]
+        self.assertTrue(policies, "a CSP must be configured")
+        for policy in policies:
+            directives = dict(
+                (parts[0], parts[1:])
+                for directive in policy.split(";")
+                if (parts := directive.split())
+            )
+            self.assertEqual(["'self'"], directives.get("style-src"))
+            self.assertEqual(["'self'"], directives.get("font-src"))
+
+
+class FontTests(unittest.TestCase):
+    """The existing typefaces load locally without a third-party CSS request."""
+
+    FACES = {
+        "instrument-sans-latin-wght.woff2": ("Instrument Sans", "normal", "400 600"),
+        "newsreader-latin-normal.woff2": ("Newsreader", "normal", "400"),
+        "newsreader-latin-italic.woff2": ("Newsreader", "italic", "400"),
+    }
+
+    def test_no_google_font_references_in_any_page_css_or_csp(self):
+        paths = ["styles.css", "vercel.json"]
+        for directory, dirs, files in os.walk(REPO_ROOT):
+            dirs[:] = [d for d in dirs if not d.startswith(".")]
+            paths.extend(
+                os.path.relpath(os.path.join(directory, name), REPO_ROOT)
+                for name in files if name.endswith(".html")
+            )
+        for path in paths:
+            with self.subTest(path=path), open(_path(path), encoding="utf-8") as fh:
+                self.assertNotRegex(fh.read(), r"(?i)(?:googleapis|gstatic)\.com")
+
+    def test_font_faces_reference_real_woff2_files_with_original_styles(self):
+        faces = re.findall(r"@font-face\s*\{([^}]+)\}", _read_css())
+        self.assertEqual(len(self.FACES), len(faces))
+        referenced = set()
+        for face in faces:
+            match = re.search(r'url\("(/assets/fonts/([^"/]+))"\)', face)
+            self.assertIsNotNone(match, "font sources must be root-relative")
+            url, filename = match.groups()
+            self.assertIn(filename, self.FACES)
+            referenced.add(filename)
+            family, style, weight = self.FACES[filename]
+            self.assertIn('font-family: "%s";' % family, face)
+            self.assertIn("font-style: %s;" % style, face)
+            self.assertIn("font-weight: %s;" % weight, face)
+            self.assertIn("font-display: swap;", face)
+            with open(_path(url.lstrip("/")), "rb") as fh:
+                self.assertEqual(b"wOF2", fh.read(4), "must be a WOFF2 file")
+        self.assertEqual(set(self.FACES), referenced)
+
+    def test_each_page_preloads_only_the_two_above_fold_faces(self):
+        expected = {
+            "/assets/fonts/instrument-sans-latin-wght.woff2",
+            "/assets/fonts/newsreader-latin-normal.woff2",
+        }
+        for name, path in {**PAGES, "not_found": "404.html"}.items():
+            with self.subTest(page=name):
+                with open(_path(path), encoding="utf-8") as fh:
+                    head = fh.read().split("</head>", 1)[0]
+                links = re.findall(r'<link\b[^>]*\brel="preload"[^>]*>', head)
+                self.assertEqual(2, len(links))
+                urls = set()
+                for link in links:
+                    attrs = dict(re.findall(r'(\w+)="([^"]*)"', link))
+                    self.assertEqual("font", attrs.get("as"))
+                    self.assertEqual("font/woff2", attrs.get("type"))
+                    self.assertRegex(link, r"\bcrossorigin(?:\s|=|>)")
+                    urls.add(attrs.get("href"))
+                self.assertEqual(expected, urls)
+
+    def test_both_font_licenses_ship_with_the_fonts(self):
+        for family in ("instrumentsans", "newsreader"):
+            with open(_path("assets/fonts/%s-OFL.txt" % family), encoding="utf-8") as fh:
+                self.assertIn("SIL OPEN FONT LICENSE Version 1.1", fh.read())
 
 
 if __name__ == "__main__":

@@ -21,9 +21,8 @@
   <meta name="twitter:image" content="https://giulioni.com/assets/og-home.png">
   <meta name="twitter:image:alt" content="Nick Giulioni beside the line: an operator who doesn't accept the status quo.">
   <meta name="theme-color" content="#16211c">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Newsreader:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <link rel="preload" href="/assets/fonts/instrument-sans-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/newsreader-latin-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -58,7 +57,7 @@
     <figure class="portrait">
       <picture>
         <source type="image/webp" srcset="/assets/portrait-nick-160.webp 160w, /assets/portrait-nick-200.webp 200w, /assets/portrait-nick-320.webp 320w, /assets/portrait-nick-348.webp 348w, /assets/portrait-nick-400.webp 400w, /assets/portrait-nick-636.webp 636w" sizes="(max-width: 520px) 160px, (max-width: 900px) 200px, (max-width: 1240px) calc(30vw - 24px), 348px">
-        <img src="/assets/portrait-nick-348.jpg" srcset="/assets/portrait-nick-160.jpg 160w, /assets/portrait-nick-200.jpg 200w, /assets/portrait-nick-320.jpg 320w, /assets/portrait-nick-348.jpg 348w, /assets/portrait-nick-400.jpg 400w, /assets/portrait-nick-636.jpg 636w" sizes="(max-width: 520px) 160px, (max-width: 900px) 200px, (max-width: 1240px) calc(30vw - 24px), 348px" width="636" height="954" alt="Nick Giulioni seated and looking out a window.">
+        <img src="/assets/portrait-nick-348.jpg" srcset="/assets/portrait-nick-160.jpg 160w, /assets/portrait-nick-200.jpg 200w, /assets/portrait-nick-320.jpg 320w, /assets/portrait-nick-348.jpg 348w, /assets/portrait-nick-400.jpg 400w, /assets/portrait-nick-636.jpg 636w" sizes="(max-width: 520px) 160px, (max-width: 900px) 200px, (max-width: 1240px) calc(30vw - 24px), 348px" width="636" height="954" fetchpriority="high" alt="Nick Giulioni seated and looking out a window.">
       </picture>
     </figure>
   </section>
@@ -79,13 +78,13 @@
         <div class="track-outcome">Out of the company and into a standalone product at <a href="https://ballpark.build">ballpark.build</a>.</div>
       </div>
       <div class="track-row">
-        <div class="track-label">Off Leash Construction<span class="track-years">CEO, Indianapolis</span></div>
+        <div class="track-label">Off Leash Construction<span class="track-years">CEO, Indianapolis, 2023–2026</span></div>
         <div class="track-problem">Residential contracting in a fragmented market, with no repeat-revenue base.</div>
         <div class="track-did">Ran it as CEO and launched a maintenance department to turn one-off jobs into a recurring book.</div>
         <div class="track-outcome"><strong>$3M+</strong> in year one, and <strong>3,000+ doors</strong> under maintenance across Greater Indianapolis.</div>
       </div>
       <div class="track-row">
-        <div class="track-label">Meta<span class="track-years">Global Sales &amp; Merchandising Lead, FRL</span></div>
+        <div class="track-label">Meta<span class="track-years">Global Sales &amp; Merchandising Lead, FRL, 2019–2022</span></div>
         <div class="track-problem">Portal and Oculus were new hardware categories that needed global sales and merchandising strategy.</div>
         <div class="track-did">Led global sales and merchandising for Facebook Reality Labs and VR hardware.</div>
         <div class="track-outcome">Portal units grew <strong>300%</strong> and Oculus units grew <strong>450%</strong> during my tenure.</div>
@@ -97,7 +96,7 @@
         <div class="track-outcome"><strong>50%+ YoY growth</strong> to the #1 NPD share. Rookie of the Year in 2018, then the President's Award in 2019.</div>
       </div>
       <div class="track-row">
-        <div class="track-label">Razer<span class="track-years">Sr. Ecommerce Manager</span></div>
+        <div class="track-label">Razer<span class="track-years">Sr. Ecommerce Manager, 2016–2017</span></div>
         <div class="track-problem">Marketplace strategy was inconsistent between regions and under-resourced.</div>
         <div class="track-did">Became the global Amazon SME, working directly with the Germany and Singapore teams.</div>
         <div class="track-outcome"><strong>70% YoY growth</strong> in managed accounts, Amazon Gold status, and a team of six on a <strong>$150M budget</strong>.</div>
@@ -106,7 +105,7 @@
       <details class="track-more">
         <summary>The ten years before Ballpark</summary>
         <div class="track-more-body">
-          <p>I find the expensive problem in a business and fix it. For ten years I did that on the commercial side of hardware companies. At Razer I ran a $150M annual budget with a team of six. At Corsair I took peripherals to the #1 NPD share, with more than 50% year-over-year growth, Rookie of the Year in 2018, then the President's Award in 2019. At Meta I led global sales and merchandising while Portal units grew 300% and Oculus units grew 450%. Then I built a construction business in Indianapolis to $3M in its first year, with a maintenance department covering 3,000+ doors.</p>
+          <p>I find the expensive problem in a business and fix it. For ten years I did that on the commercial side of hardware companies. At Razer I ran a $150M annual budget with a team of six. At Corsair I took peripherals to the #1 NPD share, with more than 50% year-over-year growth, Rookie of the Year in 2018, then the President's Award in 2019. At Meta I led global sales and merchandising while Portal units grew 300% and Oculus units grew 450%. Then I built a construction business in Indianapolis to $3M+ in its first year, with a maintenance department covering 3,000+ doors.</p>
           <p>Estimating was the thing that kept breaking. So I built the software to fix it, from inside the company that needed it. That's <a href="https://ballpark.build">Ballpark</a>.</p>
         </div>
       </details>
@@ -122,10 +121,10 @@
       </div>
       <figure class="product-image">
         <picture>
-          <source type="image/webp" srcset="/assets/ballpark-estimate-360.webp 360w, /assets/ballpark-estimate-480.webp 480w, /assets/ballpark-estimate-600.webp 600w, /assets/ballpark-estimate-720.webp 720w, /assets/ballpark-estimate-960.webp 960w, /assets/ballpark-estimate-1200.webp 1200w, /assets/ballpark-estimate-1280.webp 1280w" sizes="(max-width: 520px) calc(100vw - 112px), (max-width: 700px) calc(100vw - 120px), (max-width: 900px) min(600px, calc(100vw - 160px)), (max-width: 1240px) calc(47.5vw - 120px), (max-width: 1280px) calc(500px - 2.5vw), 468px">
-          <img src="/assets/ballpark-estimate-600.png" srcset="/assets/ballpark-estimate-360.png 360w, /assets/ballpark-estimate-480.png 480w, /assets/ballpark-estimate-600.png 600w, /assets/ballpark-estimate-720.png 720w, /assets/ballpark-estimate-960.png 960w, /assets/ballpark-estimate-1200.png 1200w, /assets/ballpark-estimate-1280.png 1280w" sizes="(max-width: 520px) calc(100vw - 112px), (max-width: 700px) calc(100vw - 120px), (max-width: 900px) min(600px, calc(100vw - 160px)), (max-width: 1240px) calc(47.5vw - 120px), (max-width: 1280px) calc(500px - 2.5vw), 468px" width="1280" height="800" loading="lazy" decoding="async" alt="Ballpark estimate interface showing a kitchen remodel with Good, Better, and Best pricing tiers.">
+          <source type="image/webp" srcset="/assets/ballpark-estimate-360.webp 360w, /assets/ballpark-estimate-480.webp 480w, /assets/ballpark-estimate-600.webp 600w, /assets/ballpark-estimate-720.webp 720w, /assets/ballpark-estimate-960.webp 960w, /assets/ballpark-estimate-1176.webp 1176w" sizes="(max-width: 520px) calc(100vw - 112px), (max-width: 700px) calc(100vw - 120px), (max-width: 900px) min(600px, calc(100vw - 160px)), (max-width: 1240px) calc(47.5vw - 120px), (max-width: 1280px) calc(500px - 2.5vw), 468px">
+          <img src="/assets/ballpark-estimate-600.png" srcset="/assets/ballpark-estimate-360.png 360w, /assets/ballpark-estimate-480.png 480w, /assets/ballpark-estimate-600.png 600w, /assets/ballpark-estimate-720.png 720w, /assets/ballpark-estimate-960.png 960w, /assets/ballpark-estimate-1176.png 1176w" sizes="(max-width: 520px) calc(100vw - 112px), (max-width: 700px) calc(100vw - 120px), (max-width: 900px) min(600px, calc(100vw - 160px)), (max-width: 1240px) calc(47.5vw - 120px), (max-width: 1280px) calc(500px - 2.5vw), 468px" width="1176" height="646" loading="lazy" decoding="async" alt="Ballpark.build home page with the headline 'Turn messy property evidence into a contractor-ready estimate' and a sample estimate card showing Good, Better and Best tiers, with customer details blocked out.">
         </picture>
-        <figcaption>Owner-authorized sanitized demo estimate. No personal data or customer information.</figcaption>
+        <figcaption>Real estimate, customer details redacted.</figcaption>
       </figure>
     </div>
   </aside>
