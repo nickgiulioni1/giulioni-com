@@ -1,6 +1,8 @@
 # Deny repo internals; new site pages and assets remain deployable by default.
-# Root-anchored gitignore patterns: https://vercel.com/docs/deployments/vercel-ignore
+# Gitignore patterns: https://vercel.com/docs/deployments/vercel-ignore
 /*.md
+# Markdown notes are internal at every depth.
+*.md
 /PLAN*
 /docs
 /tests
