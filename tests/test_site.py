@@ -404,7 +404,7 @@ class HomeTests(unittest.TestCase):
         for phrase in (
             "expensive problem",
             "$150M annual budget",
-            "$3M in its first year",
+            "$3M+ in its first year",
             "3,000+ doors",
             "Estimating was the thing that kept breaking",
             "Ballpark",
@@ -740,7 +740,7 @@ class ResumeTests(unittest.TestCase):
             "$150 million",
             "team of six",
             "$3 million",
-            "3,000 doors",
+            "3,000+ doors",
             "Oct 2023",
             "Jul 2026",
             "Nov 2019",
