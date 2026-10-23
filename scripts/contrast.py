@@ -13,5 +13,5 @@ for alpha in (.68,.8):
  dark=rgb(tokens['dark-band']);paper=rgb(tokens['paper']);mixed=[alpha*a+(1-alpha)*b for a,b in zip(paper,dark)]
  records.append({'foreground':f'paper at {alpha}','background':'dark-band','ratio':round(ratio(mixed,dark),3),'minimum':4.5})
 assert all(r['ratio']>=r['minimum'] for r in records)
-Path('/tmp/gc-beautify-evidence/contrast-tokens.json').write_text(json.dumps(records,indent=2))
+Path('/tmp/gc-beautify-round2/contrast-tokens.json').write_text(json.dumps(records,indent=2))
 print('PASS:',len(records),'text/background combinations; minimum contrast',min(r['ratio'] for r in records))

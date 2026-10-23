@@ -1,6 +1,6 @@
 from pathlib import Path
 import json,hashlib,subprocess
-root=Path('/tmp/gc-beautify-evidence')
+root=Path('/tmp/gc-beautify-round2')
 before=json.loads((root/'before/browser.json').read_text());after=json.loads((root/'after/browser.json').read_text())
 origin_diffs={k:{'before':before[k]['raw_origins'],'after':v['raw_origins']} for k,v in after.items() if before[k]['raw_origins']!=v['raw_origins']}
 contrast=[{'page':k,**f} for k,v in after.items() for f in v['contrast']['failures']+v.get('details_contrast',{}).get('failures',[])]

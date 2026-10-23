@@ -1,6 +1,6 @@
 import pathlib,threading,http.server,functools,subprocess,json,os,hashlib,sys
-base=pathlib.Path('/tmp/gc-beautify-evidence')
-roots={'before':'/tmp/gc-beautify-before','after':'/Users/nickgiulioni/.t3/worktrees/giulioni-com/t3-54c8c056'}
+base=pathlib.Path('/tmp/gc-beautify-round2')
+roots={'before':'/tmp/gc-beautify-before-r2','after':'/Users/nickgiulioni/.t3/worktrees/giulioni-com/t3-54c8c056'}
 cli='/Users/nickgiulioni/.npm/_npx/0f94ee7615faf582/node_modules/lighthouse/cli/index.js'
 chrome='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 for phase,root in roots.items():

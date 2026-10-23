@@ -1,23 +1,66 @@
 from pathlib import Path
-import json,subprocess,importlib.metadata
-root=Path('/tmp/gc-beautify-evidence');summary=json.loads((root/'summary.json').read_text());head=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
-lines=[f'# Site beautification evidence\n\nSource head: `{head}`. Baseline: `71c1b57`.\n',
-'- Stronger serif headings and consistent section spacing across all five pages.\n- Alternating track record rows, wider case facts, and larger receipt figures.\n- Two-column media archive with larger episode titles; one column on phones.\n- Underlined current navigation and footer links, larger buttons, and contrasting keyboard focus.\n- Darker rust text and corrected product-button hover contrast while retaining the existing palette.\n',
-'## Screenshots\n\nFull-page PNGs. Desktop viewport 1280 × 900; phone viewport 375 × 900. Device scale factor 1; touch enabled at 375px.\n\n| Page | Before 1280 | After 1280 | Before 375 | After 375 |\n|---|---|---|---|---|']
-for name,label in [('home','/'),('career','/career/'),('work','/work/'),('media','/media/'),('404','/404.html')]:
- lines.append('| '+label+' | '+' | '.join(f'[{phase} {width}]({phase}/{name}-{width}.png)' for width in (1280,375) for phase in ('before','after'))+' |')
-lines+=['\n## Lighthouse\n\nLocal static-server runs, not production measurements. The initial c78df86 after-results and corrections at 7045c34 and 4eacb98 failed the strict CLS gate. Their reports and screenshots are preserved under after/initial-c78df86, after/fix1-7045c34, and after/fix2-4eacb98. Each new source correction was committed before its combined screenshot and Lighthouse hold. The current after-results use the committed typography correction at the source head above. P/A/B/S = performance/accessibility/best-practices/SEO. Scores out of 100.\n\n| Page | Mobile before → after P/A/B/S; CLS | Desktop before → after P/A/B/S; CLS |\n|---|---|---|']
-for name in ('home','career','work','media'):
- cells=[]
- for mode in ('mobile','desktop'):
-  entry=next(x for x in summary['lighthouse'] if x['page']==name and x['mode']==mode)
-  def format_result(phase):
-   data=entry[phase];scores=data['scores'];return '/'.join(str(scores[k]) for k in ('performance','accessibility','best-practices','seo'))+f"; CLS {data['cls']:.8f}"
-  cells.append(format_result('before')+' → '+format_result('after'))
- lines.append('| '+name+' | '+' | '.join(cells)+' |')
-lines+=['\n## Network, accessibility, and scope\n',f"Origin differences: {len(summary['origin_diffs'])}. Computed text contrast failures: {len(summary['contrast_failures'])}. Hover contrast failures: {len(summary['hover_contrast_failures'])}. Keyboard focus failures: {len(summary['focus_failures'])}. Overflow at screenshot widths: {len(summary['overflow'])}. Protected files changed: {len(summary['protected_files_changed'])}.\n",'\n| Page | Before and after request origins |\n|---|---|']
-for name in ('home','career','work','media','404'):
- lines.append('| '+name+' | '+', '.join(summary['origins'][name+'-1280'])+' |')
-lines+=['\nAll HTML, font links, fetch priorities, tests, and all 14 sanitized demo-image variants are unchanged. Only styles.css changed in the implementation branch.\n',f"\nChrome: {(root/'after/browser-version.txt').read_text().strip()}. Python Playwright: {importlib.metadata.version('playwright')}. Lighthouse: {summary['lighthouse'][0]['after']['version']}.\n",'\n## Unit tests\n\n```text\n'+'\n'.join((root/'tests.log').read_text().splitlines()[-5:])+'\nExit code: 0\n```\n','\nNot run: production Lighthouse, deployed browser checks, independent PR review. No PR opened or merge performed.\n']
-(root/'README.md').write_text('\n'.join(lines))
-print('Evidence report written.')
+import json, subprocess
+
+root = Path('/tmp/gc-beautify-round2')
+summary = json.loads((root / 'summary.json').read_text())
+head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+browser = json.loads((root / 'after/browser.json').read_text())
+hero = browser['home-375']['hero_wrap']
+lines = [
+    '# Site beautification round 2 evidence',
+    f'Source: `{head}`. Baseline: `8ede86d7e59b7c11054b3d444136c5a2177b9ffa`.',
+    'Round 1 evidence remains pinned at e614fb8b9faa308519778430e28b16a6f08e7ee0. This revision uses the merged local fonts and image priorities.',
+    '## Review changes',
+    '| Item | Applied change |',
+    '|---|---|',
+    '| 1 | Removed page-title font-size-adjust and the page-deck reset. Declared title clamps are unchanged. |',
+    '| 2 | Removed the mobile font-size-adjust block and its comment, including the obsolete resume-topbar reset. Loaded fonts retain their intended sizes. |',
+    f'| 3 | Mobile hero uses clamp(2rem, 8vw, 2.25rem). At 375px the unreduced 36px type uses {hero["withoutReductionLines"]} lines; the revised type uses {hero["currentLines"]}. |',
+    '| 4 | Current navigation retains the rust underline without a resting background. Hover still adds the cream background. |',
+    '| 5 | Media episode underlines use 35% currentColor at rest and currentColor on hover. |',
+    '| 6 | Case-story measure is 68ch. The facts grid remains within that measure. |',
+    '| 7 | Show names use the existing mono stack, 0.75rem size, 0.08em tracking, uppercase, and the existing AA text color. |',
+    '## Screenshots',
+    'Full-page PNGs at 1280 × 900 and 375 × 900 viewports, device scale factor 1. All 20 images were inspected.',
+    '| Page | Before 1280 | After 1280 | Before 375 | After 375 |',
+    '|---|---|---|---|---|',
+]
+for name, label in [('home', '/'), ('career', '/career/'), ('work', '/work/'), ('media', '/media/'), ('404', '/404.html')]:
+    links = [f'[{phase} {width}]({phase}/{name}-{width}.png)' for width in (1280, 375) for phase in ('before', 'after')]
+    lines.append('| ' + label + ' | ' + ' | '.join(links) + ' |')
+lines += [
+    '## Lighthouse',
+    'Local static-server measurements, not production results. P/A/B/S means performance, accessibility, best practices, and SEO. The strict comparison uses unrounded CLS values with no tolerance.',
+    '| Page | Mobile before → after P/A/B/S; CLS | Desktop before → after P/A/B/S; CLS |',
+    '|---|---|---|',
+]
+for name in ('home', 'career', 'work', 'media'):
+    cells = []
+    for mode in ('mobile', 'desktop'):
+        row = next(r for r in summary['lighthouse'] if r['page'] == name and r['mode'] == mode)
+        pair = []
+        for phase in ('before', 'after'):
+            result = row[phase]
+            scores = '/'.join(str(result['scores'][k]) for k in ('performance', 'accessibility', 'best-practices', 'seo'))
+            pair.append(f'{scores}; CLS {result["cls"]!r}')
+        cells.append(' → '.join(pair))
+    lines.append('| ' + name + ' | ' + ' | '.join(cells) + ' |')
+lines += ['## Request origins', '| Page | Before | After |', '|---|---|---|']
+before_browser = json.loads((root / 'before/browser.json').read_text())
+for name in ('home', 'career', 'work', 'media', '404'):
+    lines.append('| ' + name + ' | ' + ', '.join(before_browser[name + '-1280']['raw_origins']) + ' | ' + ', '.join(browser[name + '-1280']['raw_origins']) + ' |')
+lines += ['## Audits', '| Check | Failures |', '|---|---|']
+for key in ('origin_diffs', 'contrast_failures', 'hover_contrast_failures', 'focus_failures', 'overflow', 'intermediate_overflow', 'protected_files_changed'):
+    lines.append(f'| {key} | {len(summary[key])} |')
+lines += [
+    'Normal, hover, and expanded-details text contrast were checked. Keyboard controls have visible focus. Overflow was checked at 320, 375, 520, 521, 700, 900, and 1280px.',
+    'All 62 tracked files outside styles.css retain their hashes, including HTML, images, fonts, and tests. No new font faces or third-party requests were added.',
+    'After-capture metadata records an untracked .impeccable/hook.cache.json generated by the design tool. The cache was moved outside the worktree after capture. The source-cleanup.json receipt records the clean source state; no site file changed during cleanup.',
+    '## Tests',
+    '```text\n' + '\n'.join((root / 'tests.log').read_text().splitlines()[-5:]) + '\nExit code: ' + (root / 'tests-exit-code.txt').read_text().strip() + '\n```',
+    'All screenshots, Lighthouse runs, browser audits, and the full test suite ran in one normally queued heavy-slot hold. The hold ended after the batch.',
+    'Not run: production Lighthouse, deployed browser checks, hosted CI, or independent re-review. Lighthouse excludes 404 as requested. No PR was opened, merged, or deployed.',
+]
+formatted = [line if line.startswith('|') else '\n' + line + '\n' for line in lines]
+(root / 'README.md').write_text('\n'.join(formatted) + '\n')
+print('Round 2 evidence report written.')

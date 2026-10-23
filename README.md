@@ -1,16 +1,29 @@
-# Site beautification evidence
 
-Source head: `be1e10188be807b0163722c2d214257795294266`. Baseline: `71c1b57`.
+# Site beautification round 2 evidence
 
-- Stronger serif headings and consistent section spacing across all five pages.
-- Alternating track record rows, wider case facts, and larger receipt figures.
-- Two-column media archive with larger episode titles; one column on phones.
-- Underlined current navigation and footer links, larger buttons, and contrasting keyboard focus.
-- Darker rust text and corrected product-button hover contrast while retaining the existing palette.
+
+Source: `eab58083fa75910aff714a3ac5baca41cb4d041f`. Baseline: `8ede86d7e59b7c11054b3d444136c5a2177b9ffa`.
+
+
+Round 1 evidence remains pinned at e614fb8b9faa308519778430e28b16a6f08e7ee0. This revision uses the merged local fonts and image priorities.
+
+
+## Review changes
+
+| Item | Applied change |
+|---|---|
+| 1 | Removed page-title font-size-adjust and the page-deck reset. Declared title clamps are unchanged. |
+| 2 | Removed the mobile font-size-adjust block and its comment, including the obsolete resume-topbar reset. Loaded fonts retain their intended sizes. |
+| 3 | Mobile hero uses clamp(2rem, 8vw, 2.25rem). At 375px the unreduced 36px type uses 3 lines; the revised type uses 3. |
+| 4 | Current navigation retains the rust underline without a resting background. Hover still adds the cream background. |
+| 5 | Media episode underlines use 35% currentColor at rest and currentColor on hover. |
+| 6 | Case-story measure is 68ch. The facts grid remains within that measure. |
+| 7 | Show names use the existing mono stack, 0.75rem size, 0.08em tracking, uppercase, and the existing AA text color. |
 
 ## Screenshots
 
-Full-page PNGs. Desktop viewport 1280 × 900; phone viewport 375 × 900. Device scale factor 1; touch enabled at 375px.
+
+Full-page PNGs at 1280 × 900 and 375 × 900 viewports, device scale factor 1. All 20 images were inspected.
 
 | Page | Before 1280 | After 1280 | Before 375 | After 375 |
 |---|---|---|---|---|
@@ -22,44 +35,62 @@ Full-page PNGs. Desktop viewport 1280 × 900; phone viewport 375 × 900. Device 
 
 ## Lighthouse
 
-Local static-server runs, not production measurements. The initial c78df86 after-results and corrections at 7045c34 and 4eacb98 failed the strict CLS gate. Their reports and screenshots are preserved under after/initial-c78df86, after/fix1-7045c34, and after/fix2-4eacb98. Each new source correction was committed before its combined screenshot and Lighthouse hold. The current after-results use the committed typography correction at the source head above. P/A/B/S = performance/accessibility/best-practices/SEO. Scores out of 100.
+
+Local static-server measurements, not production results. P/A/B/S means performance, accessibility, best practices, and SEO. The strict comparison uses unrounded CLS values with no tolerance.
 
 | Page | Mobile before → after P/A/B/S; CLS | Desktop before → after P/A/B/S; CLS |
 |---|---|---|
-| home | 100/100/100/100; CLS 0.00039626 → 100/100/100/100; CLS 0.00010186 | 100/100/100/100; CLS 0.00262970 → 100/100/100/100; CLS 0.00021286 |
-| career | 100/100/100/100; CLS 0.00027107 → 100/100/100/100; CLS 0.00027107 | 100/100/100/100; CLS 0.01769141 → 100/100/100/100; CLS 0.01292795 |
-| work | 100/100/100/100; CLS 0.00000000 → 100/100/100/100; CLS 0.00000000 | 100/100/100/100; CLS 0.01824761 → 100/100/100/100; CLS 0.00521761 |
-| media | 100/100/100/100; CLS 0.00000000 → 100/100/100/100; CLS 0.00000000 | 100/100/100/100; CLS 0.00542809 → 100/100/100/100; CLS 0.00000000 |
+| home | 100/100/100/100; CLS 0 → 100/100/100/100; CLS 0 | 100/100/100/100; CLS 0 → 100/100/100/100; CLS 0 |
+| career | 100/100/100/100; CLS 0 → 100/100/100/100; CLS 0 | 100/100/100/100; CLS 0 → 100/100/100/100; CLS 0 |
+| work | 100/100/100/100; CLS 0 → 100/100/100/100; CLS 0 | 100/100/100/100; CLS 0 → 100/100/100/100; CLS 0 |
+| media | 100/100/100/100; CLS 0 → 100/100/100/100; CLS 0 | 100/100/100/100; CLS 0 → 100/100/100/100; CLS 0 |
 
-## Network, accessibility, and scope
+## Request origins
 
-Origin differences: 0. Computed text contrast failures: 0. Hover contrast failures: 0. Keyboard focus failures: 0. Overflow at screenshot widths: 0. Protected files changed: 0.
+| Page | Before | After |
+|---|---|---|
+| home | http://127.0.0.1:51241 | http://127.0.0.1:51241 |
+| career | http://127.0.0.1:51241 | http://127.0.0.1:51241 |
+| work | http://127.0.0.1:51241 | http://127.0.0.1:51241 |
+| media | http://127.0.0.1:51241 | http://127.0.0.1:51241 |
+| 404 | http://127.0.0.1:51241 | http://127.0.0.1:51241 |
 
+## Audits
 
-| Page | Before and after request origins |
+| Check | Failures |
 |---|---|
-| home | http://127.0.0.1:65127, https://fonts.googleapis.com, https://fonts.gstatic.com |
-| career | http://127.0.0.1:65127, https://fonts.googleapis.com, https://fonts.gstatic.com |
-| work | http://127.0.0.1:65127, https://fonts.googleapis.com, https://fonts.gstatic.com |
-| media | http://127.0.0.1:65127, https://fonts.googleapis.com, https://fonts.gstatic.com |
-| 404 | http://127.0.0.1:65127, https://fonts.googleapis.com, https://fonts.gstatic.com |
+| origin_diffs | 0 |
+| contrast_failures | 0 |
+| hover_contrast_failures | 0 |
+| focus_failures | 0 |
+| overflow | 0 |
+| intermediate_overflow | 0 |
+| protected_files_changed | 0 |
 
-All HTML, font links, fetch priorities, tests, and all 14 sanitized demo-image variants are unchanged. Only styles.css changed in the implementation branch.
+Normal, hover, and expanded-details text contrast were checked. Keyboard controls have visible focus. Overflow was checked at 320, 375, 520, 521, 700, 900, and 1280px.
 
 
-Chrome: 155.0.8059.86. Python Playwright: 1.60.0. Lighthouse: 13.5.0.
+All 62 tracked files outside styles.css retain their hashes, including HTML, images, fonts, and tests. No new font faces or third-party requests were added.
 
 
-## Unit tests
+After-capture metadata records an untracked .impeccable/hook.cache.json generated by the design tool. The cache was moved outside the worktree after capture. The source-cleanup.json receipt records the clean source state; no site file changed during cleanup.
+
+
+## Tests
+
 
 ```text
 
 ----------------------------------------------------------------------
-Ran 65 tests in 2.520s
+Ran 78 tests in 31.163s
 
 OK
 Exit code: 0
 ```
 
 
-Not run: production Lighthouse, deployed browser checks, independent PR review. No PR opened or merge performed.
+All screenshots, Lighthouse runs, browser audits, and the full test suite ran in one normally queued heavy-slot hold. The hold ended after the batch.
+
+
+Not run: production Lighthouse, deployed browser checks, hosted CI, or independent re-review. Lighthouse excludes 404 as requested. No PR was opened, merged, or deployed.
+

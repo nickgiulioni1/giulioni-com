@@ -1,67 +1,50 @@
 {
   "home-1280": {
     "raw_origins": [
-      "http://127.0.0.1:65127",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "http://127.0.0.1:51241"
     ],
     "origins": [
-      "LOCAL",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "LOCAL"
     ],
     "failed_requests": [],
     "overflow": false,
     "fonts": [
       {
         "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
         "status": "loaded"
       },
       {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "loaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
+        "family": "Newsreader",
         "status": "loaded"
       },
       {
         "family": "Newsreader",
         "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "loaded"
       }
     ],
+    "typography": {
+      "body": {
+        "fontSize": "16px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "\"Instrument Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "lineHeight": "25.6px",
+        "height": 2630.390625
+      },
+      ".hero-lede": {
+        "fontSize": "52px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "Newsreader, Georgia, serif",
+        "lineHeight": "59.8px",
+        "height": 119.59375
+      },
+      ".closing-cta p": {
+        "fontSize": "32px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "Newsreader, Georgia, serif",
+        "lineHeight": "41.6px",
+        "height": 83.1875
+      }
+    },
     "contrast": {
       "failures": [],
       "pairs": [
@@ -79,16 +62,16 @@
           "threshold": 3
         },
         {
-          "selector": "strong.",
-          "text": "50%+ YoY growth",
+          "selector": "a.btn",
+          "text": "See ballpark.build",
           "foreground": "rgb(22, 33, 28)",
           "background": [
-            241,
-            237,
-            228,
+            246,
+            243,
+            236,
             1
           ],
-          "ratio": 14.17,
+          "ratio": 14.94,
           "threshold": 4.5
         },
         {
@@ -115,19 +98,6 @@
             1
           ],
           "ratio": 5.32,
-          "threshold": 4.5
-        },
-        {
-          "selector": "a.btn",
-          "text": "See ballpark.build",
-          "foreground": "rgb(22, 33, 28)",
-          "background": [
-            246,
-            243,
-            236,
-            1
-          ],
-          "ratio": 14.94,
           "threshold": 4.5
         },
         {
@@ -158,7 +128,7 @@
         },
         {
           "selector": "figcaption.",
-          "text": "Owner-authorized sanitized demo estimate. No personal data or customer informati",
+          "text": "Real estimate, customer details redacted.",
           "foreground": "rgb(110, 105, 94)",
           "background": [
             241,
@@ -167,6 +137,19 @@
             1
           ],
           "ratio": 4.67,
+          "threshold": 4.5
+        },
+        {
+          "selector": "strong.",
+          "text": "50%+ YoY growth",
+          "foreground": "rgb(22, 33, 28)",
+          "background": [
+            241,
+            237,
+            228,
+            1
+          ],
+          "ratio": 14.17,
           "threshold": 4.5
         },
         {
@@ -413,16 +396,16 @@
           "threshold": 3
         },
         {
-          "selector": "strong.",
-          "text": "50%+ YoY growth",
+          "selector": "a.btn",
+          "text": "See ballpark.build",
           "foreground": "rgb(22, 33, 28)",
           "background": [
-            241,
-            237,
-            228,
+            246,
+            243,
+            236,
             1
           ],
-          "ratio": 14.17,
+          "ratio": 14.94,
           "threshold": 4.5
         },
         {
@@ -449,19 +432,6 @@
             1
           ],
           "ratio": 5.32,
-          "threshold": 4.5
-        },
-        {
-          "selector": "a.btn",
-          "text": "See ballpark.build",
-          "foreground": "rgb(22, 33, 28)",
-          "background": [
-            246,
-            243,
-            236,
-            1
-          ],
-          "ratio": 14.94,
           "threshold": 4.5
         },
         {
@@ -492,7 +462,7 @@
         },
         {
           "selector": "figcaption.",
-          "text": "Owner-authorized sanitized demo estimate. No personal data or customer informati",
+          "text": "Real estimate, customer details redacted.",
           "foreground": "rgb(110, 105, 94)",
           "background": [
             241,
@@ -501,6 +471,19 @@
             1
           ],
           "ratio": 4.67,
+          "threshold": 4.5
+        },
+        {
+          "selector": "strong.",
+          "text": "50%+ YoY growth",
+          "foreground": "rgb(22, 33, 28)",
+          "background": [
+            241,
+            237,
+            228,
+            1
+          ],
+          "ratio": 14.17,
           "threshold": 4.5
         },
         {
@@ -566,6 +549,10 @@
         "overflow": false,
         "width": 520
       },
+      "521": {
+        "overflow": false,
+        "width": 521
+      },
       "700": {
         "overflow": false,
         "width": 700
@@ -578,67 +565,57 @@
   },
   "career-1280": {
     "raw_origins": [
-      "http://127.0.0.1:65127",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "http://127.0.0.1:51241"
     ],
     "origins": [
-      "LOCAL",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "LOCAL"
     ],
     "failed_requests": [],
     "overflow": false,
     "fonts": [
       {
         "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
         "status": "loaded"
       },
       {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "loaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
+        "family": "Newsreader",
         "status": "loaded"
       },
       {
         "family": "Newsreader",
         "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "loaded"
       }
     ],
+    "typography": {
+      "body": {
+        "fontSize": "16px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "\"Instrument Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "lineHeight": "25.6px",
+        "height": 2855.53125
+      },
+      ".page-title": {
+        "fontSize": "72px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "Newsreader, Georgia, serif",
+        "lineHeight": "79.2px",
+        "height": 79.1875
+      },
+      ".page-deck": {
+        "fontSize": "17.6px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "\"Instrument Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "lineHeight": "28.16px",
+        "height": 84.421875
+      },
+      ".section-name": {
+        "fontSize": "12px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "ui-monospace, \"SF Mono\", Menlo, Monaco, monospace",
+        "lineHeight": "19.2px",
+        "height": 19.1875
+      }
+    },
     "contrast": {
       "failures": [],
       "pairs": [
@@ -669,16 +646,16 @@
           "threshold": 4.5
         },
         {
-          "selector": "a.",
-          "text": "Resume",
+          "selector": "h3.",
+          "text": "Newegg.com",
           "foreground": "rgb(22, 33, 28)",
           "background": [
-            241,
-            237,
-            228,
+            246,
+            243,
+            236,
             1
           ],
-          "ratio": 14.17,
+          "ratio": 14.94,
           "threshold": 4.5
         },
         {
@@ -692,19 +669,6 @@
             1
           ],
           "ratio": 5.32,
-          "threshold": 4.5
-        },
-        {
-          "selector": "h3.",
-          "text": "Newegg.com",
-          "foreground": "rgb(22, 33, 28)",
-          "background": [
-            246,
-            243,
-            236,
-            1
-          ],
-          "ratio": 14.94,
           "threshold": 4.5
         },
         {
@@ -863,6 +827,10 @@
         "overflow": false,
         "width": 520
       },
+      "521": {
+        "overflow": false,
+        "width": 521
+      },
       "700": {
         "overflow": false,
         "width": 700
@@ -875,67 +843,57 @@
   },
   "work-1280": {
     "raw_origins": [
-      "http://127.0.0.1:65127",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "http://127.0.0.1:51241"
     ],
     "origins": [
-      "LOCAL",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "LOCAL"
     ],
     "failed_requests": [],
     "overflow": false,
     "fonts": [
       {
         "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
         "status": "loaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "loaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
       },
       {
         "family": "Newsreader",
         "status": "loaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
       }
     ],
+    "typography": {
+      "body": {
+        "fontSize": "16px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "\"Instrument Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "lineHeight": "25.6px",
+        "height": 2426.09375
+      },
+      ".page-title": {
+        "fontSize": "72px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "Newsreader, Georgia, serif",
+        "lineHeight": "79.2px",
+        "height": 79.1875
+      },
+      ".page-deck": {
+        "fontSize": "17.6px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "\"Instrument Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "lineHeight": "28.16px",
+        "height": 56.28125
+      },
+      ".receipt strong": {
+        "fontSize": "48px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "Newsreader, Georgia, serif",
+        "lineHeight": "52.8px",
+        "height": 52.796875
+      }
+    },
     "contrast": {
       "failures": [],
       "pairs": [
@@ -970,12 +928,12 @@
           "text": "Selected work",
           "foreground": "rgb(22, 33, 28)",
           "background": [
-            241,
-            237,
-            228,
+            246,
+            243,
+            236,
             1
           ],
-          "ratio": 14.17,
+          "ratio": 14.94,
           "threshold": 4.5
         },
         {
@@ -1006,7 +964,7 @@
         },
         {
           "selector": "figcaption.",
-          "text": "Owner-authorized sanitized demo estimate. No personal data or customer informati",
+          "text": "Real estimate, customer details redacted.",
           "foreground": "rgb(110, 105, 94)",
           "background": [
             241,
@@ -1156,6 +1114,10 @@
         "overflow": false,
         "width": 520
       },
+      "521": {
+        "overflow": false,
+        "width": 521
+      },
       "700": {
         "overflow": false,
         "width": 700
@@ -1168,67 +1130,57 @@
   },
   "media-1280": {
     "raw_origins": [
-      "http://127.0.0.1:65127",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "http://127.0.0.1:51241"
     ],
     "origins": [
-      "LOCAL",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "LOCAL"
     ],
     "failed_requests": [],
     "overflow": false,
     "fonts": [
       {
         "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
         "status": "loaded"
       },
       {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "loaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
+        "family": "Newsreader",
         "status": "loaded"
       },
       {
         "family": "Newsreader",
         "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "loaded"
       }
     ],
+    "typography": {
+      "body": {
+        "fontSize": "16px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "\"Instrument Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "lineHeight": "25.6px",
+        "height": 1533.875
+      },
+      ".page-title": {
+        "fontSize": "72px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "Newsreader, Georgia, serif",
+        "lineHeight": "79.2px",
+        "height": 79.1875
+      },
+      ".page-deck": {
+        "fontSize": "17.6px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "\"Instrument Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "lineHeight": "28.16px",
+        "height": 56.28125
+      },
+      ".media-meta .show-name": {
+        "fontSize": "12px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "ui-monospace, \"SF Mono\", Menlo, Monaco, monospace",
+        "lineHeight": "16.8px",
+        "height": 16.796875
+      }
+    },
     "contrast": {
       "failures": [],
       "pairs": [
@@ -1460,6 +1412,10 @@
         "overflow": false,
         "width": 520
       },
+      "521": {
+        "overflow": false,
+        "width": 521
+      },
       "700": {
         "overflow": false,
         "width": 700
@@ -1472,67 +1428,50 @@
   },
   "404-1280": {
     "raw_origins": [
-      "http://127.0.0.1:65127",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "http://127.0.0.1:51241"
     ],
     "origins": [
-      "LOCAL",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "LOCAL"
     ],
     "failed_requests": [],
     "overflow": false,
     "fonts": [
       {
         "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
         "status": "loaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "loaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
       },
       {
         "family": "Newsreader",
         "status": "loaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
       }
     ],
+    "typography": {
+      "body": {
+        "fontSize": "16px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "\"Instrument Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "lineHeight": "25.6px",
+        "height": 714.4375
+      },
+      ".page-title": {
+        "fontSize": "72px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "Newsreader, Georgia, serif",
+        "lineHeight": "79.2px",
+        "height": 79.1875
+      },
+      ".page-deck": {
+        "fontSize": "17.6px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "\"Instrument Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "lineHeight": "28.16px",
+        "height": 56.28125
+      }
+    },
     "contrast": {
       "failures": [],
       "pairs": [
@@ -1724,6 +1663,10 @@
         "overflow": false,
         "width": 520
       },
+      "521": {
+        "overflow": false,
+        "width": 521
+      },
       "700": {
         "overflow": false,
         "width": 700
@@ -1736,67 +1679,54 @@
   },
   "home-375": {
     "raw_origins": [
-      "http://127.0.0.1:65127",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "http://127.0.0.1:51241"
     ],
     "origins": [
-      "LOCAL",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "LOCAL"
     ],
     "failed_requests": [],
     "overflow": false,
     "fonts": [
       {
         "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
         "status": "loaded"
       },
       {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "loaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
+        "family": "Newsreader",
         "status": "loaded"
       },
       {
         "family": "Newsreader",
         "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "loaded"
       }
     ],
+    "typography": {
+      "body": {
+        "fontSize": "16px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "\"Instrument Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "lineHeight": "25.6px",
+        "height": 4186.296875
+      },
+      ".hero-lede": {
+        "fontSize": "32px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "Newsreader, Georgia, serif",
+        "lineHeight": "36.8px",
+        "height": 110.390625
+      },
+      ".closing-cta p": {
+        "fontSize": "24px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "Newsreader, Georgia, serif",
+        "lineHeight": "31.2px",
+        "height": 93.5625
+      }
+    },
+    "hero_wrap": {
+      "currentLines": 3,
+      "withoutReductionLines": 3
+    },
     "contrast": {
       "failures": [],
       "pairs": [
@@ -1814,16 +1744,16 @@
           "threshold": 3
         },
         {
-          "selector": "strong.",
-          "text": "50%+ YoY growth",
+          "selector": "a.btn",
+          "text": "See ballpark.build",
           "foreground": "rgb(22, 33, 28)",
           "background": [
-            241,
-            237,
-            228,
+            246,
+            243,
+            236,
             1
           ],
-          "ratio": 14.17,
+          "ratio": 14.94,
           "threshold": 4.5
         },
         {
@@ -1853,19 +1783,6 @@
           "threshold": 4.5
         },
         {
-          "selector": "a.btn",
-          "text": "See ballpark.build",
-          "foreground": "rgb(22, 33, 28)",
-          "background": [
-            246,
-            243,
-            236,
-            1
-          ],
-          "ratio": 14.94,
-          "threshold": 4.5
-        },
-        {
           "selector": "a.btn btn-primary",
           "text": "Get in touch",
           "foreground": "rgb(246, 243, 236)",
@@ -1889,6 +1806,19 @@
             1
           ],
           "ratio": 4.93,
+          "threshold": 4.5
+        },
+        {
+          "selector": "strong.",
+          "text": "50%+ YoY growth",
+          "foreground": "rgb(22, 33, 28)",
+          "background": [
+            241,
+            237,
+            228,
+            1
+          ],
+          "ratio": 14.17,
           "threshold": 4.5
         },
         {
@@ -2148,16 +2078,16 @@
           "threshold": 3
         },
         {
-          "selector": "strong.",
-          "text": "50%+ YoY growth",
+          "selector": "a.btn",
+          "text": "See ballpark.build",
           "foreground": "rgb(22, 33, 28)",
           "background": [
-            241,
-            237,
-            228,
+            246,
+            243,
+            236,
             1
           ],
-          "ratio": 14.17,
+          "ratio": 14.94,
           "threshold": 4.5
         },
         {
@@ -2187,19 +2117,6 @@
           "threshold": 4.5
         },
         {
-          "selector": "a.btn",
-          "text": "See ballpark.build",
-          "foreground": "rgb(22, 33, 28)",
-          "background": [
-            246,
-            243,
-            236,
-            1
-          ],
-          "ratio": 14.94,
-          "threshold": 4.5
-        },
-        {
           "selector": "a.btn btn-primary",
           "text": "Get in touch",
           "foreground": "rgb(246, 243, 236)",
@@ -2223,6 +2140,19 @@
             1
           ],
           "ratio": 4.93,
+          "threshold": 4.5
+        },
+        {
+          "selector": "strong.",
+          "text": "50%+ YoY growth",
+          "foreground": "rgb(22, 33, 28)",
+          "background": [
+            241,
+            237,
+            228,
+            1
+          ],
+          "ratio": 14.17,
           "threshold": 4.5
         },
         {
@@ -2295,67 +2225,57 @@
   },
   "career-375": {
     "raw_origins": [
-      "http://127.0.0.1:65127",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "http://127.0.0.1:51241"
     ],
     "origins": [
-      "LOCAL",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "LOCAL"
     ],
     "failed_requests": [],
     "overflow": false,
     "fonts": [
       {
         "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
         "status": "loaded"
       },
       {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "loaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
+        "family": "Newsreader",
         "status": "loaded"
       },
       {
         "family": "Newsreader",
         "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "loaded"
       }
     ],
+    "typography": {
+      "body": {
+        "fontSize": "16px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "\"Instrument Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "lineHeight": "25.6px",
+        "height": 4442.421875
+      },
+      ".page-title": {
+        "fontSize": "44px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "Newsreader, Georgia, serif",
+        "lineHeight": "48.4px",
+        "height": 48.390625
+      },
+      ".page-deck": {
+        "fontSize": "17.6px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "\"Instrument Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "lineHeight": "28.16px",
+        "height": 140.703125
+      },
+      ".section-name": {
+        "fontSize": "12px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "ui-monospace, \"SF Mono\", Menlo, Monaco, monospace",
+        "lineHeight": "19.2px",
+        "height": 19.1875
+      }
+    },
     "contrast": {
       "failures": [],
       "pairs": [
@@ -2386,16 +2306,16 @@
           "threshold": 4.5
         },
         {
-          "selector": "a.",
-          "text": "Resume",
+          "selector": "h3.",
+          "text": "Newegg.com",
           "foreground": "rgb(22, 33, 28)",
           "background": [
-            241,
-            237,
-            228,
+            246,
+            243,
+            236,
             1
           ],
-          "ratio": 14.17,
+          "ratio": 14.94,
           "threshold": 4.5
         },
         {
@@ -2409,19 +2329,6 @@
             1
           ],
           "ratio": 5.32,
-          "threshold": 4.5
-        },
-        {
-          "selector": "h3.",
-          "text": "Newegg.com",
-          "foreground": "rgb(22, 33, 28)",
-          "background": [
-            246,
-            243,
-            236,
-            1
-          ],
-          "ratio": 14.94,
           "threshold": 4.5
         },
         {
@@ -2574,67 +2481,57 @@
   },
   "work-375": {
     "raw_origins": [
-      "http://127.0.0.1:65127",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "http://127.0.0.1:51241"
     ],
     "origins": [
-      "LOCAL",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "LOCAL"
     ],
     "failed_requests": [],
     "overflow": false,
     "fonts": [
       {
         "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
         "status": "loaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "loaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
       },
       {
         "family": "Newsreader",
         "status": "loaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
       }
     ],
+    "typography": {
+      "body": {
+        "fontSize": "16px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "\"Instrument Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "lineHeight": "25.6px",
+        "height": 2413.890625
+      },
+      ".page-title": {
+        "fontSize": "44px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "Newsreader, Georgia, serif",
+        "lineHeight": "48.4px",
+        "height": 48.390625
+      },
+      ".page-deck": {
+        "fontSize": "17.6px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "\"Instrument Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "lineHeight": "28.16px",
+        "height": 84.421875
+      },
+      ".receipt strong": {
+        "fontSize": "36px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "Newsreader, Georgia, serif",
+        "lineHeight": "39.6px",
+        "height": 39.59375
+      }
+    },
     "contrast": {
       "failures": [],
       "pairs": [
@@ -2669,12 +2566,12 @@
           "text": "Selected work",
           "foreground": "rgb(22, 33, 28)",
           "background": [
-            241,
-            237,
-            228,
+            246,
+            243,
+            236,
             1
           ],
-          "ratio": 14.17,
+          "ratio": 14.94,
           "threshold": 4.5
         },
         {
@@ -2705,7 +2602,7 @@
         },
         {
           "selector": "figcaption.",
-          "text": "Owner-authorized sanitized demo estimate. No personal data or customer informati",
+          "text": "Real estimate, customer details redacted.",
           "foreground": "rgb(110, 105, 94)",
           "background": [
             241,
@@ -2849,67 +2746,57 @@
   },
   "media-375": {
     "raw_origins": [
-      "http://127.0.0.1:65127",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "http://127.0.0.1:51241"
     ],
     "origins": [
-      "LOCAL",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "LOCAL"
     ],
     "failed_requests": [],
     "overflow": false,
     "fonts": [
       {
         "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
         "status": "loaded"
       },
       {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "loaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
+        "family": "Newsreader",
         "status": "loaded"
       },
       {
         "family": "Newsreader",
         "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "loaded"
       }
     ],
+    "typography": {
+      "body": {
+        "fontSize": "16px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "\"Instrument Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "lineHeight": "25.6px",
+        "height": 2413.140625
+      },
+      ".page-title": {
+        "fontSize": "44px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "Newsreader, Georgia, serif",
+        "lineHeight": "48.4px",
+        "height": 48.390625
+      },
+      ".page-deck": {
+        "fontSize": "17.6px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "\"Instrument Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "lineHeight": "28.16px",
+        "height": 84.421875
+      },
+      ".media-meta .show-name": {
+        "fontSize": "12px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "ui-monospace, \"SF Mono\", Menlo, Monaco, monospace",
+        "lineHeight": "16.8px",
+        "height": 16.796875
+      }
+    },
     "contrast": {
       "failures": [],
       "pairs": [
@@ -3135,67 +3022,50 @@
   },
   "404-375": {
     "raw_origins": [
-      "http://127.0.0.1:65127",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "http://127.0.0.1:51241"
     ],
     "origins": [
-      "LOCAL",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "LOCAL"
     ],
     "failed_requests": [],
     "overflow": false,
     "fonts": [
       {
         "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
         "status": "loaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "loaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Instrument Sans",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
-      },
-      {
-        "family": "Newsreader",
-        "status": "unloaded"
       },
       {
         "family": "Newsreader",
         "status": "loaded"
+      },
+      {
+        "family": "Newsreader",
+        "status": "unloaded"
       }
     ],
+    "typography": {
+      "body": {
+        "fontSize": "16px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "\"Instrument Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "lineHeight": "25.6px",
+        "height": 801.390625
+      },
+      ".page-title": {
+        "fontSize": "44px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "Newsreader, Georgia, serif",
+        "lineHeight": "48.4px",
+        "height": 48.390625
+      },
+      ".page-deck": {
+        "fontSize": "17.6px",
+        "fontSizeAdjust": "none",
+        "fontFamily": "\"Instrument Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "lineHeight": "28.16px",
+        "height": 84.421875
+      }
+    },
     "contrast": {
       "failures": [],
       "pairs": [

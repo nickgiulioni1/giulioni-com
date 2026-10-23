@@ -2,54 +2,34 @@
   "origin_diffs": {},
   "origins": {
     "home-1280": [
-      "http://127.0.0.1:65127",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "http://127.0.0.1:51241"
     ],
     "career-1280": [
-      "http://127.0.0.1:65127",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "http://127.0.0.1:51241"
     ],
     "work-1280": [
-      "http://127.0.0.1:65127",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "http://127.0.0.1:51241"
     ],
     "media-1280": [
-      "http://127.0.0.1:65127",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "http://127.0.0.1:51241"
     ],
     "404-1280": [
-      "http://127.0.0.1:65127",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "http://127.0.0.1:51241"
     ],
     "home-375": [
-      "http://127.0.0.1:65127",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "http://127.0.0.1:51241"
     ],
     "career-375": [
-      "http://127.0.0.1:65127",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "http://127.0.0.1:51241"
     ],
     "work-375": [
-      "http://127.0.0.1:65127",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "http://127.0.0.1:51241"
     ],
     "media-375": [
-      "http://127.0.0.1:65127",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "http://127.0.0.1:51241"
     ],
     "404-375": [
-      "http://127.0.0.1:65127",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "http://127.0.0.1:51241"
     ]
   },
   "contrast_failures": [],
@@ -69,7 +49,7 @@
           "best-practices": 100,
           "seo": 100
         },
-        "cls": 0.0003962595108912023,
+        "cls": 0,
         "version": "13.5.0"
       },
       "after": {
@@ -79,7 +59,7 @@
           "best-practices": 100,
           "seo": 100
         },
-        "cls": 0.0001018563966139585,
+        "cls": 0,
         "version": "13.5.0"
       }
     },
@@ -93,7 +73,7 @@
           "best-practices": 100,
           "seo": 100
         },
-        "cls": 0.0002710666972054294,
+        "cls": 0,
         "version": "13.5.0"
       },
       "after": {
@@ -103,7 +83,7 @@
           "best-practices": 100,
           "seo": 100
         },
-        "cls": 0.0002710666972054294,
+        "cls": 0,
         "version": "13.5.0"
       }
     },
@@ -165,7 +145,7 @@
           "best-practices": 100,
           "seo": 100
         },
-        "cls": 0.002629702381272155,
+        "cls": 0,
         "version": "13.5.0"
       },
       "after": {
@@ -175,7 +155,7 @@
           "best-practices": 100,
           "seo": 100
         },
-        "cls": 0.00021285523295498128,
+        "cls": 0,
         "version": "13.5.0"
       }
     },
@@ -189,7 +169,7 @@
           "best-practices": 100,
           "seo": 100
         },
-        "cls": 0.017691406540294625,
+        "cls": 0,
         "version": "13.5.0"
       },
       "after": {
@@ -199,7 +179,7 @@
           "best-practices": 100,
           "seo": 100
         },
-        "cls": 0.01292794836003167,
+        "cls": 0,
         "version": "13.5.0"
       }
     },
@@ -213,7 +193,7 @@
           "best-practices": 100,
           "seo": 100
         },
-        "cls": 0.0182476128967705,
+        "cls": 0,
         "version": "13.5.0"
       },
       "after": {
@@ -223,7 +203,7 @@
           "best-practices": 100,
           "seo": 100
         },
-        "cls": 0.005217605917388108,
+        "cls": 0,
         "version": "13.5.0"
       }
     },
@@ -237,7 +217,7 @@
           "best-practices": 100,
           "seo": 100
         },
-        "cls": 0.005428090611395092,
+        "cls": 0,
         "version": "13.5.0"
       },
       "after": {
