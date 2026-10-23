@@ -27,6 +27,9 @@ import subprocess
 import tempfile
 import unittest
 import xml.etree.ElementTree as ET
+from html.parser import HTMLParser
+from pathlib import Path
+from urllib.parse import unquote, urljoin, urlsplit
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -1329,6 +1332,115 @@ class NotFoundPageTests(unittest.TestCase):
         with open(_path("vercel.json"), encoding="utf-8") as fh:
             vercel = fh.read()
         self.assertNotIn('"rewrites"', vercel, "rewrites would serve 404.html as 200")
+
+
+class DeploymentReferences(HTMLParser):
+    """URLs used by markup, including responsive images and share cards."""
+
+    def __init__(self):
+        super().__init__()
+        self.urls = []
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        self.urls.extend(attrs[key] for key in ("href", "src") if attrs.get(key))
+        for candidate in attrs.get("srcset", "").split(","):
+            if candidate.strip():
+                self.urls.append(candidate.split()[0])
+        if tag == "meta" and attrs.get("property", attrs.get("name")) in (
+            "og:image", "twitter:image",
+        ):
+            self.urls.append(attrs["content"])
+
+
+class VercelIgnoreTests(unittest.TestCase):
+    """Internal files stay out; pages and their dependencies remain deployable."""
+
+    def ignored_paths(self, paths):
+        # Let Git parse its own syntax, isolated from repo/global ignore rules.
+        with tempfile.TemporaryDirectory() as directory:
+            subprocess.run(["git", "init", "-q", directory], check=True)
+            Path(directory, ".gitignore").write_text(
+                Path(_path(".vercelignore")).read_text(encoding="utf-8"),
+                encoding="utf-8",
+            )
+            result = subprocess.run(
+                ["git", "-c", "core.excludesFile=/dev/null", "check-ignore",
+                 "--no-index", "-z", "--stdin"],
+                cwd=directory, input="\0".join(sorted(paths)) + "\0",
+                text=True, capture_output=True,
+            )
+            self.assertIn(result.returncode, (0, 1), result.stderr)
+            return set(result.stdout.split("\0")) - {""}
+
+    def test_internal_paths_are_excluded(self):
+        paths = {
+            "AGENTS.md", "DEPLOYMENT.md", "README.md", "NOTES.md",
+            "PLAN", "PLAN.txt", "PLAN-release.json", ".github/workflows/check.yml",
+            ".gitignore", ".vercelignore", "assets/favicon-preview.png",
+            "docs/future/note.txt", "tests/future/test.py", "tools/future/script.sh",
+        }
+        for directory in ("docs", "tests", "tools"):
+            paths.update(
+                str(path.relative_to(REPO_ROOT))
+                for path in Path(_path(directory)).rglob("*") if path.is_file()
+            )
+        self.assertEqual(paths, self.ignored_paths(paths))
+
+    def test_font_assets_and_licenses_are_kept(self):
+        # PR #39 adds these files; root-only exclusions must not match them.
+        paths = {
+            "assets/fonts/README.md",
+            "assets/fonts/instrument-sans-latin-wght.woff2",
+            "assets/fonts/instrumentsans-OFL.txt",
+            "assets/fonts/newsreader-OFL.txt",
+            "assets/fonts/newsreader-latin-italic.woff2",
+            "assets/fonts/newsreader-latin-normal.woff2",
+        }
+        self.assertEqual(set(), self.ignored_paths(paths))
+
+    def test_site_files_and_references_are_kept(self):
+        root = Path(REPO_ROOT)
+        pages = sorted(root.rglob("*.html"))
+        paths = {"styles.css", "robots.txt", "sitemap.xml", "vercel.json",
+                 "favicon.ico", "favicon.svg", "apple-touch-icon.png"}
+        paths.update(str(page.relative_to(root)) for page in pages)
+        paths.update(
+            str(path.relative_to(root)) for path in (root / "assets").rglob("*")
+            if path.is_file() and path.name != "favicon-preview.png"
+        )
+        urls = []
+        for page in pages:
+            parser = DeploymentReferences()
+            parser.feed(page.read_text(encoding="utf-8"))
+            base = "https://giulioni.com/" + str(page.relative_to(root))
+            urls.extend((base, url) for url in parser.urls)
+        urls.extend(
+            ("https://giulioni.com/", node.text)
+            for node in ET.parse(_path("sitemap.xml")).iter()
+            if node.tag.endswith("}loc")
+        )
+        urls.extend(
+            ("https://giulioni.com/", url)
+            for url in re.findall(r"(?im)^Sitemap:\s*(\S+)",
+                                  Path(_path("robots.txt")).read_text())
+        )
+        urls.extend(
+            ("https://giulioni.com/styles.css", url.strip("\"' "))
+            for url in re.findall(r"url\(([^)]+)\)", _read_css())
+        )
+        for base, reference in urls:
+            url = urlsplit(urljoin(base, reference))
+            if url.scheme not in ("http", "https") or url.hostname not in (
+                "giulioni.com", "www.giulioni.com",
+            ):
+                continue
+            path = unquote(url.path).lstrip("/")
+            if not path or url.path.endswith("/") or (root / path).is_dir():
+                path += "index.html"
+            self.assertTrue((root / path).is_file(), "missing site reference: " + path)
+            paths.add(path)
+        self.assertEqual(set(), self.ignored_paths(paths))
 
 
 class CspTests(unittest.TestCase):
