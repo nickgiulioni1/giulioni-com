@@ -973,6 +973,18 @@ class MediaArchiveTests(unittest.TestCase):
             '<meta property="og:title" content="Earlier media | Nick Giulioni">', html
         )
 
+    def test_intrigue_podcast_show_name(self):
+        html = _strip_html_comments(_read_page("media"))
+        entry = re.search(
+            r'<article class="media-entry">(?:(?!</article>).)*'
+            r'href="https://www\.youtube\.com/watch\?v=dv72SopKqeM"'
+            r'(?:(?!</article>).)*</article>',
+            html,
+            flags=re.S,
+        )
+        self.assertIsNotNone(entry, "The Intrigue episode must stay on /media/")
+        self.assertIn("The Intrigue Podcast", entry.group(0))
+
     def test_each_approved_url_appears_exactly_once_as_href(self):
         html = _strip_html_comments(_read_page("media"))
         for _title, url in MEDIA_ENTRIES:
