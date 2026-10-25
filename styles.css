@@ -728,6 +728,8 @@ h1, h2 { text-wrap: balance; }
 }
 
 @media (pointer: coarse) {
+  .site-footer { align-items: center; }
+
   .site-nav a,
   .btn,
   .destination-link,
