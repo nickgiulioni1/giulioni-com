@@ -27,26 +27,26 @@ CARDS = (
     (
         "og-home.png",
         "Nick Giulioni",
-        "An operator who doesn't\naccept the status quo.",
-        "AI product, solutions, enablement, forward-deployed",
+        "If you can't sell it,\nrent it.",
+        "Director of Sales and Marketing, T&H Realty Services",
     ),
     (
         "og-career.png",
         "Resume",
-        "Razer, Corsair, Meta,\nOff Leash, Ballpark.",
-        "Ten years commercial, then built and ran the business",
+        "T&H, Ballpark,\nOff Leash, Meta,\nCorsair, Razer.",
+        "From tech sales to Indiana real estate",
     ),
     (
         "og-work.png",
         "Selected work",
-        "Ballpark: AI estimating\nbuilt inside the job.",
-        "Shipped from the company that needed it",
+        "Ballpark: market intel\nfor Central Indiana.",
+        "A product I'm building, 2025 to present",
     ),
     (
         "og-media.png",
-        "Earlier media",
-        "Podcast and interview\nappearances.",
-        "A record of past media coverage",
+        "Podcasts and talks",
+        "Investing in Central\nIndiana real estate.",
+        "Guest on Indy REI with T&H Realty and more",
     ),
 )
 

@@ -120,10 +120,10 @@ h1, h2 { text-wrap: balance; }
 
 /* Main content wrapper */
 .page-main {
-  width: min(calc(1160px + 5rem + var(--safe-left) + var(--safe-right)), 100%);
-  margin-inline: auto;
   padding: clamp(2.5rem, 5vw, 4rem) calc(2.5rem + var(--safe-right)) calc(3rem + var(--safe-bottom)) calc(2.5rem + var(--safe-left));
 }
+
+.page-main > * { max-width: 1160px; margin-inline: auto; }
 
 /* Home hero */
 .home-hero {
@@ -135,6 +135,16 @@ h1, h2 { text-wrap: balance; }
   border-bottom: 1px solid var(--rule);
 }
 .hero-content { min-width: 0; }
+.hero-role {
+  margin: 0 0 1rem;
+  font-family: var(--mono);
+  font-size: .8125rem;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.hero-role a { color: var(--rust-text); }
 .hero-lede {
   margin: 0 0 1.5rem;
   font-family: var(--heading);
@@ -161,14 +171,6 @@ h1, h2 { text-wrap: balance; }
   border-bottom: 1px solid var(--rule);
 }
 .hero-link:hover { color: var(--rust-text); border-bottom-color: var(--rust-text); }
-.track-more-body { max-width: 60ch; padding-top: .5rem; }
-.track-more-body p {
-  margin: 0 0 1rem;
-  color: var(--ink-soft);
-  font-size: 1.05rem;
-}
-.track-more-body p:last-child { margin-bottom: 0; }
-.track-more-body strong { color: var(--ink); font-weight: 600; }
 .hero-location {
   margin: 1.25rem 0 0;
   font-size: .9375rem;
@@ -253,19 +255,6 @@ h1, h2 { text-wrap: balance; }
   text-transform: uppercase;
   color: var(--ink-mute);
 }
-.track-more { margin-top: 1.5rem; }
-.track-more summary {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  font-size: .9375rem;
-  font-weight: 500;
-  color: var(--rust-text);
-  cursor: pointer;
-}
-.track-more summary::after { content: "+"; margin-left: .4rem; }
-.track-more[open] summary::after { content: "\2013"; }
-.track-more summary:hover { color: var(--ink); }
 .product-band .section-label { color: rgba(246, 243, 236, .68); margin-bottom: .75rem; }
 .track-record-grid {
   display: grid;
@@ -277,25 +266,15 @@ h1, h2 { text-wrap: balance; }
 }
 .track-row {
   display: grid;
-  grid-template-columns: minmax(150px, 1fr) 1.5fr 1.5fr 1.5fr;
+  grid-template-columns: minmax(180px, 1fr) 3fr;
   gap: 1.25rem;
   padding: 1.5rem;
   background: var(--paper);
   font-size: .9375rem;
   line-height: 1.65;
 }
-.track-row-header {
-  padding-block: .875rem;
-  background: var(--paper-band);
-  font-family: var(--mono);
-  font-size: .75rem;
-  font-weight: 500;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--ink-mute);
-}
-.track-row-header span { padding: 0; }
-.track-row:not(.track-row-header):nth-child(odd) { background: var(--paper-band); }
+.track-row:nth-child(even) { background: var(--paper-band); }
+.track-row-lead { border-left: 3px solid var(--rust); }
 .track-label {
   font-size: 1rem;
   font-weight: 600;
@@ -308,14 +287,29 @@ h1, h2 { text-wrap: balance; }
   color: var(--ink-mute);
   margin-top: .25rem;
 }
-.track-problem { color: var(--ink-soft); }
-.track-did { color: var(--ink-soft); }
-.track-outcome { color: var(--ink-soft); }
-.track-outcome strong { color: var(--ink); font-weight: 600; }
-.track-outcome a { color: var(--rust-text); font-weight: 500; }
+.track-line { color: var(--ink-soft); }
+.track-line strong { color: var(--ink); font-weight: 600; }
+.track-line a { color: var(--rust-text); font-weight: 500; }
+
+/* Owner story */
+.owner-story {
+  padding: var(--section-space) 0;
+}
+.owner-story h2 {
+  margin: 0 0 1.25rem;
+  font-family: var(--heading);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  line-height: 1.2;
+  font-weight: 400;
+  color: var(--ink);
+}
+.owner-story-body { max-width: 62ch; }
+.owner-story-body p { margin: 0 0 1rem; color: var(--ink-soft); font-size: 1.05rem; }
+.owner-story-body p:last-child { margin-bottom: 0; }
 
 /* Dark product band */
 .product-band {
+  max-width: none;
   background: var(--dark-band);
   color: var(--paper);
   margin: 0 calc(-2.5rem - var(--safe-right)) 0 calc(-2.5rem - var(--safe-left));
@@ -342,34 +336,50 @@ h1, h2 { text-wrap: balance; }
   color: rgba(246, 243, 236, .8);
   max-width: 48ch;
 }
-.product-band p:last-of-type { margin-bottom: 1.5rem; }
-.product-band a.btn {
-  color: var(--ink);
-  background: var(--paper);
-  border-color: var(--paper);
+.product-band p:last-child { margin-bottom: 0; }
+.product-band a { color: var(--rust-on-dark); }
+.product-band a:hover { color: var(--paper); }
+.episode-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgba(246, 243, 236, .2);
 }
-.product-band a.btn:hover {
-  color: var(--ink);
-  background: var(--rust-on-dark);
-  border-color: var(--rust-on-dark);
+.episode-list li {
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(246, 243, 236, .2);
 }
-.product-image {
-  margin-block: 0;
-  border-radius: 4px;
-  overflow: hidden;
-  background: var(--paper);
+.episode-list a {
+  font-family: var(--heading);
+  font-size: 1.25rem;
+  line-height: 1.3;
 }
-.product-image img {
-  width: 100%;
-  height: auto;
+.episode-date {
   display: block;
-}
-.product-image figcaption {
-  padding: .75rem 1rem;
+  margin-top: .25rem;
   font-size: .8125rem;
-  color: var(--ink-mute);
-  background: var(--paper-band);
+  color: rgba(246, 243, 236, .68);
 }
+
+/* Ballpark card */
+.ballpark-card-section { padding: var(--section-space) 0 0; }
+.ballpark-card {
+  max-width: 44rem;
+  padding: clamp(1.5rem, 3vw, 2rem);
+  background: var(--paper-band);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+}
+.ballpark-card h2 {
+  margin: 0 0 .75rem;
+  font-family: var(--heading);
+  font-size: clamp(1.375rem, 2.25vw, 1.75rem);
+  line-height: 1.25;
+  font-weight: 400;
+  color: var(--ink);
+}
+.ballpark-card p { margin: 0 0 1rem; color: var(--ink-soft); }
+.card-link { font-weight: 500; }
 
 /* Closing CTA */
 .closing-cta {
@@ -385,6 +395,12 @@ h1, h2 { text-wrap: balance; }
   line-height: 1.3;
   font-weight: 400;
   color: var(--ink);
+}
+.closing-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .75rem 1.5rem;
 }
 
 /* Contact line */
@@ -486,6 +502,7 @@ h1, h2 { text-wrap: balance; }
 }
 .career-entry:last-child { border-bottom: none; padding-bottom: 0; }
 .career-entry-compact { padding: .875rem 0; }
+.career-entry-lead .entry-detail p { color: var(--ink); }
 .career-meta h3 {
   margin: 0;
   font-family: var(--sans);
@@ -617,7 +634,7 @@ h1, h2 { text-wrap: balance; }
 }
 .receipt p { margin: 0; color: var(--ink-soft); font-size: .9375rem; }
 
-/* Earlier media page */
+/* Podcasts and talks (media) page */
 .media-entries {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -631,6 +648,13 @@ h1, h2 { text-wrap: balance; }
   min-width: 0;
   padding: 2rem 0;
   border-bottom: 1px solid var(--rule);
+}
+/* #61: a lone last entry spans both columns, so the grid ends cleanly. */
+.media-entry:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.media-date {
+  margin: .25rem 0 0;
+  font-size: .8125rem;
+  color: var(--ink-mute);
 }
 .media-meta .show-name {
   margin: 0;
@@ -679,24 +703,7 @@ h1, h2 { text-wrap: balance; }
   .portrait { max-width: 200px; aspect-ratio: 1 / 1; }
   .portrait img { aspect-ratio: 1 / 1; }
   .product-band-inner { grid-template-columns: 1fr; }
-  .product-image { max-width: 600px; }
-  .track-row { grid-template-columns: 1fr; gap: 1rem; }
-  .track-row-header { display: none; }
-  .track-problem::before,
-  .track-did::before,
-  .track-outcome::before {
-    display: block;
-    font-family: var(--mono);
-    font-size: .6875rem;
-    font-weight: 500;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: var(--ink-mute);
-    margin-bottom: .25rem;
-  }
-  .track-problem::before { content: "Problem"; }
-  .track-did::before { content: "What I did"; }
-  .track-outcome::before { content: "Result"; }
+  .track-row { grid-template-columns: 1fr; gap: .5rem; }
   .receipt-grid { grid-template-columns: 1fr; }
 }
 
@@ -721,7 +728,7 @@ h1, h2 { text-wrap: balance; }
   .track-row { padding: 1.25rem; }
   .receipt { padding: 1.5rem; }
   .contact-line { gap: .5rem 1.5rem; }
-  .track-more-body p { font-size: 1rem; }
+  .owner-story-body p { font-size: 1rem; }
   .hero-actions .btn { width: 100%; }
   .hero-targeting { font-size: 1rem; }
   .portrait { max-width: 160px; }
@@ -734,6 +741,8 @@ h1, h2 { text-wrap: balance; }
   .btn,
   .destination-link,
   .media-entry .episode-title a,
+  .episode-list a,
+  .card-link,
   .contact-line a,
   .site-footer a,
   .resume-contact a {
