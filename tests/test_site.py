@@ -2,11 +2,13 @@
 
 Deterministic, standard-library-only checks describing the approved final
 production state: a four-page static site (Home, Resume, Selected work,
-Earlier media) with root-relative internal links and assets, the approved
-contact links (Email, LinkedIn), the recruiter-first primary nav, the
-approved Resume section structure, the Selected work Ballpark case + A
-Little True + three receipts, the seven Earlier media URLs, the resume
-PDF, the responsive / safe-area / coarse-pointer / reduced-motion CSS,
+Podcasts and talks) that leads with Nick's T&H Realty Services role, with
+root-relative internal links and assets, the approved contact links (Email,
+LinkedIn), the primary nav, one owner-facing primary CTA, the Indy REI guest
+credit, the single Ballpark card, one-line career history, the Selected work
+Ballpark case + A Little True + three receipts, the media URLs, the content
+that must never appear, the resume PDF, the full-bleed band (#60) and media
+grid (#61) layouts, the responsive / safe-area / coarse-pointer / reduced-motion CSS,
 CSP-safe markup, balanced CSS braces, and none of the prohibited Open
 Design-only artifacts (data-od-id attributes, sidecars, home.html,
 DESIGN.md, brand-spec.md).
@@ -48,8 +50,64 @@ SOCIAL_HREFS = (
     "https://www.linkedin.com/in/nickgiulioni",
 )
 
-# Approved Media appearances: (episode title, URL), exact strings.
-MEDIA_ENTRIES = (
+# T&H role copy, exact strings from the Oct 30, 2026 brief.
+TH_URL = "https://www.threaltyinc.com/"
+TH_LETS_TALK = "https://www.threaltyinc.com/lets-talk/"
+TH_RENTAL_ANALYSIS = "https://www.threaltyinc.com/free-rental-analysis/"
+TH_ROLE = "Director of Sales and Marketing"
+TH_DESCRIPTION = (
+    "T&amp;H Realty Services is an Indianapolis property management company"
+    " and real estate brokerage serving investors and landlords across"
+    " Central Indiana."
+)
+TH_SCOPE = (
+    "I help rental owners and investors find the right management for their"
+    " properties, and I lead T&amp;H's investor community."
+)
+
+# Guest credit on Indy REI with T&H Realty: (episode title, URL, date).
+INDY_REI_SHOW = "https://www.threaltyinc.com/indy-rei-with-th-realty-podcast/"
+INDY_REI_EPISODES = (
+    (
+        "Trading 75 Rentals for 10 Elite Assets with Nick Giulioni",
+        "https://indyreiwiththrealty.podbean.com/e/trading-75-rentals-for-10-elite-assets-with-nick-giulioni/",
+        "Nov 18, 2025",
+    ),
+    (
+        "Picking the Right Partner with Nick Giulioni (Part 1): Contractors",
+        "https://indyreiwiththrealty.podbean.com/e/picking-the-right-team-contractors/",
+        "Sep 10, 2024",
+    ),
+    (
+        "The State of the Short-Term and Mid-Term Rental Market in Central"
+        " Indiana with Nick Giulioni",
+        "https://indyreiwiththrealty.podbean.com/e/the-state-of-the-short-term-and-midterm-rental-market-in-central-indiana/",
+        "Jan 30, 2024",
+    ),
+)
+
+BALLPARK_CARD_TITLE = "Ballpark, a product I'm building (2025 to present)"
+BALLPARK_CARD_COPY = (
+    "Ballpark is market intelligence for Central Indiana real estate pros. It"
+    " turns listings, rentals and sales into comps, condition grades and"
+    " leads, and it's bringing AI repair estimates into the same platform."
+)
+
+# Approved Media appearances: (episode title, URL), exact strings, in order.
+MEDIA_ENTRIES = tuple((title, url) for title, url, _date in INDY_REI_EPISODES) + (
+    (
+        "9.5.24 Indy Investor Masterclass | Nick Giulioni &amp; Mark Nottingham",
+        "https://www.youtube.com/watch?v=zmVUoNDVfcg",
+    ),
+    (
+        "Everything You Need to Know About Midterm Rentals In Indianapolis"
+        " &amp; Why They're HOT",
+        "https://www.simplequarters.com/podcasts/everything-you-need-to-know-about-midterm-rentals-in-indianapolis-why-theyre-hot",
+    ),
+    (
+        "Ep.02: Nick Giulioni: FAANG to FI",
+        "https://www.youtube.com/watch?v=pI3Cgnx-ZVI",
+    ),
     (
         "You WON'T BELIEVE Nick Giulioni's Journey from Tech to Real Estate",
         "https://www.rootsrealty.co/podcast/nick-giulioni-real-estate",
@@ -183,6 +241,20 @@ def _normalized_text(text):
     return re.sub(r"\s+", "", text.lower())
 
 
+def _visible_text(html_text):
+    """Page text with tags, comments and entities resolved, whitespace collapsed."""
+    text = re.sub(r"<[^>]+>", " ", _strip_html_comments(html_text))
+    return re.sub(r"\s+", " ", html.unescape(text))
+
+
+def _section(html_text, open_tag):
+    """The element that starts with open_tag, up to its first close tag."""
+    html_text = _strip_html_comments(html_text)
+    start = html_text.index(open_tag)
+    tag = re.match(r"<(\w+)", open_tag).group(1)
+    return html_text[start:html_text.index("</%s>" % tag, start)]
+
+
 class StructureTests(unittest.TestCase):
     """The site is four directory-rooted pages."""
 
@@ -257,15 +329,6 @@ class LcpImagePriorityTests(unittest.TestCase):
         portrait = self._image_in_figure(home, "portrait")
         self.assertIn('fetchpriority="high"', portrait)
         self.assertNotRegex(portrait, r'\bloading\s*=\s*["\']lazy["\']')
-
-        work = _read_page("work")
-        ballpark_work = self._image_in_figure(work, "work-image")
-        self.assertIn('fetchpriority="high"', ballpark_work)
-        self.assertNotRegex(ballpark_work, r'\bloading\s*=\s*["\']lazy["\']')
-
-        ballpark_home = self._image_in_figure(home, "product-image")
-        self.assertRegex(ballpark_home, r'\bloading\s*=\s*["\']lazy["\']')
-        self.assertNotRegex(ballpark_home, r'\bfetchpriority\s*=')
 
 
 class SitemapTests(unittest.TestCase):
@@ -402,110 +465,106 @@ class NavigationTests(unittest.TestCase):
 
 
 class HomeTests(unittest.TestCase):
-    """Home page carries hero, track record, product band, and closing CTA."""
+    """Home leads with the T&H role and tells owners why to work with Nick."""
 
-    PRIMARY_HREFS = (
-        "/career/",
-        "/work/",
-        "mailto:nick@giulioni.com",
-        "/assets/nick-giulioni-resume.pdf",
-    )
+    def _hero(self):
+        return _section(_read_page("home"), '<section class="home-hero"')
 
-    def test_home_has_primary_actions_and_pdf_download(self):
-        html = _strip_html_comments(_read_page("home"))
-        for href in self.PRIMARY_HREFS:
-            with self.subTest(href=href):
-                self.assertIn(
-                    'href="%s"' % href,
-                    html,
-                    "home must link %r as a primary action or PDF download" % href,
-                )
+    def test_home_title_leads_with_th_role(self):
+        self.assertIn(
+            "<title>Nick Giulioni | Director of Sales and Marketing,"
+            " T&amp;H Realty Services</title>",
+            _read_page("home"),
+        )
 
-    def test_home_has_hero_lede(self):
-        html = _strip_html_comments(_read_page("home"))
-        self.assertIn("operator who doesn't accept the status quo", html.lower())
+    def test_hero_tagline_role_and_th_link(self):
+        hero = self._hero()
+        self.assertIn('<h1 class="hero-lede">If you can\'t sell it, rent it.</h1>', hero)
+        self.assertIn(TH_ROLE, hero)
+        self.assertIn('href="%s"' % TH_URL, hero)
 
-    def test_home_hero_is_lede_targeting_and_one_primary_cta(self):
-        """First screen stays skimmable: no career narrative, one primary CTA."""
-        html = _strip_html_comments(_read_page("home"))
-        hero = html[html.index('<section class="home-hero"') : html.index("</section>")]
-        self.assertIn("hero-targeting", hero, "hero must carry a targeting line")
+    def test_hero_has_exactly_one_primary_cta_to_lets_talk(self):
+        hero = self._hero()
+        buttons = re.findall(r'<a class="btn btn-primary" href="([^"]+)">([^<]+)</a>', hero)
         self.assertEqual(
-            hero.count("btn-primary"),
-            1,
-            "hero must offer exactly one primary CTA",
+            buttons, [(TH_LETS_TALK, "Talk to me about managing your rental")]
         )
-        self.assertNotIn(
-            "btn-secondary",
-            hero,
-            "hero secondary buttons must be demoted to quiet links",
-        )
-        self.assertNotIn(
-            "expensive problem",
-            hero,
-            "career narrative must move out of the first screen",
+        self.assertNotIn("btn-secondary", hero)
+
+    def test_home_page_has_only_one_primary_button(self):
+        html = _strip_html_comments(_read_page("home"))
+        self.assertEqual(html.count("btn-primary"), 1)
+
+    def test_hero_secondary_link_is_quiet_rental_analysis(self):
+        self.assertIn(
+            '<a class="hero-link" href="%s">' % TH_RENTAL_ANALYSIS, self._hero()
         )
 
-    def test_home_keeps_career_narrative_in_more_expand(self):
-        """The long Razer/Corsair/Meta paragraph stays on the page, below the
-        fold, inside a no-JavaScript <details> expand."""
-        html = _strip_html_comments(_read_page("home"))
-        start = html.index('<details class="track-more"')
-        expand = html[start : html.index("</details>", start)]
-        self.assertIn("<summary>", expand, "expand must have a summary control")
-        for phrase in (
-            "expensive problem",
-            "$150M annual budget",
-            "$3M+ in its first year",
-            "3,000+ doors",
-            "Estimating was the thing that kept breaking",
-            "Ballpark",
-        ):
+    def test_home_no_longer_reads_as_a_job_search(self):
+        text = _visible_text(_read_page("home")).lower()
+        for phrase in ("forward-deployed", "looking for", "new opportunity",
+                       "download resume", "status quo"):
             with self.subTest(phrase=phrase):
-                self.assertIn(
-                    phrase,
-                    expand,
-                    "career expand must contain approved phrase %r" % phrase,
-                )
+                self.assertNotIn(phrase, text)
 
-    def test_home_carries_target_role_language(self):
+    def test_track_record_leads_with_th_role_copy(self):
         html = _strip_html_comments(_read_page("home"))
-        for phrase in (
-            "AI product",
-            "solutions",
-            "enablement",
-            "forward-deployed",
-            "construction",
-            "field service",
-        ):
-            with self.subTest(phrase=phrase):
-                self.assertIn(
-                    phrase.lower(),
-                    html.lower(),
-                    "home must carry target-role phrase %r" % phrase,
-                )
+        labels = re.findall(r'<div class="track-label">([^<]+)<', html)
+        self.assertEqual(labels[0], "T&amp;H Realty Services")
+        lead = html[html.index('<div class="track-row track-row-lead">'):]
+        lead = lead[:lead.index('<div class="track-row">')]
+        self.assertIn("%s, Nov 2026–present" % TH_ROLE, lead)
+        for copy in (TH_DESCRIPTION, TH_SCOPE, 'href="%s"' % TH_URL):
+            with self.subTest(copy=copy):
+                self.assertIn(copy, lead)
 
     def test_home_has_track_record_section(self):
         html = _strip_html_comments(_read_page("home"))
         self.assertIn("track-record", html)
-        for label in ("Ballpark", "Off Leash Construction", "Meta", "Corsair", "Razer"):
+        for label in ("T&amp;H Realty Services", "Ballpark", "Off Leash Investments",
+                      "Off Leash Construction", "Meta", "Corsair", "Razer"):
             with self.subTest(label=label):
-                self.assertIn(label, html)
+                self.assertIn('<div class="track-label">%s<' % label, html)
 
-    def test_home_track_record_has_three_cells_per_row(self):
+    def test_each_track_record_row_is_one_line(self):
         html = _strip_html_comments(_read_page("home"))
-        self.assertIn("track-problem", html, "track record must have problem cells")
-        self.assertIn("track-did", html, "track record must have what-I-did cells")
-        self.assertIn("track-outcome", html, "track record must have outcome cells")
+        rows = re.findall(r'<div class="track-row[^"]*">(.*?)\n      </div>', html, re.S)
+        self.assertEqual(len(rows), 7)
+        for row in rows:
+            with self.subTest(row=row[:60]):
+                self.assertEqual(row.count('class="track-line"'), 1)
+                self.assertNotRegex(row, r"track-(problem|did|outcome)")
 
-    def test_home_has_product_band_with_ballpark_link(self):
-        html = _strip_html_comments(_read_page("home"))
-        self.assertIn("product-band", html)
-        self.assertIn('href="https://ballpark.build"', html)
+    def test_home_tells_the_owner_story(self):
+        story = _section(_read_page("home"), '<section class="owner-story"')
+        self.assertIn("owner's side of the table", story)
+        self.assertIn("since 2016", story)
 
-    def test_home_has_estimate_image(self):
+    def test_band_is_indy_rei_guest_credit_with_three_episodes(self):
+        band = _section(_read_page("home"), '<aside class="product-band"')
+        self.assertIn(
+            'Guest on <a href="%s">Indy REI with T&amp;H Realty</a>' % INDY_REI_SHOW,
+            band,
+        )
+        self.assertNotRegex(_visible_text(band).lower(), r"\bhost(ed)?\b")
+        links = re.findall(
+            r'<li><a href="([^"]+)">([^<]+)</a>'
+            r'<span class="episode-date">([^<]+)</span></li>', band
+        )
+        self.assertEqual(
+            links, [(url, title, date) for title, url, date in INDY_REI_EPISODES]
+        )
+
+    def test_home_has_one_ballpark_card_and_no_estimate_image(self):
         html = _strip_html_comments(_read_page("home"))
-        self.assertIn('src="/assets/ballpark-estimate-600.png"', html)
+        self.assertEqual(html.count('<article class="ballpark-card">'), 1)
+        card = _section(html, '<article class="ballpark-card">')
+        self.assertIn("<h2>%s</h2>" % BALLPARK_CARD_TITLE, card)
+        self.assertIn("<p>%s</p>" % BALLPARK_CARD_COPY, card)
+        self.assertIn('href="https://ballpark.build"', card)
+        self.assertNotIn("<img", card)
+        self.assertNotIn("ballpark-estimate", html)
+        self.assertNotIn("product-image", html)
 
     def test_home_btn_classes_meet_coarse_pointer_44px_rule(self):
         css = _read_css()
@@ -544,85 +603,39 @@ class ResponsiveImageTests(unittest.TestCase):
     """Each picture has local WebP candidates and a resized legacy fallback."""
 
     def test_variants_exist_and_are_referenced(self):
-        expected = {
-            "portrait-nick": ("jpg", [160, 200, 320, 348, 400, 636]),
-            "ballpark-estimate": ("png", [360, 480, 600, 720, 960, 1176]),
-        }
-        for page, names in (("home", list(expected)), ("work", ["ballpark-estimate"])):
-            pictures = re.findall(r"<picture>.*?</picture>", _read_page(page), re.S)
-            self.assertEqual(len(pictures), len(names))
-            for picture, name in zip(pictures, names):
-                ext, widths = expected[name]
-                tags = re.findall(r"<(?:source|img)\b[^>]*>", picture)
-                self.assertEqual(len(tags), 2)
-                attrs = [dict(re.findall(r'([\w-]+)="([^"]*)"', tag)) for tag in tags]
-                source, fallback = attrs
-                self.assertEqual(source["type"], "image/webp")
-                self.assertEqual(source["sizes"], fallback["sizes"])
-                self.assertTrue(source["sizes"])
-                for attributes, fmt in ((source, "webp"), (fallback, ext)):
-                    candidates = [value.strip() for value in attributes["srcset"].split(",")]
-                    self.assertEqual(candidates, [
-                        "/assets/%s-%s.%s %sw" % (name, width, fmt, width)
-                        for width in widths
-                    ])
-                    for candidate in candidates:
-                        path = _path(candidate.split()[0].lstrip("/"))
-                        self.assertTrue(os.path.isfile(path), path)
-                        self.assertGreater(os.path.getsize(path), 0)
-                self.assertIn(fallback["src"], [
-                    candidate.split()[0] for candidate in fallback["srcset"].split(", ")
-                ])
-                self.assertTrue(fallback["alt"])
-                self.assertEqual((fallback["width"], fallback["height"]),
-                                 ("636", "954") if name == "portrait-nick" else ("1176", "646"))
-                self.assertEqual(fallback.get("loading"),
-                                 "lazy" if page == "home" and name == "ballpark-estimate" else None)
+        widths = [160, 200, 320, 348, 400, 636]
+        self.assertEqual(re.findall(r"<picture>", _read_page("work")), [])
+        pictures = re.findall(r"<picture>.*?</picture>", _read_page("home"), re.S)
+        self.assertEqual(len(pictures), 1)
+        tags = re.findall(r"<(?:source|img)\b[^>]*>", pictures[0])
+        self.assertEqual(len(tags), 2)
+        source, fallback = [dict(re.findall(r'([\w-]+)="([^"]*)"', tag)) for tag in tags]
+        self.assertEqual(source["type"], "image/webp")
+        self.assertEqual(source["sizes"], fallback["sizes"])
+        self.assertTrue(source["sizes"])
+        for attributes, fmt in ((source, "webp"), (fallback, "jpg")):
+            candidates = [value.strip() for value in attributes["srcset"].split(",")]
+            self.assertEqual(candidates, [
+                "/assets/portrait-nick-%s.%s %sw" % (width, fmt, width)
+                for width in widths
+            ])
+            for candidate in candidates:
+                path = _path(candidate.split()[0].lstrip("/"))
+                self.assertTrue(os.path.isfile(path), path)
+                self.assertGreater(os.path.getsize(path), 0)
+        self.assertIn(fallback["src"], [
+            candidate.split()[0] for candidate in fallback["srcset"].split(", ")
+        ])
+        self.assertTrue(fallback["alt"])
+        self.assertEqual((fallback["width"], fallback["height"]), ("636", "954"))
+        self.assertIsNone(fallback.get("loading"))
 
-    def test_ballpark_variants_match_master_ratio_and_carry_no_metadata(self):
-        """Every Ballpark size is regenerated from one master (#26)."""
-        master_w, master_h = _image_size(_path("assets/ballpark-estimate.png"))
-        self.assertEqual((master_w, master_h), (1176, 646))
-        master_chunks = _image_chunks(_path("assets/ballpark-estimate.png"))
-        self.assertIn("IHDR", master_chunks, "master must be a real lossless PNG")
-        self.assertEqual(master_chunks["IHDR"][8:10], b"\x08\x02", "master must retain RGB pixels")
-        widths = (360, 480, 600, 720, 960, master_w)
-        expected_files = {_path("assets/ballpark-estimate.png")}
-        for width in widths:
-            for ext in ("png", "webp"):
-                path = _path("assets/ballpark-estimate-%d.%s" % (width, ext))
-                expected_files.add(path)
-                with self.subTest(file=os.path.basename(path)):
-                    w, h = _image_size(path)
-                    self.assertEqual(w, width)
-                    self.assertLessEqual(w, master_w, "variants must not upscale")
-                    self.assertEqual(h, round(w * master_h / master_w))
-        self.assertEqual(set(glob.glob(_path("assets/ballpark-estimate*"))), expected_files)
-        for path in sorted(glob.glob(_path("assets/ballpark-estimate*"))):
-            with self.subTest(file=os.path.basename(path)):
-                self.assertLessEqual(
-                    set(_image_chunks(path)),
-                    {"IHDR", "PLTE", "IDAT", "IEND", "tRNS", "VP8 ", "VP8L", "VP8X", "ALPH"},
-                    "%s carries metadata" % path,
-                )
-
-    def test_ballpark_caption_and_alt_describe_the_redacted_image(self):
-        for page in ("home", "work"):
-            with self.subTest(page=page):
-                figure = next(block for block in re.findall(
-                    r"<figure\b.*?</figure>", _read_page(page), re.S
-                ) if "ballpark-estimate" in block)
-                caption = re.search(r"<figcaption>(.*?)</figcaption>", figure, re.S).group(1)
-                self.assertEqual(caption, "Real estimate, customer details redacted.")
-                self.assertNotIn("sanitized", caption.lower())
-                self.assertNotIn("no personal data", caption.lower())
-                alt = re.search(r'\balt="([^"]*)"', figure).group(1)
-                self.assertEqual(
-                    alt,
-                    "Ballpark.build home page with the headline 'Turn messy property evidence "
-                    "into a contractor-ready estimate' and a sample estimate card showing Good, "
-                    "Better and Best tiers, with customer details blocked out.",
-                )
+    def test_old_ballpark_estimate_image_is_gone(self):
+        """No estimate or signed-in screenshots of Ballpark ship on the site."""
+        self.assertEqual(glob.glob(_path("assets/ballpark-estimate*")), [])
+        for name in PAGES:
+            with self.subTest(page=name):
+                self.assertNotIn("ballpark-estimate", _read_page(name))
 
 
 class ShareCardTests(unittest.TestCase):
@@ -687,44 +700,75 @@ class ShareCardTests(unittest.TestCase):
 
 
 class MixedSignalTests(unittest.TestCase):
-    """Home and Selected work must not carry Best Notes, venues, real
-    estate, or 48-hour STR claims."""
+    """Home and Selected work must not carry Best Notes, venues, or 48-hour
+    STR claims."""
 
     MIXED_TOKENS = (
         "Best Notes",
         "The Wilds",
         "Laural Mill",
-        "Off Leash Investments",
         "48 hours",
-        "short-term rental",
     )
 
-    def test_home_carries_no_mixed_signal_tokens(self):
-        html = _strip_html_comments(_read_page("home"))
-        normalized = _normalized_text(html)
-        for token in self.MIXED_TOKENS:
-            with self.subTest(token=token):
-                self.assertNotIn(
-                    _normalized_text(token),
-                    normalized,
-                    "home must not carry mixed-signal token %r" % token,
-                )
+    def test_home_and_work_carry_no_mixed_signal_tokens(self):
+        for page in ("home", "work"):
+            normalized = _normalized_text(_strip_html_comments(_read_page(page)))
+            for token in self.MIXED_TOKENS:
+                with self.subTest(page=page, token=token):
+                    self.assertNotIn(_normalized_text(token), normalized)
 
-    def test_work_carries_no_mixed_signal_tokens(self):
-        html = _strip_html_comments(_read_page("work"))
-        normalized = _normalized_text(html)
-        for token in self.MIXED_TOKENS:
-            with self.subTest(token=token):
-                self.assertNotIn(
-                    _normalized_text(token),
-                    normalized,
-                    "work must not carry mixed-signal token %r" % token,
-                )
 
-    def test_resume_keeps_operating_history_only_in_subordinate_section(self):
-        html = _strip_html_comments(_read_page("resume"))
-        self.assertIn("Operating history", html)
-        self.assertIn("resume-section-subordinate", html)
+def _pdf_text():
+    return subprocess.run(
+        ["pdftotext", "-layout", _path("assets/nick-giulioni-resume.pdf"), "-"],
+        check=True, capture_output=True, text=True,
+    ).stdout
+
+
+class NeverOnSiteTests(unittest.TestCase):
+    """Content the Oct 30, 2026 brief rules out on every page and in the PDF."""
+
+    FORBIDDEN = (
+        # The T&H deal, people and internals.
+        r"\bJeremy\b", r"\bTallman\b", r"\bacqui(?:re|red|sition)\b",
+        r"\bsale of\b", r"\bownership\b", r"\bhandbook\b", r"\bmeetings?\b",
+        r"\bcompensation\b", r"\bsalary\b", r"\bcommission\b", r"\bbonus\b",
+        r"\blicen[cs]e[ds]?\b", r"\btargets?\b", r"\bquota\b", r"\bschedule\b",
+        # Family and personal details.
+        r"\bBailey\b", r"\bdaughter\b", r"\bson\b", r"\bwife\b",
+        r"\brobbe(?:d|ry)\b", r"\blawsuit\b", r"\blegal\b",
+        r"\bperformance review\b",
+        # Street addresses.
+        r"\b\d+\s+\w+(?:\s\w+)?\s(?:St|Street|Ave|Avenue|Rd|Road|Dr|Drive|Blvd|Ln|Lane)\b",
+        # Ballpark vendors and AI model names.
+        r"\bOpenAI\b", r"\bGPT", r"\bClaude\b", r"\bAnthropic\b", r"\bGemini\b",
+        # The unapproved Part 2 podcast episode.
+        r"Part 2", r"part-2",
+    )
+
+    def _sources(self):
+        for name in PAGES:
+            page = _read_page(name)
+            hrefs = " ".join(h for _q, h in _anchor_pairs(page))
+            yield name, _visible_text(page) + " " + hrefs
+        yield "resume-pdf", _pdf_text()
+
+    def test_no_forbidden_content_on_any_page_or_pdf(self):
+        for name, text in self._sources():
+            for pattern in self.FORBIDDEN:
+                with self.subTest(source=name, pattern=pattern):
+                    self.assertNotRegex(text, re.compile(pattern, re.I))
+
+    def test_portrait_is_the_only_photo(self):
+        """No child photos or other people: Nick's portrait only."""
+        for name in PAGES:
+            with self.subTest(page=name):
+                for src in re.findall(r'\bsrcs?e?t?="([^"]+)"', _read_page(name)):
+                    for candidate in src.split(","):
+                        self.assertTrue(
+                            candidate.strip().startswith("/assets/portrait-nick"),
+                            candidate,
+                        )
 
 
 class ResumeTests(unittest.TestCase):
@@ -732,7 +776,6 @@ class ResumeTests(unittest.TestCase):
 
     REQUIRED_SECTIONS = (
         "Summary",
-        "Ballpark bridge",
         "Experience",
         "Earlier experience",
         "Operating history",
@@ -769,22 +812,47 @@ class ResumeTests(unittest.TestCase):
             "resume PDF link must carry the canonical download filename",
         )
 
-    def test_resume_carries_target_role_language(self):
+    def test_th_role_leads_experience(self):
         html = _strip_html_comments(_read_page("resume"))
-        for phrase in (
-            "AI product",
-            "solutions",
-            "enablement",
-            "forward-deployed",
-            "construction tech",
-            "field-service software",
-        ):
+        first = _section(html, '<article class="career-entry')
+        self.assertIn("<h3>T&amp;H Realty Services</h3>", first)
+        self.assertIn('<p class="role">%s</p>' % TH_ROLE, first)
+        self.assertIn('<p class="date">Nov 2026–present</p>', first)
+        for copy in (TH_DESCRIPTION, TH_SCOPE, 'href="%s"' % TH_URL):
+            with self.subTest(copy=copy):
+                self.assertIn(copy, first)
+
+    def test_resume_no_longer_reads_as_a_job_search(self):
+        text = _visible_text(_read_page("resume")).lower()
+        for phrase in ("forward-deployed", "looking for", "new opportunity",
+                       "target role", "ballpark bridge"):
             with self.subTest(phrase=phrase):
-                self.assertIn(
-                    phrase,
-                    html,
-                    "resume must carry target-role phrase %r" % phrase,
-                )
+                self.assertNotIn(phrase, text)
+
+    def test_every_other_role_is_one_line(self):
+        html = _strip_html_comments(_read_page("resume"))
+        entries = re.findall(r'<article class="career-entry[^"]*">.*?</article>', html, re.S)
+        names = [re.search(r"<h3>([^<]+)</h3>", e).group(1) for e in entries]
+        self.assertEqual(names, [
+            "T&amp;H Realty Services", "Ballpark", "Off Leash Construction",
+            "Facebook / Meta", "Corsair", "Razer", "TP-LINK USA", "D-Link",
+            "Arclyte Technologies", "Newegg.com", "Off Leash Investments",
+            "The Wilds Wedding Venue", "Laural Mill",
+        ])
+        for name, entry in zip(names[1:], entries[1:]):
+            with self.subTest(role=name):
+                detail = entry[entry.index('<div class="entry-detail">'):]
+                self.assertEqual(detail.count("<p>"), 1)
+                self.assertNotIn("<li>", detail)
+
+    def test_operating_businesses_stay_short(self):
+        html = _strip_html_comments(_read_page("resume"))
+        section = html[html.index("Operating history"):html.index("Education")]
+        lines = re.findall(r'<div class="entry-detail"><p>(.*?)</p></div>', section)
+        self.assertEqual(len(lines), 3)
+        for line in lines:
+            with self.subTest(line=line):
+                self.assertLessEqual(len(line.split()), 8)
 
     def test_resume_preserves_truthful_titles_dates_metrics(self):
         html = _read_page("resume")
@@ -921,9 +989,13 @@ class SelectedWorkTests(unittest.TestCase):
                 "Ballpark must not carry claim %r" % phrase,
             )
 
-    def test_ballpark_case_has_estimate_image(self):
-        html = _read_page("work")
-        self.assertIn('src="/assets/ballpark-estimate-600.png"', html)
+    def test_ballpark_case_matches_market_intelligence_positioning(self):
+        html = _strip_html_comments(_read_page("work"))
+        block = _section(html, '<article class="work-case" data-project="ballpark">')
+        self.assertIn("Market intelligence for Central Indiana real estate pros", block)
+        self.assertIn("AI repair estimates", block)
+        self.assertIn('href="https://ballpark.build"', block)
+        self.assertNotIn("<img", block)
 
     def test_a_little_true_is_compact_also_shipped_with_one_link(self):
         html = _strip_html_comments(_read_page("work"))
@@ -963,15 +1035,36 @@ class SelectedWorkTests(unittest.TestCase):
 
 
 class MediaArchiveTests(unittest.TestCase):
-    """/media/ retains the seven incumbent URLs and stays out of the
+    """/media/ lists every approved appearance and stays out of the
     primary nav."""
 
     def test_media_title_and_metadata(self):
         html = _read_page("media")
-        self.assertIn("<title>Earlier media | Nick Giulioni</title>", html)
+        self.assertIn("<title>Podcasts and talks | Nick Giulioni</title>", html)
         self.assertIn(
-            '<meta property="og:title" content="Earlier media | Nick Giulioni">', html
+            '<meta property="og:title" content="Podcasts and talks | Nick Giulioni">',
+            html,
         )
+
+    def test_entries_are_the_approved_titles_in_order(self):
+        html = _strip_html_comments(_read_page("media"))
+        found = re.findall(
+            r'<p class="episode-title"><a href="([^"]+)">([^<]+)</a></p>', html
+        )
+        self.assertEqual(found, [(url, title) for title, url in MEDIA_ENTRIES])
+
+    def test_indy_rei_entries_are_guest_credits_with_dates(self):
+        html = _strip_html_comments(_read_page("media"))
+        for title, url, date in INDY_REI_EPISODES:
+            with self.subTest(title=title):
+                entry = re.search(
+                    r'<article class="media-entry">(?:(?!</article>).)*href="%s"'
+                    r'(?:(?!</article>).)*</article>' % re.escape(url),
+                    html, re.S,
+                ).group(0)
+                self.assertIn("Indy REI with T&amp;H Realty (guest)", entry)
+                self.assertIn('<p class="media-date">%s</p>' % date, entry)
+        self.assertNotRegex(_visible_text(html).lower(), r"\bhost(ed)?\b")
 
     def test_intrigue_podcast_show_name(self):
         html = _strip_html_comments(_read_page("media"))
@@ -1038,6 +1131,10 @@ class ResumePdfTests(unittest.TestCase):
         "nick@giulioni.com",
         "linkedin.com/in/nickgiulioni",
         "ballpark",
+        "director of sales and marketing",
+        "t&h realty services",
+        "nov 2026",
+        "investor community",
     )
 
     @staticmethod
@@ -1058,6 +1155,7 @@ class ResumePdfTests(unittest.TestCase):
                 self.assertTrue(urlsplit(url).scheme, "PDF links must be absolute")
                 self.assertNotRegex(url.lower(), r"127\.0\.0\.1|localhost|0\.0\.0\.0")
         self.assertIn("https://giulioni.com/work/", urls)
+        self.assertIn(TH_URL, urls)
         for contact in SOCIAL_HREFS:
             self.assertIn(contact, urls)
 
@@ -1438,6 +1536,31 @@ class CssTests(unittest.TestCase):
     def test_css_does_not_use_old_palette(self):
         css = _read_css()
         self.assertNotIn("#1f2ec4", css, "CSS must not use old ultramarine #1f2ec4")
+
+    @staticmethod
+    def _rule(css, selector):
+        match = re.search(r"(?m)^" + re.escape(selector) + r"\s*\{([^}]*)\}", css)
+        if match is None:
+            raise AssertionError("missing top-level rule for %s" % selector)
+        return match.group(1)
+
+    def test_dark_band_bleeds_to_viewport_edges(self):
+        """#60: the width cap lives on .page-main's children, not .page-main,
+        so the band's negative margins always reach the viewport edges."""
+        css = _read_css()
+        self.assertNotRegex(self._rule(css, ".page-main"), r"(?<![-\w])width:")
+        self.assertRegex(self._rule(css, ".page-main > *"), r"max-width:\s*1160px")
+        band = self._rule(css, ".product-band")
+        self.assertRegex(band, r"max-width:\s*none")
+        self.assertIn("calc(-2.5rem - var(--safe-left))", band)
+        self.assertNotIn("100vw", css, "vw bleeds overflow with classic scrollbars")
+
+    def test_media_grid_last_odd_entry_spans_both_columns(self):
+        """#61: works for any entry count, so no empty cell after the last."""
+        self.assertRegex(
+            self._rule(_read_css(), ".media-entry:last-child:nth-child(odd)"),
+            r"grid-column:\s*1\s*/\s*-1",
+        )
 
 
 class OpenDesignArtifactTests(unittest.TestCase):

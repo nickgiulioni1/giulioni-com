@@ -16,7 +16,7 @@ Cream / forest / rust editorial identity:
 | rust | #b8501f | Accent, links |
 | rust-on-dark | #d97a45 | Accent on dark |
 | rule | #e0dbd0 | Borders |
-| dark-band | #16211c | Product band |
+| dark-band | #16211c | Full-bleed podcast band |
 
 Typography:
 - Headings: Newsreader (Google Fonts, weight 400)
@@ -38,15 +38,14 @@ Open `http://127.0.0.1:8791/`, `http://127.0.0.1:8791/career/`,
 
 | Path | Role |
 |---|---|
-| `index.html` | Home page (hero + track record + product band + closing CTA) |
-| `career/index.html` | Resume page (target role, summary, Ballpark bridge, experience, education) |
-| `work/index.html` | Selected work page (Ballpark case + Also shipped + receipts) |
-| `media/index.html` | Earlier media archive (seven incumbent podcast appearances) |
+| `index.html` | Home page (T&H hero + track record + owner story + Indy REI podcast band + Ballpark card + closing CTA) |
+| `career/index.html` | Resume page (T&H role, summary, one-line experience, operating history, education) |
+| `work/index.html` | Selected work page (Ballpark case, no screenshots + Also shipped + receipts) |
+| `media/index.html` | Podcasts and talks (Indy REI guest episodes plus other appearances) |
 | `styles.css` | Cream/forest/rust editorial design system |
 | `assets/portrait-nick.jpg` | Hero portrait |
-| `assets/ballpark-estimate.png` | Cropped Ballpark.build page, customer details redacted; lossless 1176×646 PNG master. Responsive PNG/WebP widths: 360, 480, 600, 720, 960, 1176. |
 | `assets/nick-giulioni-resume.pdf` | Downloadable resume (PDF) |
-| `vercel.json` | Security headers (CSP allows Google Fonts) |
+| `vercel.json` | Security headers (CSP: same-origin only) |
 
 ## Regenerating the resume PDF
 
@@ -82,10 +81,11 @@ freely.
 python3 -m unittest discover -s tests -v
 ```
 
-Tests cover the recruiter-first nav, primary actions, track record section,
-product band, estimate image, mixed-signal removal, the Resume page sections,
-the Selected work case study with four labelled facts, the Earlier media
-archive, the resume PDF, the responsive / safe-area / coarse-pointer /
+Tests cover the nav, the T&H hero with one primary CTA, the one-line track
+record, the Indy REI guest band, the single Ballpark card, content that must
+never appear on the site or in the PDF, the Resume page sections, the
+Selected work case study with four labelled facts, the media page, the
+full-bleed band (#60) and media grid (#61) layouts, the resume PDF, the responsive / safe-area / coarse-pointer /
 reduced-motion CSS, the print body size floor, CSP, markup hygiene, balanced
 CSS braces, root-relative references, new palette tokens, and the absence of
 Open Design-only artifacts.
