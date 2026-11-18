@@ -42,7 +42,8 @@ class SiteTests(unittest.TestCase):
                 descriptions.append(metas['description'])
                 for tag in ['og:title','og:description','og:url','og:image','twitter:card','twitter:title','twitter:description','twitter:image']: self.assertTrue(metas.get(tag))
                 self.assertTrue(metas['og:image'].startswith('https://giulioni.com/assets/'))
-                self.assertIn({'rel':'canonical','href':'https://giulioni.com'+url},m.attrs('link'))
+                canonicals=[a for a in m.attrs('link') if a.get('rel')=='canonical']
+                self.assertEqual(canonicals,[] if url in EXTRA else [{'rel':'canonical','href':'https://giulioni.com'+url}])
                 self.assertIn('viewport-fit=cover',metas['viewport'])
                 self.assertEqual(len([a for a in m.attrs('link') if a.get('as')=='font']),2)
                 if url in EXTRA: self.assertEqual(metas['robots'],'noindex')
@@ -55,6 +56,7 @@ class SiteTests(unittest.TestCase):
             with self.subTest(url=url):
                 m=Markup(text)
                 footers.append(re.search(r'<footer class="site-footer">.*?</footer>',text,re.S).group())
+                self.assertLess(text.index('</main>'),text.index('<footer'))
                 self.assertIn('class="disclosure"',text)
                 self.assertIn('760 E. 52nd St',text)
                 self.assertIn('317-255-7767',text)
@@ -144,7 +146,7 @@ class SiteTests(unittest.TestCase):
         headers={h['key']:h['value'] for h in self.config['headers'][0]['headers']}
         self.assertEqual(headers['Content-Security-Policy'],"default-src 'self'; img-src 'self'; style-src 'self'; font-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; object-src 'none'; upgrade-insecure-requests")
         for key in ['X-Content-Type-Options','Referrer-Policy','Permissions-Policy']: self.assertTrue(headers[key])
-        self.assertFalse(self.config['git']['deploymentEnabled'])
+        self.assertNotIn('git',self.config)
         for path in ['/contact/thanks/','/contact/error/','/api/(.*)']:
             self.assertIn({'source':path,'headers':[{'key':'X-Robots-Tag','value':'noindex'}]},self.config['headers'])
         excluded=(ROOT/'.vercelignore').read_text().splitlines()
@@ -159,6 +161,16 @@ class SiteTests(unittest.TestCase):
         self.assertIn(':focus-visible',css)
         self.assertIn('min-height:44px',css)
         for font in re.findall(r'url\("(/assets/fonts/[^\"]+)"\)',css): self.assertTrue((ROOT/font.lstrip('/')).exists())
+
+    def test_area_paragraphs_are_distinct(self):
+        seen=set()
+        for city in ['carmel','westfield','fishers']:
+            text=self.pages['/areas/'+city+'/'].split('<section class="closing-cta">')[0]
+            paragraphs=re.findall(r'<section class="editorial"><h2>.*?</h2><p>(.*?)</p>',text)
+            self.assertEqual(len(paragraphs),6)
+            for paragraph in paragraphs:
+                self.assertNotIn(paragraph,seen)
+                seen.add(paragraph)
 
     def test_image_metadata_and_cards(self):
         for path in (ROOT/'assets').glob('*'):
