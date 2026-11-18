@@ -45,6 +45,7 @@ function createHandler({ env = process.env, fetcher = globalThis.fetch, now = Da
       if (Object.entries(lengths).some(([key, max]) => (data[key] || '').length > max)) return finish(false, 'invalid fields');
       if (!data.name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email || '') || /[\r\n]/.test(data.name + data.email + data.phone) || !/^[+()\d\s.\-]+$/.test(data.phone || '') || !/^\d{10,11}$/.test((data.phone || '').replace(/\D/g, '')) || data.consent !== 'yes' || !INTENTS.has(data.intent) || !SOURCES.has(data.source)) return finish(false, 'invalid fields');
       if (data.source.startsWith('sell-or-rent-') && (!data.location || data.intent !== 'Sell or rent review')) return finish(false, 'address required');
+      if (ENV.some(key => !env[key])) return finish(false, 'notifications not configured');
       const time = now();
       for (const [key, bucket] of limits) if (time - bucket.start >= WINDOW) limits.delete(key);
       const ip = req.headers['x-vercel-forwarded-for'] || req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown';
@@ -52,7 +53,6 @@ function createHandler({ env = process.env, fetcher = globalThis.fetch, now = Da
       if (bucket.count >= 5 || (!limits.has(ip) && limits.size >= 10000)) return finish(false, 'rate limited');
       bucket.count += 1;
       limits.set(ip, bucket);
-      if (ENV.some(key => !env[key])) return finish(false, 'notifications not configured');
       const received = new Intl.DateTimeFormat('en-US', { dateStyle: 'full', timeStyle: 'long', timeZone: 'America/Indianapolis' }).format(new Date(time));
       const text = ['Name: ' + data.name, 'Email: ' + data.email, 'Phone: ' + data.phone, 'City or address: ' + (data.location || ''), 'Intent: ' + data.intent, 'Message: ' + (data.message || ''), 'Consent: yes', 'Source: ' + data.source, 'Received: ' + received].join('\n');
       const email = await fetcher('https://api.resend.com/emails', { method: 'POST', signal: AbortSignal.timeout(8000), headers: { Authorization: 'Bearer ' + env.RESEND_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ from: env.NOTIFY_EMAIL_FROM, to: [env.NOTIFY_EMAIL_TO], reply_to: data.email, subject: 'Consult request: ' + data.intent + ', ' + data.source, text }) });

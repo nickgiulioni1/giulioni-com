@@ -2,7 +2,7 @@
 
 Repository: `nickgiulioni1/giulioni-com`. Existing Vercel project: `giulioni-com`, in `nick-giulionis-projects`, project ID `prj_v6dRhb9H3UQQ5CGzQLM8nblLIuib`.
 
-Do not merge or deploy without Nick's yes. This rebuild is approved for a preview only. Do not alter production domains, project settings, or environment variables. Vercel Git deployments are disabled in `vercel.json`. Build locally on Omarchy with `vercel build`, then publish the preview with `vercel deploy --prebuilt` (never use the production flag). After any `vercel pull`, remove `.vercel` when the work is finished. Do not commit local deployment files.
+Do not merge or deploy without Nick's yes. This rebuild is approved for a preview only. Do not alter production domains, project settings, or environment variables. This change leaves the existing Vercel Git deployment behavior unchanged. Build locally on Omarchy with `vercel build`, then publish the preview with `vercel deploy --prebuilt` (never use the production flag). After any `vercel pull`, remove `.vercel` when the work is finished. Do not commit local deployment files.
 
 ## Notification configuration, left unset
 
@@ -17,7 +17,7 @@ No Resend or Quo accounts or API keys are created by this change. Before live no
 | `QUO_FROM_NUMBER` | The business line, +14632239952 |
 | `NOTIFY_SMS_TO` | Nick’s destination number, entered only by Nick in Vercel |
 
-No secret values belong in the repository. Until all six variables exist, submissions redirect to `/contact/error/` and record only a request ID and `notifications not configured`. Honeypot submissions silently redirect to thanks without notifications. Successful email delivery redirects to thanks even if text delivery fails. Live delivery testing needs Nick’s go-ahead and is not performed with unset credentials.
+No secret values belong in the repository. Until all six variables exist, the fallback limiter is skipped and submissions redirect to `/contact/error/` and record only a request ID and `notifications not configured`. Honeypot submissions silently redirect to thanks without notifications. Successful email delivery redirects to thanks even if text delivery fails. Live delivery testing needs Nick’s go-ahead and is not performed with unset credentials.
 
 API references: [Resend email API](https://resend.com/docs/api-reference/emails/send-email) and [Quo text API](https://www.quo.com/docs/mdx/api-reference/messages/send-a-text-message).
 
