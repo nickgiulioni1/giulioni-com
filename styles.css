@@ -307,13 +307,24 @@ em { font-style: italic; }
 .consult-form .btn { width: 100%; min-height: 56px; font-size: 1.0625rem; }
 .honeypot { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
-/* Work gallery: only rendered when site.json lists approved photos. */
-.work-gallery { padding-top: var(--space); padding-bottom: var(--space); }
-.work-gallery h2 { margin-bottom: clamp(1.5rem, 3vw, 2.5rem); }
-.work-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 1.5rem; }
-.work-item { margin: 0; }
-.work-item img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius); background: var(--paper-deep); }
-.work-item figcaption { margin-top: .625rem; font-size: .875rem; color: var(--ink-soft); }
+/* Work gallery: rendered from site.json work_gallery. Desktop: six-column mosaic, the first photo
+   spans four columns and two rows; landscapes take two columns, portraits one. Phones: two columns. */
+.work-gallery { padding-top: var(--space); padding-bottom: var(--space); background: var(--card); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.work-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .5rem 2rem; margin-bottom: clamp(1.75rem, 3vw, 2.5rem); }
+.work-head h2 { max-width: 16ch; }
+.work-head p { margin: 0; color: var(--ink-soft); font-size: 1.0625rem; }
+.work-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-auto-flow: dense; gap: 1.75rem 1rem; }
+.work-item { grid-column: span 2; min-width: 0; }
+.work-item--portrait { grid-column: span 1; }
+.work-item--feature { grid-column: span 4; grid-row: span 2; }
+.work-item figure { margin: 0; height: 100%; display: flex; flex-direction: column; }
+.work-item picture { position: relative; display: block; flex: 1 1 0; min-height: 12rem; overflow: hidden; border-radius: var(--radius); background: var(--paper-deep); }
+.work-item--landscape:not(.work-item--feature) picture { flex: 0 0 auto; min-height: 0; aspect-ratio: 3 / 2; }
+.work-item img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.work-item figcaption { display: flex; flex-direction: column; gap: .125rem; padding-top: .625rem; line-height: 1.35; }
+.work-detail { font-size: .9375rem; font-weight: 600; color: var(--ink); }
+.work-place { font-size: .8125rem; color: var(--ink-mute); }
+.work-credit { margin: 1.5rem 0 0; font-size: .8125rem; color: var(--ink-mute); }
 
 /* Closing call to action */
 .closing-cta { padding-top: var(--space-s); padding-bottom: var(--space-s); background: var(--paper-deep); border-top: 1px solid var(--line); }
@@ -462,6 +473,10 @@ em { font-style: italic; }
 
 /* Tablet */
 @media (max-width: 1100px) {
+  .work-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .work-item--feature { grid-column: 1 / -1; grid-row: auto; }
+  .work-item--feature picture { flex: 0 0 auto; min-height: 0; aspect-ratio: 3 / 2; }
+  .work-item--portrait picture { flex: 0 0 auto; min-height: 0; aspect-ratio: 2 / 3; }
   .header-phone { display: none; }
   .site-actions { padding-left: 0; border-left: 0; }
   .fact-figure { font-size: 2.25rem; }
@@ -531,6 +546,12 @@ em { font-style: italic; }
   .town-body { display: contents; }
   .town-name { order: -1; }
   .paths { grid-template-columns: 1fr; gap: 1.5rem; }
+  .work-grid { display: flex; gap: .75rem; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; margin-inline: calc(-1 * var(--gutter)); padding: 0 var(--gutter) .75rem; scroll-padding-inline: var(--gutter); scrollbar-width: thin; }
+  .work-item, .work-item--feature, .work-item--portrait { flex: 0 0 auto; width: 80vw; scroll-snap-align: start; }
+  .work-item--portrait { width: calc(80vw * 4 / 9); }
+  .work-item picture, .work-item--feature picture, .work-item--portrait picture, .work-item--landscape:not(.work-item--feature) picture { flex: 0 0 auto; min-height: 0; height: calc(80vw * 2 / 3); aspect-ratio: auto; }
+  .work-item figcaption { padding-top: .5rem; }
+  .work-head { margin-bottom: 1.25rem; }
   .path-title { font-size: 1.75rem; }
   .path-text { grid-column: 1 / -1; max-width: none; }
   .form-grid { grid-template-columns: 1fr; }

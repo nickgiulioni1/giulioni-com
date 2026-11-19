@@ -184,18 +184,21 @@ class SiteTests(unittest.TestCase):
     def test_work_gallery_slot(self):
         items=self.site['work_gallery']
         self.assertIsInstance(items,list)
+        credit=self.site.get('work_gallery_credit','')
         for url,text in self.pages.items():
             with self.subTest(url=url):
-                if not items:
+                if not items or url not in ['/','/about/']:
                     self.assertNotIn('work-gallery',text)
-                elif url in ['/','/about/']:
-                    self.assertEqual(text.count('<figure class="work-item">'),len(items))
+                else:
+                    self.assertEqual(text.count('<li class="work-item'),len(items))
+                    self.assertEqual('class="work-credit"' in text,bool(credit.strip()))
+                    for item in items: self.assertIn('alt="'+item['alt']+'"',text)
+        ids=[item['id'] for item in items]
+        self.assertEqual(len(ids),len(set(ids)))
         for item in items:
-            for key in ['src','width','height','alt']: self.assertTrue(item.get(key),key)
-            for key in ['src','webp']:
-                if item.get(key):
-                    self.assertTrue(item[key].startswith('/assets/work/'),item[key])
-                    self.assertTrue((ROOT/item[key].lstrip('/')).exists(),item[key])
+            for key in ['id','place','detail','alt']: self.assertTrue(item.get(key),key)
+            for ext in ['avif','webp','jpg']:
+                self.assertTrue(list((ROOT/'assets/work').glob(item['id']+'-*.'+ext)),item['id']+' '+ext)
 
     def test_image_metadata_and_cards(self):
         for path in (ROOT/'assets').rglob('*'):
@@ -207,6 +210,10 @@ class SiteTests(unittest.TestCase):
                     size=struct.unpack('>I',data[offset:offset+4])[0]; kind=data[offset+4:offset+8]
                     self.assertNotIn(kind,[b'eXIf',b'tEXt',b'zTXt',b'iTXt'],path.name)
                     offset+=12+size
+            elif path.suffix=='.avif':
+                self.assertNotIn(b'Exif',data,path.name)
+                self.assertNotIn(b'<x:xmpmeta',data,path.name)
+                for box in re.findall(rb'colr(....)',data): self.assertNotIn(box,[b'prof',b'rICC'],path.name)
             elif path.suffix=='.webp':
                 for chunk in [b'EXIF',b'XMP ',b'ICCP']: self.assertNotIn(chunk,data,path.name)
             elif path.suffix in ['.jpg','.jpeg']:
