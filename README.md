@@ -1,6 +1,6 @@
 # giulioni.com
 
-Nick Giulioni’s static Central Indiana buyer and seller site. Cream, forest, and rust, self-hosted Newsreader and Instrument Sans, and no executable page scripts.
+Nick Giulioni’s static Central Indiana buyer and seller site. Limestone, Monon green and brick, self-hosted Instrument Serif and Instrument Sans, and no executable page scripts.
 
 Pages: `/`, `/sell/`, `/buy/`, `/areas/`, `/areas/carmel/`, `/areas/westfield/`, `/areas/fishers/`, `/about/`, `/contact/`, `/podcast/`, `/privacy/`, `/contact/thanks/`, `/contact/error/`, and `404.html`.
 

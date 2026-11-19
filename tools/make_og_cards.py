@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Render the 1200x630 social share cards in assets/.
 
-Portrait plus title, cream/forest/rust palette. Run after changing card copy:
+Portrait plus title, limestone/green/brick palette. Run after changing card copy:
 
     python3 tools/make_og_cards.py
 """
@@ -15,12 +15,12 @@ ASSETS = os.path.join(REPO_ROOT, "assets")
 PORTRAIT = os.path.join(ASSETS, "portrait-nick.jpg")
 
 W, H = 1200, 630
-PAPER = (246, 243, 236)
-INK = (22, 33, 28)
-INK_SOFT = (74, 84, 78)
-RUST = (184, 80, 31)
+PAPER = (244, 239, 230)
+INK = (21, 33, 27)
+INK_SOFT = (70, 82, 75)
+RUST = (154, 59, 26)
 
-SERIF = os.path.join(ASSETS, "fonts/newsreader-latin-normal.woff2")
+SERIF = os.path.join(ASSETS, "fonts/instrument-serif-latin-normal.woff2")
 SANS = os.path.join(ASSETS, "fonts/instrument-sans-latin-wght.woff2")
 
 CARDS = tuple(("og-"+key+".png", "Nick Giulioni", title, "Carmel · Westfield · Fishers") for key,title in [
@@ -70,12 +70,12 @@ def render(name, eyebrow, title, footer):
     draw.rectangle([W - panel_w - 6, 0, W - panel_w - 1, H], fill=RUST)
 
     eyebrow_font = load_font(SANS, 26)
-    title_font = load_font(SERIF, 62)
+    title_font = load_font(SERIF, 78)
     footer_font = load_font(SANS, 24)
 
     x = 72
     draw.text((x, 104), eyebrow, font=eyebrow_font, fill=RUST)
-    wrapped(draw, title, title_font, INK, x, 168, 78)
+    wrapped(draw, title, title_font, INK, x, 160, 84)
     draw.line([(x, H - 152), (x + 96, H - 152)], fill=RUST, width=3)
     draw.text((x, H - 122), footer, font=footer_font, fill=INK_SOFT)
     draw.text((x, H - 84), "giulioni.com", font=footer_font, fill=INK)
