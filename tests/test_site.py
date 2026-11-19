@@ -16,7 +16,6 @@ Run:
     python3 -m unittest discover -s tests -v
 """
 
-import glob
 import hashlib
 import html
 import json
@@ -97,45 +96,6 @@ def _read_page(name):
         raise AssertionError("required page %r is missing (%s)" % (rel, path))
     with open(path, encoding="utf-8") as fh:
         return fh.read()
-
-
-def _image_chunks(path):
-    """(chunk id, payload) pairs of a PNG or RIFF WebP file, by content not extension."""
-    with open(path, "rb") as fh:
-        data = fh.read()
-    chunks = []
-    if data[:8] == b"\x89PNG\r\n\x1a\n":
-        i = 8
-        while i + 8 <= len(data):
-            n = int.from_bytes(data[i:i + 4], "big")
-            chunks.append((data[i + 4:i + 8].decode("latin-1"), data[i + 8:i + 8 + n]))
-            i += 12 + n
-    elif data[:4] == b"RIFF" and data[8:12] == b"WEBP":
-        i = 12
-        while i + 8 <= len(data):
-            n = int.from_bytes(data[i + 4:i + 8], "little")
-            chunks.append((data[i:i + 4].decode("latin-1"), data[i + 8:i + 8 + n]))
-            i += 8 + n + (n & 1)
-    else:
-        raise AssertionError("%s is neither PNG nor WebP" % path)
-    return dict(chunks)
-
-
-def _image_size(path):
-    """(width, height) of a PNG or WebP (VP8, VP8L, or VP8X) file."""
-    chunks = _image_chunks(path)
-    if "IHDR" in chunks:
-        ihdr = chunks["IHDR"]
-        return int.from_bytes(ihdr[0:4], "big"), int.from_bytes(ihdr[4:8], "big")
-    if "VP8X" in chunks:
-        x = chunks["VP8X"]
-        return int.from_bytes(x[4:7], "little") + 1, int.from_bytes(x[7:10], "little") + 1
-    if "VP8L" in chunks:
-        bits = int.from_bytes(chunks["VP8L"][1:5], "little")
-        return (bits & 0x3FFF) + 1, ((bits >> 14) & 0x3FFF) + 1
-    frame = chunks["VP8 "]
-    return (int.from_bytes(frame[6:8], "little") & 0x3FFF,
-            int.from_bytes(frame[8:10], "little") & 0x3FFF)
 
 
 def _strip_html_comments(html):
@@ -257,15 +217,6 @@ class LcpImagePriorityTests(unittest.TestCase):
         portrait = self._image_in_figure(home, "portrait")
         self.assertIn('fetchpriority="high"', portrait)
         self.assertNotRegex(portrait, r'\bloading\s*=\s*["\']lazy["\']')
-
-        work = _read_page("work")
-        ballpark_work = self._image_in_figure(work, "work-image")
-        self.assertIn('fetchpriority="high"', ballpark_work)
-        self.assertNotRegex(ballpark_work, r'\bloading\s*=\s*["\']lazy["\']')
-
-        ballpark_home = self._image_in_figure(home, "product-image")
-        self.assertRegex(ballpark_home, r'\bloading\s*=\s*["\']lazy["\']')
-        self.assertNotRegex(ballpark_home, r'\bfetchpriority\s*=')
 
 
 class SitemapTests(unittest.TestCase):
@@ -503,10 +454,6 @@ class HomeTests(unittest.TestCase):
         self.assertIn("product-band", html)
         self.assertIn('href="https://ballpark.build"', html)
 
-    def test_home_has_estimate_image(self):
-        html = _strip_html_comments(_read_page("home"))
-        self.assertIn('src="/assets/ballpark-estimate-600.png"', html)
-
     def test_home_btn_classes_meet_coarse_pointer_44px_rule(self):
         css = _read_css()
         coarse = re.search(r"@media \(pointer: coarse\)\s*\{(.*?)\n\}", css, re.S)
@@ -546,9 +493,8 @@ class ResponsiveImageTests(unittest.TestCase):
     def test_variants_exist_and_are_referenced(self):
         expected = {
             "portrait-nick": ("jpg", [160, 200, 320, 348, 400, 636]),
-            "ballpark-estimate": ("png", [360, 480, 600, 720, 960, 1176]),
         }
-        for page, names in (("home", list(expected)), ("work", ["ballpark-estimate"])):
+        for page, names in (("home", list(expected)), ("work", [])):
             pictures = re.findall(r"<picture>.*?</picture>", _read_page(page), re.S)
             self.assertEqual(len(pictures), len(names))
             for picture, name in zip(pictures, names):
@@ -575,54 +521,8 @@ class ResponsiveImageTests(unittest.TestCase):
                 ])
                 self.assertTrue(fallback["alt"])
                 self.assertEqual((fallback["width"], fallback["height"]),
-                                 ("636", "954") if name == "portrait-nick" else ("1176", "646"))
-                self.assertEqual(fallback.get("loading"),
-                                 "lazy" if page == "home" and name == "ballpark-estimate" else None)
-
-    def test_ballpark_variants_match_master_ratio_and_carry_no_metadata(self):
-        """Every Ballpark size is regenerated from one master (#26)."""
-        master_w, master_h = _image_size(_path("assets/ballpark-estimate.png"))
-        self.assertEqual((master_w, master_h), (1176, 646))
-        master_chunks = _image_chunks(_path("assets/ballpark-estimate.png"))
-        self.assertIn("IHDR", master_chunks, "master must be a real lossless PNG")
-        self.assertEqual(master_chunks["IHDR"][8:10], b"\x08\x02", "master must retain RGB pixels")
-        widths = (360, 480, 600, 720, 960, master_w)
-        expected_files = {_path("assets/ballpark-estimate.png")}
-        for width in widths:
-            for ext in ("png", "webp"):
-                path = _path("assets/ballpark-estimate-%d.%s" % (width, ext))
-                expected_files.add(path)
-                with self.subTest(file=os.path.basename(path)):
-                    w, h = _image_size(path)
-                    self.assertEqual(w, width)
-                    self.assertLessEqual(w, master_w, "variants must not upscale")
-                    self.assertEqual(h, round(w * master_h / master_w))
-        self.assertEqual(set(glob.glob(_path("assets/ballpark-estimate*"))), expected_files)
-        for path in sorted(glob.glob(_path("assets/ballpark-estimate*"))):
-            with self.subTest(file=os.path.basename(path)):
-                self.assertLessEqual(
-                    set(_image_chunks(path)),
-                    {"IHDR", "PLTE", "IDAT", "IEND", "tRNS", "VP8 ", "VP8L", "VP8X", "ALPH"},
-                    "%s carries metadata" % path,
-                )
-
-    def test_ballpark_caption_and_alt_describe_the_redacted_image(self):
-        for page in ("home", "work"):
-            with self.subTest(page=page):
-                figure = next(block for block in re.findall(
-                    r"<figure\b.*?</figure>", _read_page(page), re.S
-                ) if "ballpark-estimate" in block)
-                caption = re.search(r"<figcaption>(.*?)</figcaption>", figure, re.S).group(1)
-                self.assertEqual(caption, "Real estimate, customer details redacted.")
-                self.assertNotIn("sanitized", caption.lower())
-                self.assertNotIn("no personal data", caption.lower())
-                alt = re.search(r'\balt="([^"]*)"', figure).group(1)
-                self.assertEqual(
-                    alt,
-                    "Ballpark.build home page with the headline 'Turn messy property evidence "
-                    "into a contractor-ready estimate' and a sample estimate card showing Good, "
-                    "Better and Best tiers, with customer details blocked out.",
-                )
+                                 ("636", "954"))
+                self.assertIsNone(fallback.get("loading"))
 
 
 class ShareCardTests(unittest.TestCase):
@@ -920,10 +820,6 @@ class SelectedWorkTests(unittest.TestCase):
                 block.lower(),
                 "Ballpark must not carry claim %r" % phrase,
             )
-
-    def test_ballpark_case_has_estimate_image(self):
-        html = _read_page("work")
-        self.assertIn('src="/assets/ballpark-estimate-600.png"', html)
 
     def test_a_little_true_is_compact_also_shipped_with_one_link(self):
         html = _strip_html_comments(_read_page("work"))
