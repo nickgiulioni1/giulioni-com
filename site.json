@@ -92,8 +92,25 @@
     }
   ],
   "work_gallery_credit": "",
-  "hero_photo": null,
-  "about_photos": [],
+  "hero_photo": {
+    "id": "hero-01",
+    "alt": "Nick Giulioni, Indianapolis-area real estate agent"
+  },
+  "about_photos": [
+    {
+      "id": "about-nick-diane-01",
+      "alt": "Nick Giulioni and his wife Diane"
+    },
+    {
+      "id": "about-family-01",
+      "alt": "Nick, Diane and their baby",
+      "credit": "Ashlyn Peters Photography"
+    },
+    {
+      "id": "about-solo-02",
+      "alt": "Nick Giulioni seated in a white chair"
+    }
+  ],
   "area_photos": {
     "carmel": null,
     "westfield": null,

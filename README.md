@@ -30,7 +30,7 @@ All photos are driven by `site.json` and must be metadata-stripped (EXIF, GPS, X
 
 - `work_gallery`: ordered list of `{"id", "place", "detail", "alt"}`; files in `assets/work/`. `work_gallery_credit` is an optional credit line.
 - `hero_photo`: `null` or `{"id", "alt"}`; files in `assets/nick/`. Portrait 2:3.
-- `about_photos`: up to two `{"id", "alt", "caption"?, "credit"?}`; files in `assets/nick/`. Portrait 4:5 for two photos, landscape 3:2 for one.
+- `about_photos`: up to three `{"id", "alt", "caption"?, "credit"?}`; files in `assets/nick/`. Portrait 4:5 for the first two photos, with a full-width 3:2 landscape below when three are supplied; landscape 3:2 for one. The family photo uses its full 4:5 frame with `object-fit: contain` and no `object-position`.
 - `area_photos`: one key per area slug, `null` or `{"id", "alt", "caption", "credit", "license"?, "license_url"?, "source_url"?}`; files in `assets/areas/`. Landscape 3:2. A credit is required.
 
 After editing, run `python3 tools/render_site.py` and both test commands, and commit the regenerated HTML.
