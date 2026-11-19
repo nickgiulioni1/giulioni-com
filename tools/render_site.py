@@ -23,7 +23,7 @@ FOOTER=('<footer class="site-footer"><div class="footer-top">'
     '<nav class="footer-nav" aria-label="Footer"><a href="/sell/">Sell</a><a href="/buy/">Buy</a><a href="/areas/">Areas</a><a href="/about/">About</a><a href="/podcast/">Podcast</a><a href="/contact/">Contact</a></nav>'
     '<div class="footer-contact"><a href="'+S['phone_tel']+'">'+S['phone_display']+'</a><a href="mailto:'+S['email']+'">'+S['email']+'</a></div>'
     '</div><div class="footer-legal">'
-    '<p class="disclosure">Nick Giulioni is an Indiana real estate broker affiliated with T&amp;H Realty Services, 760 E. 52nd St, Indianapolis, IN 46205, 317-255-7767.</p>'
+    '<p class="disclosure">Nick Giulioni is an Indiana real estate broker affiliated with T&amp;H Realty Services, <span class="nowrap">760 E. 52nd St</span>, <span class="nowrap">Indianapolis, IN 46205</span>, <span class="nowrap">317-255-7767</span>.</p>'
     '<p class="housing"><img src="/assets/equal-housing.svg" width="28" height="28" alt="Equal Housing Opportunity"> Equal Housing Opportunity.</p>'
     '</div><div class="footer-base"><div class="footer-links"><a href="/privacy/">Privacy</a><a href="https://www.linkedin.com/in/nickgiulioni">LinkedIn</a></div>'
     '<p class="copyright">© 2026 Nick Giulioni</p></div></footer>')
@@ -49,7 +49,7 @@ def section(title,text,cls='editorial'): return '<section class="'+cls+'"><h2>'+
 def cta(label='Request a consult',promise=True):
     return ('<section class="closing-cta"><div class="closing-cta__inner"><p class="closing-title">Let’s talk through your next move</p>'
         '<div class="closing-actions"><a class="btn btn-primary btn-large" href="/contact/">'+label+'</a>'
-        '<p class="closing-note">Or call '+TEL+('. I respond personally, <span class="nowrap">usually the same day.</span>' if promise else '.')+'</p></div></div></section>')
+        '<p class="closing-note">Or call '+TEL+('.<span class="closing-promise">I respond personally, usually the same day.</span>' if promise else '.')+'</p></div></div></section>')
 
 # Schematic line maps of places named in the copy. Decorative and not to scale; the
 # same places are named in the adjacent text, so each drawing is hidden from assistive tech.
@@ -70,10 +70,10 @@ MAPS={
     '<text class="map-label map-label--muted" x="352" y="282">roundabouts</text></svg>'),
 'westfield':('<svg class="map map--westfield" viewBox="0 0 480 300" aria-hidden="true" focusable="false">'
     '<rect class="map-ground" width="480" height="300"/>'
-    '<path class="map-road map-road--minor" d="M0 276H480"/>'
-    '<rect class="map-park" x="34" y="62" width="272" height="190" rx="4"/>'
-    +''.join(f'<rect class="map-field" x="{52+c*62}" y="{80+r*56}" width="50" height="40" rx="2"/><path class="map-field-line" d="M{77+c*62} {80+r*56}v40"/><circle class="map-field-line" cx="{77+c*62}" cy="{100+r*56}" r="7"/>' for r in range(2) for c in range(4))
-    +''.join(f'<path class="map-diamond" d="M{52+c*62} 232v-40a40 40 0 0 1 40 40z"/>' for c in range(4))+
+    '<path class="map-road map-road--minor" d="M0 286H480"/>'
+    '<rect class="map-park" x="34" y="62" width="272" height="206" rx="4"/>'
+    +''.join(f'<rect class="map-field" x="{52+c*62}" y="{82+r*60}" width="50" height="42" rx="2"/><path class="map-field-line" d="M{77+c*62} {82+r*60}v42"/><circle class="map-field-line" cx="{77+c*62}" cy="{103+r*60}" r="7"/>' for r in range(2) for c in range(4))
+    +''.join(f'<path class="map-diamond" d="M{52+c*62} 250v-42a42 42 0 0 1 42 42z"/>' for c in range(4))+
     '<path class="map-trail" d="M366 0C362 80 370 150 364 210S358 270 362 300"/>'
     '<text class="map-label map-label--place" x="34" y="44">Grand Park</text>'
     '<text class="map-label map-label--trail" x="382" y="150">Monon</text><text class="map-label map-label--trail" x="382" y="172">Trail</text></svg>'),
@@ -191,7 +191,7 @@ HOME=('<section class="home-hero"><div class="hero-grid">'
     '<p class="approach-lead">My background is in tech sales. I have been investing in Central Indiana since 2017. Years running renovation and new-build work taught me to look past finishes and ask what a property needs. I live in Carmel. Now I represent buyers and sellers in Carmel, Westfield, and Fishers, bringing that experience to the conversation.</p>'
     '<div class="paths"><a class="path" href="/sell/"><span class="path-kicker">Selling</span><span class="path-title">Thinking about selling?</span><span class="path-text">Start with your timing, the condition of the home, and what you want to do next.</span><span class="path-arrow" aria-hidden="true">→</span></a>'
     '<a class="path" href="/buy/"><span class="path-kicker">Buying</span><span class="path-title">Start with the right town</span><span class="path-text">Compare towns, home condition and new-build choices before narrowing the home list.</span><span class="path-arrow" aria-hidden="true">→</span></a></div></section>'
-    '<section class="towns"><div class="towns-head"><h2>Find the town that fits your day</h2><p>Choose the daily routine first. Then choose the home.</p><a class="text-link" href="/areas/">Compare all three</a></div>'+towns('h3')+'</section>'
+    '<section class="towns"><div class="towns-head"><h2>Find the town that fits your day</h2><div class="towns-head__aside"><p>Choose the daily routine first. Then choose the home.</p><a class="text-link" href="/areas/">Compare all three</a></div></div>'+towns('h3')+'</section>'
     +slot('sell-or-rent-home')+gallery()+cta(promise=False))
 
 AREA_ACTIONS='<a class="btn btn-primary btn-large" href="/contact/">Request a consult</a>'+CALL_LINK
