@@ -2,7 +2,7 @@
 
 Nick Giulioni’s static Central Indiana buyer and seller site. Limestone, Monon green and brick, self-hosted Instrument Serif and Instrument Sans, and no executable page scripts.
 
-Pages: `/`, `/sell/`, `/buy/`, `/areas/`, `/areas/carmel/`, `/areas/westfield/`, `/areas/fishers/`, `/about/`, `/contact/`, `/podcast/`, `/privacy/`, `/contact/thanks/`, `/contact/error/`, and `404.html`.
+Pages: `/`, `/sell/`, `/buy/`, `/areas/`, `/areas/carmel/`, `/areas/westfield/`, `/areas/fishers/`, `/areas/north-indianapolis/`, `/areas/noblesville/`, `/areas/zionsville/`, `/about/`, `/contact/`, `/podcast/`, `/privacy/`, `/contact/thanks/`, `/contact/error/`, and `404.html`.
 
 ## Local preview
 
@@ -23,3 +23,14 @@ Configuration names: `RESEND_API_KEY`, `NOTIFY_EMAIL_TO`, `NOTIFY_EMAIL_FROM`, `
 `node --test`
 
 Tests cover static structure, shared copy, links, forms, headers, image metadata, redirects, and mocked function notifications. No test makes a real notification request.
+
+## Photos
+
+All photos are driven by `site.json` and must be metadata-stripped (EXIF, GPS, XMP, ICC) before they are committed; the tests check every file under `assets/`. Each photo is a set of files named `<id>-<size>.<avif|webp|jpg>`, where size is the long edge in pixels (800, 1200, 1600 and, for wide area photos, 2400). Empty slots render nothing (the home hero falls back to the existing portrait).
+
+- `work_gallery`: ordered list of `{"id", "place", "detail", "alt"}`; files in `assets/work/`. `work_gallery_credit` is an optional credit line.
+- `hero_photo`: `null` or `{"id", "alt"}`; files in `assets/nick/`. Portrait 2:3.
+- `about_photos`: up to two `{"id", "alt", "caption"?, "credit"?}`; files in `assets/nick/`. Portrait 4:5 for two photos, landscape 3:2 for one.
+- `area_photos`: one key per area slug, `null` or `{"id", "alt", "caption", "credit", "license"?, "license_url"?, "source_url"?}`; files in `assets/areas/`. Landscape 3:2. A credit is required.
+
+After editing, run `python3 tools/render_site.py` and both test commands, and commit the regenerated HTML.
