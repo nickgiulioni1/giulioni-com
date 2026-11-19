@@ -25,9 +25,9 @@ def header(path):
 
 FOOTER=('<footer class="site-footer"><div class="footer-top">'
     '<div class="footer-brand"><p class="footer-name">Nick Giulioni</p><p class="footer-tag">Buyer and seller representation in Carmel, Westfield and Fishers, Indiana, plus north Indianapolis, Noblesville and Zionsville.</p></div>'
-    '<nav class="footer-nav" aria-label="Footer"><a href="/sell/">Sell</a><a href="/buy/">Buy</a><a href="/areas/">Areas</a><a href="/about/">About</a><a href="/podcast/">Podcast</a><a href="/contact/">Contact</a></nav>'
+    '<nav class="footer-nav" aria-label="Footer"><p class="footer-heading">Explore</p><a href="/sell/">Sell</a><a href="/buy/">Buy</a><a href="/areas/">Areas</a><a href="/about/">About</a><a href="/podcast/">Podcast</a><a href="/contact/">Contact</a></nav>'
     '<nav class="footer-areas" aria-label="Area guides"><p class="footer-heading">Area guides</p>'+''.join('<a href="/areas/'+slug+'/">'+city+'</a>' for slug,city in [('carmel','Carmel'),('westfield','Westfield'),('fishers','Fishers'),('north-indianapolis','North Indianapolis'),('noblesville','Noblesville'),('zionsville','Zionsville')])+'</nav>'
-    '<div class="footer-contact"><a href="'+S['phone_tel']+'">'+S['phone_display']+'</a><a href="mailto:'+S['email']+'">'+S['email']+'</a></div>'
+    '<div class="footer-contact"><p class="footer-heading">Contact</p><a href="'+S['phone_tel']+'">'+S['phone_display']+'</a><a href="mailto:'+S['email']+'">'+S['email']+'</a></div>'
     '</div><div class="footer-legal">'
     '<p class="disclosure">Nick Giulioni is an Indiana real estate broker affiliated with T&amp;H Realty Services, <span class="nowrap">760 E. 52nd St</span>, <span class="nowrap">Indianapolis, IN 46205</span>, <span class="nowrap">317-255-7767</span>.</p>'
     '<p class="housing"><img src="/assets/equal-housing.svg" width="28" height="28" alt="Equal Housing Opportunity"> Equal Housing Opportunity.</p>'
@@ -107,7 +107,7 @@ MAPS['north-indianapolis']=('<svg class="map map--north-indianapolis" viewBox="0
     '<text class="map-label" x="74" y="48">86th St</text>'
     '<text class="map-label map-label--place" x="336" y="44">Nora</text>'
     '<text class="map-label map-label--river" x="74" y="100">White River</text>'
-    '<text class="map-label" x="74" y="160">Meridian St</text>'
+    '<text class="map-label" transform="translate(48 292) rotate(-90)">Meridian St</text>'
     '<text class="map-label map-label--place" x="334" y="206">Broad</text><text class="map-label map-label--place" x="334" y="228">Ripple</text>'
     '<text class="map-label map-label--river" x="212" y="274" text-anchor="end">Canal</text>'
     '<text class="map-label map-label--place" x="76" y="212">Meridian-</text><text class="map-label map-label--place" x="76" y="234">Kessler</text>'
@@ -123,12 +123,12 @@ MAPS['noblesville']=('<svg class="map map--noblesville" viewBox="0 0 480 300" ar
     '<text class="map-label map-label--river" x="34" y="140">White</text><text class="map-label map-label--river" x="34" y="162">River</text></svg>')
 MAPS['zionsville']=('<svg class="map map--zionsville" viewBox="0 0 480 300" aria-hidden="true" focusable="false">'
     '<rect class="map-ground" width="480" height="300"/>'
-    '<path class="map-road map-road--minor" d="M0 270H480M0 30H480"/>'
+    '<path class="map-road map-road--minor" d="M0 270H480"/>'
     '<path class="map-trail map-trail--thin" d="M60 300C120 230 150 190 200 160"/>'
     +''.join(f'<rect class="map-block" x="{x}" y="{y}" width="28" height="26" rx="2"/>' for x in [196,256] for y in [70,104,138,172,206])+
     '<path class="map-brick" d="M240 44V256"/>'
     '<rect class="map-park" x="300" y="150" width="70" height="56" rx="3"/>'
-    '<text class="map-label map-label--place" x="30" y="110">Brick</text><text class="map-label map-label--place" x="30" y="132">Main Street</text>'
+    '<text class="map-label map-label--place" x="240" y="30" text-anchor="middle">Brick Main Street</text>'
     '<text class="map-label" x="300" y="100">The Village</text>'
     '<text class="map-label map-label--trail" x="300" y="234">Lincoln Park</text>'
     '<text class="map-label map-label--muted" x="30" y="250">trail</text></svg>')
@@ -157,7 +157,7 @@ def towns(level='h2',items=None):
     return '<div class="town-ledger">'+''.join(f'<article class="town town--{slug}"><div class="town-map">{MAPS[slug]}{MAP_NOTE}</div><div class="town-body"><{level} class="town-name"><a href="/areas/{slug}/">{city}</a></{level}><p>{desc}</p><p class="town-more" aria-hidden="true">Read the {city} guide <span>→</span></p></div></article>' for slug,city,desc in (items or AREAS))+'</div>'
 
 def more_towns():
-    return ('<div class="more-towns"><p class="more-towns__label">More area guides</p><ul>'+''.join(f'<li><a href="/areas/{slug}/"><span class="more-towns__name">{city}</span><span class="more-towns__desc">{desc}</span></a></li>' for slug,city,desc in MORE_AREAS)+'</ul></div>')
+    return ('<div class="more-towns"><p class="more-towns__label">More area guides</p><ul>'+''.join(f'<li><a href="/areas/{slug}/"><span class="more-towns__name">{city}</span><span class="more-towns__desc">{desc}</span><span class="more-towns__more" aria-hidden="true">Read the guide <span>→</span></span></a></li>' for slug,city,desc in MORE_AREAS)+'</ul></div>')
 
 def area_switch(current):
     return '<nav class="area-switch" aria-label="Area guides">'+''.join('<a href="/areas/'+slug+'/"'+(' aria-current="page"' if slug==current else '')+'>'+city+'</a>' for slug,city,_ in ALL_AREAS)+'</nav>'
@@ -305,7 +305,7 @@ FACTS=('<section class="facts" aria-label="At a glance"><div class="facts-grid">
     '<li class="fact"><span class="fact-figure">Carmel</span><span class="fact-label">where I live</span></li></ul>'
     '<div class="fact fact--podcast"><p class="fact-kicker">Podcast</p><p class="fact-quote">'+POD+'</p><a href="/podcast/">Podcast and earlier media</a></div></div></section>')
 HOME=('<section class="home-hero"><div class="hero-grid">'
-    '<div class="hero-content"><p class="page-kicker">Indiana real estate broker <span class="nowrap">· T&amp;H Realty Services</span></p>'
+    '<div class="hero-content"><p class="page-kicker">Indiana real estate broker<span class="kicker-sep"> · </span><span class="kicker-firm">T&amp;H Realty Services</span></p>'
     '<h1 class="hero-lede">Your next move in <em>Carmel, Westfield and Fishers</em></h1>'
     '<p class="hero-targeting">I’m Nick Giulioni, an agent who has been on the other side. Buy or sell with an investor who knows what a house needs.</p>'
     '<div class="hero-actions"><a class="btn btn-primary btn-large" href="/contact/">Request a consult</a><p class="hero-call">Or call '+TEL+'</p></div>'
@@ -331,7 +331,7 @@ def build():
      '<div class="pair-item"><h2>Fix what matters</h2><p>Years running renovation and new-build work help me ask useful questions about condition. We can separate work worth pricing before a listing from changes a buyer may prefer to make. An older home and a new build deserve different preparation conversations.</p></div></section>'
      +'<section class="process-panel"><h2>A clear process, with me directly</h2><div class="process-body"><p>I am newly licensed as a broker. I bring '+STAT+' from my investing and renovation experience, and I live in Carmel. We agree on priorities, review the pricing rationale together, and set a communication plan before moving forward.</p>'
      '<p class="mgmt-referral">If you would rather keep the property and have it managed, I can introduce you to <a href="https://threaltyinc.com/">T&amp;H</a>.</p></div></section>'+slot('sell-or-rent-sell')+cta('Request a seller consult'),
-     card='sell', kicker='Indiana real estate broker <span class="nowrap">· T&amp;H Realty Services</span>', deck='Start with your timing, the condition of the home, and what you want to do next.', actions='<a class="btn btn-primary btn-large" href="/contact/">Request a seller consult</a><p class="hero-call">Or call '+TEL+'</p><a class="hero-link hero-link--quiet" href="#sell-or-rent">Ask about sell or rent</a>', art=picture('(max-width: 900px) 88px, 300px','portrait header-portrait'), variant='portrait')
+     card='sell', kicker='Indiana real estate broker<span class="kicker-sep"> · </span><span class="kicker-firm">T&amp;H Realty Services</span>', deck='Start with your timing, the condition of the home, and what you want to do next.', actions='<a class="btn btn-primary btn-large" href="/contact/">Request a seller consult</a><p class="hero-call">Or call '+TEL+'</p><a class="hero-link hero-link--quiet" href="#sell-or-rent">Ask about sell or rent</a>', art=picture('(max-width: 900px) 88px, 300px','portrait header-portrait'), variant='portrait')
     page('/buy/', 'Buying a home in Carmel, Westfield or Fishers | Nick Giulioni', 'Compare towns, home condition and new-build choices with a personal Hamilton County buyer consult from Nick Giulioni.', 'Buying in Hamilton County? Start with the right town.', section('Choose your everyday routine','Start with where you need to be, what you want nearby, and how much house you want to look after. Compare <a href="/areas/carmel/">Carmel</a>, <a href="/areas/westfield/">Westfield</a>, and <a href="/areas/fishers/">Fishers</a>, or look at <a href="/areas/north-indianapolis/">north Indianapolis</a>, <a href="/areas/noblesville/">Noblesville</a> and <a href="/areas/zionsville/">Zionsville</a>, before narrowing the home list.','lede-block')+'<section class="pair"><div class="pair-item"><h2>Look beyond the finishes</h2><p>For an existing home, we can talk through condition, likely projects, and what to ask an inspector. For a new build, we can compare the base plan with options, timing, and the finished cost. My renovation background helps frame the questions; specialist inspections still matter.</p></div><div class="pair-item"><h2>What a buyer consult covers</h2><p>We discuss your budget, timing, location, and tolerance for projects. Then we agree on the next steps, including financing conversations and a plan for seeing homes. Live listing search comes later. For now, tell me what you are looking for.</p></div></section>'+cta('Request a buyer consult'),card='buy',kicker='Buying · Hamilton County',deck='Choose the everyday routine first. Then look beyond the finishes.',art='<div class="page-header__art">'+COUNTY+'</div>',variant='area')
     page('/areas/', 'Carmel, Westfield, Fishers and nearby: where to live | Nick Giulioni', 'A practical starting point for choosing between Carmel, Westfield and Fishers, plus north Indianapolis, Noblesville and Zionsville.', 'Carmel, Westfield, Fishers and nearby', '<section class="towns towns--index">'+towns(items=ALL_AREAS)+'</section>'+cta(),card='areas',kicker='Area guides · Central Indiana',deck='Choose the daily routine first. Then choose the home. Carmel, Westfield and Fishers come first, with guides for north Indianapolis, Noblesville and Zionsville below.',art='<div class="page-header__art">'+COUNTY+'</div>',variant='area')
 
@@ -381,7 +381,7 @@ def build():
       ('Plan for the house you will live with','Compare the floor plan, storage, parking and outdoor space with how you live now. A charming front porch does not settle whether the layout works, so we can list what you would change and roughly how large each project is before you make an offer.','')]),
      ('Before you commit',[
       ('Walk the trail and drive the routes','The Monon Trail runs north and south through this part of the city. If trail access matters, walk from the home to the nearest entrance, then drive your commute at the hours you would normally travel. Keep both trips in the comparison.',''),
-      ('Confirm the school district for the address','Addresses on the north side can fall in different school districts, including Indianapolis Public Schools and the Metropolitan School District of Washington Township. Look up the specific address with the district before making a decision.','Sources: <a href="https://www.myips.org/">Indianapolis Public Schools</a> and <a href="https://www.msdwt.k12.in.us/">MSD of Washington Township</a><span class="source-date">Checked November 19, 2026</span>')])],
+      ('Confirm the school district for the address','Addresses on the north side can fall in different school districts, including Indianapolis Public Schools and the Metropolitan School District of Washington Township. Look up the specific address with the district before making a decision.','Sources:<span class="source-list"><a href="https://www.myips.org/">Indianapolis Public Schools</a><a href="https://www.msdwt.k12.in.us/">MSD of Washington Township</a></span><span class="source-date">Checked November 19, 2026</span>')])],
      h1='Living in North Indianapolis',county='Marion County')
     area_page('noblesville','Noblesville','Living in Noblesville, Indiana: downtown square and the White River | Nick Giulioni', 'Compare downtown Noblesville, the White River and newer and older homes, then weigh condition, routes and your routine with a local broker.',
      'Start with the courthouse square and the White River, then compare established streets near downtown with newer neighborhoods farther out.',[
