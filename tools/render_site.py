@@ -212,7 +212,7 @@ def gallery():
 
 # Photo slots (all optional, all driven by site.json; an empty slot renders nothing or falls back):
 #   "hero_photo":   null | {"id","alt"}                                    -> /assets/nick/<id>-<size>.<ext>  (home hero; falls back to the existing portrait)
-#   "about_photos": [] | up to two {"id","alt","caption"?,"credit"?}       -> /assets/nick/<id>-<size>.<ext>  (About page)
+#   "about_photos": [] | up to three {"id","alt","caption"?,"credit"?}       -> /assets/nick/<id>-<size>.<ext>  (About page)
 #   "area_photos":  {"<area-slug>": null | {"id","alt","caption","credit","license"?,"license_url"?,"source_url"?}} -> /assets/areas/<id>-<size>.<ext>
 # <size> is the long edge in pixels (any of 800, 1200, 1600, 2400 that exist); each size needs .avif, .webp and .jpg.
 SLOT_SIZES=[800,1200,1600,2400]
@@ -247,10 +247,21 @@ def hero_figure():
     return picture(HERO_SIZES,'portrait hero-portrait',True)
 
 def about_photos():
-    items=(S.get('about_photos') or [])[:2]
+    items=(S.get('about_photos') or [])[:3]
     if not items: return ''
-    sizes='(max-width: 700px) calc(100vw - 2.5rem), 560px' if len(items)==2 else '(max-width: 900px) calc(100vw - 2.5rem), 760px'
-    return '<section class="about-photos about-photos--'+str(len(items))+'">'+''.join(photo(NICK_DIR,item,sizes,'about-photo') for item in items)+'</section>'
+    figures=[]
+    for index,item in enumerate(items):
+        wide=len(items)==1 or (len(items)==3 and index==2)
+        sizes='(max-width: 900px) calc(100vw - 2.5rem), 760px' if wide else '(max-width: 700px) calc((100vw - 3.75rem) / 2), 370px'
+        if len(items)==3:
+            sizes='(max-width: 1296px) calc(100vw - clamp(2.5rem, 8vw, 6rem)), 1200px' if wide else '(max-width: 1296px) calc((100vw - clamp(2.5rem, 8vw, 6rem) - 1.25rem) / 2), 590px'
+        elif len(items)==2:
+            sizes='(max-width: 700px) calc(100vw - 2.5rem), 560px'
+        cls='about-photo'
+        if len(items)==3 and index==2: cls+=' about-photo--wide'
+        if item['id']=='about-family-01': cls+=' about-photo--family'
+        figures.append(photo(NICK_DIR,item,sizes,cls))
+    return '<section class="about-photos about-photos--'+str(len(items))+'">'+''.join(figures)+'</section>'
 
 def area_photo(slug):
     item=(S.get('area_photos') or {}).get(slug)

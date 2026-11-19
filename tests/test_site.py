@@ -222,9 +222,42 @@ class SiteTests(unittest.TestCase):
         self.assertIn('class="town-photo"',rs.area_photo('carmel'))
         self.assertEqual(rs.area_photo('westfield'),'')
         with self.assertRaises(ValueError): rs.S=dict(rs.S,area_photos={'carmel':dict(sample,credit='')}); rs.area_photo('carmel')
-        self.assertEqual(rs.about_photos().count('<figure'),2)
+        self.assertEqual(rs.about_photos().count('<figure'),3)
+        self.assertIn('about-photo--wide',rs.about_photos())
         self.assertIn('alt="Hero alt"',rs.hero_figure())
         with self.assertRaises(FileNotFoundError): rs.photo('work',{'id':'missing-file','alt':'x'},'100vw','x')
+
+    def test_nick_photo_slots_preserve_family_frame(self):
+        import importlib.util
+        spec=importlib.util.spec_from_file_location('render_site',ROOT/'tools/render_site.py')
+        rs=importlib.util.module_from_spec(spec); spec.loader.exec_module(rs)
+        expected={
+            'hero-01':[(533,800),(800,1200),(1067,1600)],
+            'about-nick-diane-01':[(640,800),(960,1200),(1280,1600)],
+            'about-family-01':[(640,800),(960,1200),(1280,1600)],
+            'about-solo-02':[(800,534),(1200,800),(1600,1067)],
+        }
+        for id,dimensions in expected.items():
+            for n,dim in zip([800,1200,1600],dimensions):
+                self.assertEqual(rs.jpeg_size(ROOT/f'assets/nick/{id}-{n}.jpg'),dim)
+                for ext in ['avif','webp','jpg']:
+                    self.assertTrue((ROOT/f'assets/nick/{id}-{n}.{ext}').is_file())
+        about=self.pages['/about/']
+        section=re.search(r'<section class="about-photos.*?</section>',about).group()
+        self.assertEqual(section.count('<figure'),3)
+        self.assertEqual([a['alt'] for a in Markup(section).attrs('img')],[p['alt'] for p in self.site['about_photos']])
+        family=re.search(r'<figure class="about-photo about-photo--family">.*?</figure>',section).group()
+        self.assertIn('width="1280" height="1600"',family)
+        self.assertIn('Photo: Ashlyn Peters Photography',family)
+        self.assertNotIn('hero-portrait',family)
+        self.assertNotIn('style=',family)
+        css=(ROOT/'styles.css').read_text()
+        rule=re.search(r'\.about-photo--family img\s*{([^}]+)}',css).group(1)
+        self.assertIn('aspect-ratio: 4 / 5',rule)
+        self.assertIn('object-fit: contain',rule)
+        for selectors,decl in re.findall(r'([^{}]+){([^{}]*)}',css):
+            if 'object-position' in decl:
+                self.assertNotRegex(selectors,r'about-photo|(?:^|,)\s*(?:img|picture|figure)\b')
 
     def test_work_gallery_slot(self):
         items=self.site['work_gallery']
