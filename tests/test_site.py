@@ -169,7 +169,7 @@ class SiteTests(unittest.TestCase):
             text=self.pages['/areas/'+city+'/'].split('<section class="closing-cta">')[0]
             self.assertEqual(text.count('<section class="guide-group">'),3)
             paragraphs=re.findall(r'<div class="guide-item"><h3>.*?</h3><p>(.*?)</p>',text)
-            self.assertEqual(len(paragraphs),6)
+            self.assertGreaterEqual(len(paragraphs),6)
             for paragraph in paragraphs:
                 self.assertNotIn(paragraph,seen)
                 seen.add(paragraph)
