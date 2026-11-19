@@ -119,19 +119,19 @@ MAPS['noblesville']=('<svg class="map map--noblesville" viewBox="0 0 480 300" ar
     +''.join(f'<rect class="map-block" x="{x}" y="{y}" width="34" height="30" rx="2"/>' for x in [220,262,304] for y in [100,140,180] if not (x==262 and y==140))+
     '<rect class="map-district" x="262" y="140" width="34" height="30" rx="2"/><circle class="map-point" cx="279" cy="155" r="5"/>'
     '<text class="map-label" x="220" y="90">Downtown</text>'
-    '<text class="map-label map-label--place" x="220" y="238">Courthouse square</text>'
+    '<text class="map-label map-label--place" x="220" y="236">Courthouse</text><text class="map-label map-label--place" x="220" y="258">square</text>'
     '<text class="map-label map-label--river" x="34" y="140">White</text><text class="map-label map-label--river" x="34" y="162">River</text></svg>')
 MAPS['zionsville']=('<svg class="map map--zionsville" viewBox="0 0 480 300" aria-hidden="true" focusable="false">'
     '<rect class="map-ground" width="480" height="300"/>'
-    '<path class="map-road map-road--minor" d="M0 270H480"/>'
-    '<path class="map-trail map-trail--thin" d="M60 300C120 230 150 190 200 160"/>'
-    +''.join(f'<rect class="map-block" x="{x}" y="{y}" width="28" height="26" rx="2"/>' for x in [196,256] for y in [70,104,138,172,206])+
-    '<path class="map-brick" d="M240 44V256"/>'
-    '<rect class="map-park" x="300" y="150" width="70" height="56" rx="3"/>'
-    '<text class="map-label map-label--place" x="240" y="30" text-anchor="middle">Brick Main Street</text>'
-    '<text class="map-label" x="300" y="100">The Village</text>'
-    '<text class="map-label map-label--trail" x="300" y="234">Lincoln Park</text>'
-    '<text class="map-label map-label--muted" x="30" y="250">trail</text></svg>')
+    '<path class="map-road map-road--minor" d="M0 270H480M0 118H140M330 118H480"/>'
+    '<path class="map-trail map-trail--thin" d="M64 300C92 236 60 170 84 110S70 30 96 0"/>'
+    +''.join(f'<rect class="map-block" x="{x}" y="{y}" width="30" height="26" rx="2"/>' for x in [168,232] for y in [62,96,130,164,198])+
+    '<path class="map-brick" d="M215 40V250"/>'
+    '<rect class="map-park" x="300" y="150" width="78" height="60" rx="3"/>'
+    '<text class="map-label map-label--place" x="215" y="28" text-anchor="middle">Brick Main Street</text>'
+    '<text class="map-label" x="300" y="96">The Village</text>'
+    '<text class="map-label map-label--trail" x="300" y="236">Lincoln Park</text>'
+    '<text class="map-label map-label--muted" x="104" y="232">trail</text></svg>')
 COUNTY=('<svg class="map map--county" viewBox="0 0 480 360" role="img" aria-label="Schematic map, not to scale: Westfield sits north of Carmel along the Monon, and Fishers lies east of Carmel across the White River.">'
     '<rect class="map-ground" width="480" height="360"/>'
     '<rect class="map-town" x="34" y="24" width="252" height="138" rx="4"/>'
@@ -375,7 +375,8 @@ def build():
      'Meridian-Kessler, Broad Ripple and Nora each have their own rhythm. Compare the streets, the older homes and the routes you would use before you narrow the list.',[
      ('Three neighborhoods, three routines',[
       ('Meridian-Kessler','Meridian-Kessler is known for tree-lined streets and older homes in a range of styles. If established architecture draws you, walk a few blocks instead of judging from listing photos, and note how each street connects to the shops and errands you would actually use.',''),
-      ('Broad Ripple and Nora','Broad Ripple Village sits along the Monon Trail and the Central Canal, with shops and restaurants close together. Nora, farther north around 86th Street, mixes established neighborhoods with nearby shopping. Visit each at the times you would really be there, including an evening and a weekend morning.','')]),
+      ('Broad Ripple','Broad Ripple Village sits along the Monon Trail and the Central Canal, with shops and restaurants close together. Visit at the times you would really be there, including an evening and a weekend morning.',''),
+  ('Nora','Nora, farther north around 86th Street, mixes established neighborhoods with nearby shopping. Drive the routes you would use most, at the hours you would use them, before you compare individual homes.','')]),
      ('An older home deserves a closer look',[
       ('Look behind the character','An older home may have been updated more than once. Ask what was changed, when, and whether the work was permitted, and keep the inspection focused on systems as well as finishes. I can help you sort cosmetic projects from work that needs a contractor’s estimate.',''),
       ('Plan for the house you will live with','Compare the floor plan, storage, parking and outdoor space with how you live now. A charming front porch does not settle whether the layout works, so we can list what you would change and roughly how large each project is before you make an offer.','')]),
