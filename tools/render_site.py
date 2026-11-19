@@ -212,7 +212,7 @@ def gallery():
 
 # Photo slots (all optional, all driven by site.json; an empty slot renders nothing or falls back):
 #   "hero_photo":   null | {"id","alt"}                                    -> /assets/nick/<id>-<size>.<ext>  (home hero; falls back to the existing portrait)
-#   "about_photos": [] | up to three {"id","alt","caption"?,"credit"?}       -> /assets/nick/<id>-<size>.<ext>  (About page)
+#   "about_photos": [] | up to three {"id","alt","caption"?,"credit"?,"fit"?} -> /assets/nick/<id>-<size>.<ext>  (About page; "fit": "contain" = never crop)
 #   "area_photos":  {"<area-slug>": null | {"id","alt","caption","credit","license"?,"license_url"?,"source_url"?}} -> /assets/areas/<id>-<size>.<ext>
 # <size> is the long edge in pixels (any of 800, 1200, 1600, 2400 that exist); each size needs .avif, .webp and .jpg.
 SLOT_SIZES=[800,1200,1600,2400]
@@ -246,21 +246,27 @@ def hero_figure():
     if item: return photo(NICK_DIR,item,HERO_SIZES,'portrait hero-portrait',priority=True,with_caption=False)
     return picture(HERO_SIZES,'portrait hero-portrait',True)
 
+# About grid: two-up 4:5 portraits (full-width 3:2 below when three are listed); one column at or below ABOUT_STACK px.
+# A photo with "fit": "contain" keeps its full frame (no crop, no object-position) at every size.
+PAGE_WIDTH='calc(100vw - clamp(2.5rem, 8vw, 6rem))'
+ABOUT_STACK=600
+ABOUT_FITS={None,'cover','contain'}
+def about_sizes(count,index):
+    if count==1: return f'(max-width: 856px) {PAGE_WIDTH}, 760px'
+    if count==3 and index==2: return f'(max-width: 1296px) {PAGE_WIDTH}, 1200px'
+    return f'(max-width: {ABOUT_STACK}px) {PAGE_WIDTH}, (max-width: 1296px) calc(({PAGE_WIDTH} - 1.25rem) / 2), 590px'
+
 def about_photos():
     items=(S.get('about_photos') or [])[:3]
     if not items: return ''
     figures=[]
     for index,item in enumerate(items):
-        wide=len(items)==1 or (len(items)==3 and index==2)
-        sizes='(max-width: 900px) calc(100vw - 2.5rem), 760px' if wide else '(max-width: 700px) calc((100vw - 3.75rem) / 2), 370px'
-        if len(items)==3:
-            sizes='(max-width: 1296px) calc(100vw - clamp(2.5rem, 8vw, 6rem)), 1200px' if wide else '(max-width: 1296px) calc((100vw - clamp(2.5rem, 8vw, 6rem) - 1.25rem) / 2), 590px'
-        elif len(items)==2:
-            sizes='(max-width: 700px) calc(100vw - 2.5rem), 560px'
+        fit=item.get('fit')
+        if fit not in ABOUT_FITS: raise ValueError(f'about_photos.{item["id"]}.fit must be "cover" or "contain"')
         cls='about-photo'
         if len(items)==3 and index==2: cls+=' about-photo--wide'
-        if item['id']=='about-family-01': cls+=' about-photo--family'
-        figures.append(photo(NICK_DIR,item,sizes,cls))
+        if fit=='contain': cls+=' about-photo--contain'
+        figures.append(photo(NICK_DIR,item,about_sizes(len(items),index),cls))
     return '<section class="about-photos about-photos--'+str(len(items))+'">'+''.join(figures)+'</section>'
 
 def area_photo(slug):
