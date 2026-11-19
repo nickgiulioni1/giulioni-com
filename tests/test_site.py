@@ -166,14 +166,31 @@ class SiteTests(unittest.TestCase):
         seen=set()
         for city in ['carmel','westfield','fishers']:
             text=self.pages['/areas/'+city+'/'].split('<section class="closing-cta">')[0]
-            paragraphs=re.findall(r'<section class="editorial"><h2>.*?</h2><p>(.*?)</p>',text)
+            self.assertEqual(text.count('<section class="guide-group">'),3)
+            paragraphs=re.findall(r'<div class="guide-item"><h3>.*?</h3><p>(.*?)</p>',text)
             self.assertEqual(len(paragraphs),6)
             for paragraph in paragraphs:
                 self.assertNotIn(paragraph,seen)
                 seen.add(paragraph)
 
+    def test_work_gallery_slot(self):
+        items=self.site['work_gallery']
+        self.assertIsInstance(items,list)
+        for url,text in self.pages.items():
+            with self.subTest(url=url):
+                if not items:
+                    self.assertNotIn('work-gallery',text)
+                elif url in ['/','/about/']:
+                    self.assertEqual(text.count('<figure class="work-item">'),len(items))
+        for item in items:
+            for key in ['src','width','height','alt']: self.assertTrue(item.get(key),key)
+            for key in ['src','webp']:
+                if item.get(key):
+                    self.assertTrue(item[key].startswith('/assets/work/'),item[key])
+                    self.assertTrue((ROOT/item[key].lstrip('/')).exists(),item[key])
+
     def test_image_metadata_and_cards(self):
-        for path in (ROOT/'assets').glob('*'):
+        for path in (ROOT/'assets').rglob('*'):
             if not path.is_file(): continue
             data=path.read_bytes()
             if path.suffix=='.png':
