@@ -66,7 +66,6 @@ body {
   font-size: 1.0625rem;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
 }
 ::selection { background: var(--green); color: var(--on-dark); }
 img { display: block; max-width: 100%; height: auto; }
@@ -172,14 +171,15 @@ em { font-style: italic; }
 .hero-call a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
 .portrait { margin: 0; position: relative; }
 .portrait img { width: 100%; border-radius: var(--radius); object-fit: cover; background: var(--paper-deep); }
-.hero-portrait { max-width: 460px; justify-self: end; width: 100%; margin-bottom: -4.5rem; }
-.hero-portrait img { aspect-ratio: 4 / 5; object-position: 30% 22%; box-shadow: var(--shadow); }
+.hero-portrait { max-width: 460px; justify-self: end; align-self: stretch; width: 100%; margin-bottom: -4.5rem; padding-top: .3rem; display: flex; flex-direction: column; }
+.hero-portrait picture { flex: 1 1 auto; min-height: 0; display: block; }
+.hero-portrait img { width: 100%; height: 100%; aspect-ratio: auto; object-position: 30% 22%; box-shadow: var(--shadow); }
 .hero-portrait figcaption { margin-top: .875rem; font-size: .8125rem; font-weight: 500; letter-spacing: .02em; color: var(--on-dark-soft); }
 
 /* Facts band: aligned to the hero grid so the portrait overlap sits above the podcast column. */
 .facts { background: var(--green-deep); color: var(--on-dark); padding-top: clamp(2.5rem, 4vw, 3rem); padding-bottom: clamp(3rem, 5vw, 4rem); }
 .facts-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 2rem clamp(2.5rem, 6vw, 6rem); }
-.facts-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.15fr) minmax(0, 1fr); align-self: start; }
+.facts-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.15fr) minmax(0, 1fr); align-self: end; }
 .fact { display: flex; flex-direction: column; gap: .25rem; padding: .25rem 1.5rem .25rem 0; }
 .fact + .fact { padding-left: 1.5rem; border-left: 1px solid var(--on-dark-line); }
 .fact-figure { font-family: var(--serif); font-size: clamp(2.25rem, 3.4vw, 3.25rem); line-height: 1; letter-spacing: -.02em; color: var(--on-dark); white-space: nowrap; }
@@ -274,9 +274,10 @@ em { font-style: italic; }
 .sell-or-rent__intro { position: sticky; top: 7rem; }
 .sell-or-rent__intro h2 { margin-bottom: 1.5rem; }
 .sell-or-rent__intro > p:not(.section-label) { color: var(--on-dark-soft); font-size: 1.125rem; max-width: 28rem; }
-.steps { list-style: none; counter-reset: step; margin: 1.75rem 0 0; padding: 0; display: grid; gap: .75rem; }
-.steps li { counter-increment: step; display: grid; grid-template-columns: 2rem minmax(0, 1fr); align-items: baseline; color: var(--on-dark); font-size: 1rem; }
+.steps { list-style: none; counter-reset: step; margin: .25rem 0 0; padding: 0; display: grid; gap: .75rem; }
+.steps li { counter-increment: step; display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); align-items: baseline; color: var(--on-dark); font-size: 1.125rem; }
 .steps li::before { content: counter(step); font-family: var(--serif); font-size: 1.5rem; line-height: 1; color: var(--brick-light); }
+.sell-or-rent__intro .sell-or-rent__caveat { margin: 1.5rem 0 0; font-size: 1rem; }
 .sell-or-rent__intro .sell-or-rent__note { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--on-dark-line); font-size: .9375rem; color: var(--on-dark); font-weight: 500; }
 .sell-or-rent__embed { background: var(--card); color: var(--ink); border-radius: var(--radius); padding: clamp(1.5rem, 3vw, 2.5rem); box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .55); }
 .sell-or-rent__embed .consult-form { margin: 0; }
@@ -356,7 +357,7 @@ em { font-style: italic; }
 
 .lede-block { padding-top: var(--space); padding-bottom: 0; }
 .lede-block h2 { margin-bottom: 1.25rem; font-family: var(--sans); font-size: .8125rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--brick); line-height: 1.5; }
-.lede-block > p { margin: 0; font-family: var(--serif); font-size: clamp(1.875rem, 3.6vw, 3rem); line-height: 1.14; letter-spacing: -.012em; color: var(--ink); max-width: 32ch; text-wrap: balance; }
+.lede-block > p { margin: 0; font-family: var(--serif); font-size: clamp(1.875rem, 3.6vw, 3rem); line-height: 1.14; letter-spacing: -.012em; color: var(--ink); max-width: 28ch; text-wrap: balance; }
 .lede-block > p a { color: var(--green); }
 
 .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem clamp(2rem, 6vw, 6rem); padding-top: var(--space-s); padding-bottom: var(--space); }
@@ -378,7 +379,7 @@ em { font-style: italic; }
   padding-top: var(--space-s); padding-bottom: var(--space-s); border-top: 1px solid var(--line-strong);
 }
 .page-header + .guide-group { border-top: 0; }
-.guide-group > h2 { position: sticky; top: 6.5rem; font-size: clamp(2rem, 3.4vw, 3rem); line-height: 1.02; max-width: 11ch; }
+.guide-group > h2 { position: sticky; top: 6.5rem; font-size: clamp(2rem, 3.4vw, 3rem); line-height: 1.02; max-width: 15ch; }
 .guide-items { display: grid; gap: 2.25rem; }
 .guide-item + .guide-item { padding-top: 2.25rem; border-top: 1px solid var(--line); }
 .guide-item h3 { font-family: var(--sans); font-size: 1.1875rem; font-weight: 600; letter-spacing: -.005em; line-height: 1.3; margin-bottom: .625rem; }
@@ -397,25 +398,25 @@ em { font-style: italic; }
 .guide-cta .hero-link:hover { color: var(--brick-light); }
 .guide-cta :focus-visible { outline-color: var(--brick-light); }
 
-/* Contact */
-.contact-layout {
-  display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); grid-template-areas: "form aside"; gap: clamp(2rem, 5vw, 4.5rem); align-items: start;
-  padding-top: clamp(2.5rem, 5vw, 4rem); padding-bottom: var(--space);
-}
-.contact-form-card { grid-area: form; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(1.5rem, 3.5vw, 3rem); box-shadow: var(--shadow); }
+/* Contact: identity card sits in the header band; the form card spans the measure below it. */
+.page-header--contact { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); padding-top: clamp(2.5rem, 5vw, 4.5rem); padding-bottom: clamp(2.25rem, 4vw, 3.5rem); }
+.contact-layout { padding-top: clamp(2.5rem, 5vw, 4rem); padding-bottom: var(--space); }
+.contact-form-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(1.5rem, 3.5vw, 3rem); box-shadow: var(--shadow); }
 .contact-form-card .consult-form { margin: 0; max-width: none; }
-.contact-aside { grid-area: aside; position: sticky; top: 6.5rem; padding: 2rem; background: var(--green); color: var(--on-dark); border-radius: var(--radius); }
-.contact-id { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+.contact-form-card .form-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.contact-form-card .consult-form .btn { width: auto; min-width: 22rem; padding-inline: 2.5rem; }
+.contact-aside { padding: 1.75rem 2rem; background: var(--green); color: var(--on-dark); border-radius: var(--radius); box-shadow: var(--shadow); }
+.contact-id { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; }
 .contact-portrait { flex: 0 0 88px; width: 88px; }
 .contact-portrait img { aspect-ratio: 1; border-radius: 50%; object-position: 30% 18%; }
 .contact-aside__name { margin: 0; font-family: var(--serif); font-size: 1.875rem; line-height: 1.05; }
 .contact-aside__role { margin: .375rem 0 0; color: var(--on-dark-soft); font-size: .875rem; line-height: 1.45; }
-.contact-line { display: flex; flex-direction: column; gap: .5rem; padding: 1.25rem 0; border-top: 1px solid var(--on-dark-line); border-bottom: 1px solid var(--on-dark-line); }
+.contact-line { display: flex; flex-direction: column; gap: .375rem; padding-top: 1.25rem; border-top: 1px solid var(--on-dark-line); }
 .contact-call { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: .75rem 1rem; border: 1px solid var(--on-dark); border-radius: var(--radius); color: var(--on-dark); font-weight: 600; font-size: 1.0625rem; text-decoration: none; font-variant-numeric: tabular-nums; }
 .contact-call:hover { background: var(--on-dark); color: var(--green); }
 .contact-email { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; color: var(--on-dark); font-weight: 500; text-decoration-color: var(--brick-light); overflow-wrap: anywhere; }
 .contact-email:hover { color: var(--brick-light); }
-.contact-aside__note { margin: 1.25rem 0 0; color: var(--on-dark-soft); font-size: .9375rem; }
+.contact-aside__note { margin: .25rem 0 0; text-align: center; color: var(--on-dark-soft); font-size: .9375rem; }
 .contact-aside :focus-visible { outline-color: var(--brick-light); }
 
 /* Podcast page */
@@ -465,15 +466,15 @@ em { font-style: italic; }
   .hero-grid, .approach, .sell-or-rent, .editorial, .lede-block, .process-panel, .contact-layout, .page-header--area, .page-header--portrait, .towns-head, .guide-group, .guide-cta, .closing-cta__inner { grid-template-columns: minmax(0, 1fr); }
   .hero-content { padding-bottom: 2.5rem; }
   .hero-portrait { max-width: none; justify-self: stretch; }
-  .hero-portrait img { aspect-ratio: 5 / 4; object-position: 30% 24%; }
+  .hero-portrait img { height: auto; aspect-ratio: 5 / 4; object-position: 30% 24%; }
   .approach h2 { max-width: 18ch; }
   .towns-head .text-link { grid-column: 1; margin-top: 0; }
   .town { grid-template-columns: minmax(0, 1fr); }
   .header-portrait { justify-self: start; max-width: 88px; order: -1; }
   .header-portrait img { aspect-ratio: 1; border-radius: 50%; object-position: 30% 18%; box-shadow: none; }
   .sell-or-rent__intro, .guide-group > h2 { position: static; }
-  .contact-layout { grid-template-areas: "aside" "form"; }
-  .contact-aside { position: static; }
+  .page-header--contact { grid-template-columns: minmax(0, 1fr); }
+  .contact-form-card .form-grid { grid-template-columns: 1fr 1fr; }
   .footer-top { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .footer-brand { grid-column: 1 / -1; }
   .footer-legal { grid-template-columns: minmax(0, 1fr); }
@@ -514,9 +515,9 @@ em { font-style: italic; }
   .fact-quote { font-size: 1.3125rem; max-width: none; }
   .map-label { font-size: 18px; }
   .map-caption { font-size: .75rem; padding: .375rem .75rem; }
-  .intent-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .intent-choices { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.25fr); }
   .intent-choices legend { grid-column: 1 / -1; float: none; }
-  .intent-choices .choice { justify-content: flex-start; padding: .5rem .625rem; }
+  .intent-choices .choice { justify-content: flex-start; gap: .5rem; padding: .5rem .625rem; white-space: nowrap; }
   .intent-choices .choice:nth-of-type(4) { grid-column: span 2; }
   .approach { gap: 1.25rem; }
   .page-kicker { letter-spacing: .1em; }
@@ -550,14 +551,17 @@ em { font-style: italic; }
   .guide-item + .guide-item { padding-top: 1.75rem; }
   .guide-cta__actions .btn { width: 100%; }
   .guide-cta__actions .hero-link { width: 100%; justify-content: center; }
-  .contact-layout { padding-top: 1.5rem; gap: 1.5rem; }
+  .contact-layout { padding-top: 1.5rem; }
+  .contact-form-card .form-grid { grid-template-columns: 1fr; }
+  .contact-form-card .consult-form .btn { width: 100%; min-width: 0; }
+  .guide-cta .hero-link { display: none; }
   .contact-aside { padding: 1rem 1.125rem 1.125rem; }
   .contact-id { margin-bottom: .75rem; }
   .contact-portrait { flex-basis: 56px; width: 56px; }
   .contact-aside__name { font-size: 1.5rem; }
   .contact-line { padding: .875rem 0 0; gap: .125rem; border-bottom: 0; }
   .contact-aside__note { margin-top: 0; text-align: center; font-size: .875rem; }
-  .page-contact .page-header { padding-top: 1.5rem; padding-bottom: 1.75rem; }
+  .page-contact .page-header { padding-top: 1.5rem; padding-bottom: 1.5rem; gap: 1.25rem; }
   .contact-form-card { padding: 1.5rem 1.25rem; }
   .closing-cta__inner { gap: 1.5rem; }
   .closing-actions .btn { width: 100%; }
