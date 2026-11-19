@@ -43,22 +43,16 @@
       "alt": "Gravel drive curving up to a stone-front house with attached garages."
     },
     {
-      "id": "stay-wilds-villa-kitchen",
-      "place": "Stay Wilds, Bloomington area",
-      "detail": "Villa kitchen",
-      "alt": "Kitchen with gray cabinets, open shelving and an island with stools over a wood floor."
-    },
-    {
-      "id": "1410-s-alabama-st-bathroom",
-      "place": "1410 S Alabama St, Indianapolis",
-      "detail": "Alabama St bathroom",
-      "alt": "Bathroom with a freestanding tub and a double vanity with two mirrors."
-    },
-    {
       "id": "stay-wilds-villa-covered-patio",
       "place": "Stay Wilds, Bloomington area",
       "detail": "Villa covered patio",
       "alt": "Wood pergola over a patio dining table beside the house."
+    },
+    {
+      "id": "stay-wilds-villa-kitchen",
+      "place": "Stay Wilds, Bloomington area",
+      "detail": "Villa kitchen",
+      "alt": "Kitchen with gray cabinets, open shelving and an island with stools over a wood floor."
     },
     {
       "id": "stay-wilds-villa-fire-pit",
@@ -67,16 +61,10 @@
       "alt": "Fire pit ringed by wooden benches at the edge of a field."
     },
     {
-      "id": "stay-wilds-villa-living-room",
-      "place": "Stay Wilds, Bloomington area",
-      "detail": "Villa living room",
-      "alt": "Living room with a leather sectional, an armchair and a round coffee table under a ceiling fan."
-    },
-    {
-      "id": "1410-s-alabama-st-exterior",
+      "id": "1410-s-alabama-st-bathroom",
       "place": "1410 S Alabama St, Indianapolis",
-      "detail": "Alabama St exterior",
-      "alt": "Single-story home with board-and-batten siding and a side deck, seen from the alley."
+      "detail": "Alabama St bathroom",
+      "alt": "Bathroom with a freestanding tub and a double vanity with two mirrors."
     },
     {
       "id": "1602-w-76th-pl-dining",
@@ -85,10 +73,22 @@
       "alt": "View past the kitchen counters to a dining table in front of a dark accent wall."
     },
     {
+      "id": "stay-wilds-villa-living-room",
+      "place": "Stay Wilds, Bloomington area",
+      "detail": "Villa living room",
+      "alt": "Living room with a leather sectional, an armchair and a round coffee table under a ceiling fan."
+    },
+    {
       "id": "stay-wilds-homestead-glam-suite",
       "place": "Stay Wilds, Bloomington area",
       "detail": "Homestead glam suite",
       "alt": "Room with arched mirrors above a long counter with stools."
+    },
+    {
+      "id": "1410-s-alabama-st-exterior",
+      "place": "1410 S Alabama St, Indianapolis",
+      "detail": "Alabama St exterior",
+      "alt": "Single-story home with board-and-batten siding and a side deck, seen from the alley."
     }
   ],
   "work_gallery_credit": ""
