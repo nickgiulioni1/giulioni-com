@@ -8,7 +8,8 @@ from pathlib import Path
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
-PATHS = ['/', '/sell/', '/buy/', '/areas/', '/areas/carmel/', '/areas/westfield/', '/areas/fishers/', '/about/', '/contact/', '/podcast/', '/privacy/']
+AREA_SLUGS = ['carmel', 'westfield', 'fishers', 'north-indianapolis', 'noblesville', 'zionsville']
+PATHS = ['/', '/sell/', '/buy/', '/areas/'] + ['/areas/'+s+'/' for s in AREA_SLUGS] + ['/about/', '/contact/', '/podcast/', '/privacy/']
 EXTRA = ['/contact/thanks/', '/contact/error/', '/404.html']
 
 def file_for(url):
@@ -138,7 +139,7 @@ class SiteTests(unittest.TestCase):
             blocks=re.findall(r'<script type="application/ld\+json">(.*?)</script>',self.pages[url])
             self.assertEqual(len(blocks),1)
             schema=json.loads(blocks[0]); self.assertEqual(schema['@type'],'RealEstateAgent')
-            self.assertEqual(len(schema['areaServed']),3)
+            self.assertEqual([a['name'] for a in schema['areaServed']][:3],['Carmel, Indiana','Westfield, Indiana','Fishers, Indiana'])
         self.assertIn('fetchpriority="high"',self.pages['/'])
         self.assertIn('<picture>',self.pages['/'])
 
@@ -164,7 +165,7 @@ class SiteTests(unittest.TestCase):
 
     def test_area_paragraphs_are_distinct(self):
         seen=set()
-        for city in ['carmel','westfield','fishers']:
+        for city in AREA_SLUGS:
             text=self.pages['/areas/'+city+'/'].split('<section class="closing-cta">')[0]
             self.assertEqual(text.count('<section class="guide-group">'),3)
             paragraphs=re.findall(r'<div class="guide-item"><h3>.*?</h3><p>(.*?)</p>',text)
@@ -180,6 +181,50 @@ class SiteTests(unittest.TestCase):
             items=re.findall(r'<li>(.*?)</li>',steps)
             self.assertEqual(len(items),3)
             for item in items: self.assertRegex(item,r'^<span>.*</span>$')
+
+    def test_area_guides_keep_primary_towns_first(self):
+        primary=['carmel','westfield','fishers']
+        def order(fragment):
+            found=re.findall(r'href="/areas/([a-z-]+)/"',fragment)
+            seen=[]
+            for slug in found:
+                if slug not in seen: seen.append(slug)
+            return seen
+        for url,text in self.pages.items():
+            with self.subTest(url=url):
+                footer=re.search(r'<nav class="footer-areas".*?</nav>',text,re.S).group()
+                self.assertEqual(order(footer),AREA_SLUGS)
+                menu=re.search(r'<div class="nav-menu">.*?</div>',text,re.S).group()
+                self.assertEqual(order(menu),AREA_SLUGS)
+        self.assertEqual(order(re.search(r'<div class="town-ledger">.*?</section>',self.pages['/areas/'],re.S).group())[:6],AREA_SLUGS)
+        self.assertNotIn('Coming later',self.pages['/areas/'])
+        for slug in AREA_SLUGS:
+            text=self.pages['/areas/'+slug+'/']
+            self.assertEqual(order(re.search(r'<nav class="area-switch".*?</nav>',text,re.S).group()),AREA_SLUGS)
+            self.assertIn('<title>',text)
+
+    def test_photo_slots_collapse_and_render(self):
+        import importlib.util
+        spec=importlib.util.spec_from_file_location('render_site',ROOT/'tools/render_site.py')
+        rs=importlib.util.module_from_spec(spec); spec.loader.exec_module(rs)
+        self.assertEqual(set(self.site['area_photos']),set(AREA_SLUGS))
+        if not self.site.get('hero_photo'): self.assertIn('/assets/portrait-nick-',re.search(r'<section class="home-hero">.*?</section>',self.pages['/'],re.S).group())
+        if not self.site.get('about_photos'): self.assertNotIn('about-photos',self.pages['/about/'])
+        for slug in AREA_SLUGS:
+            if not self.site['area_photos'][slug]: self.assertNotIn('town-photo',self.pages['/areas/'+slug+'/'])
+        sample={'id':'1602-w-76th-pl-exterior','alt':'Sample alt','caption':'Sample caption','credit':'Sample Credit','license':'CC BY 4.0','license_url':'https://creativecommons.org/licenses/by/4.0/','source_url':'https://example.org/photo'}
+        html=rs.photo('work',sample,'100vw','town-photo__figure')
+        for needle in ['type="image/avif"','type="image/webp"','.jpg 1600w','alt="Sample alt"','Sample caption','Photo: <a href="https://example.org/photo">Sample Credit</a>','CC BY 4.0</a>','loading="lazy"']:
+            self.assertIn(needle,html)
+        rs.NICK_DIR=rs.AREA_DIR='work'
+        self.assertIn('fetchpriority="high"',rs.photo('work',sample,'100vw','x',priority=True))
+        rs.S=dict(rs.S,area_photos={'carmel':sample},about_photos=[sample,sample,sample],hero_photo={'id':'1602-w-76th-pl-exterior','alt':'Hero alt'})
+        self.assertIn('class="town-photo"',rs.area_photo('carmel'))
+        self.assertEqual(rs.area_photo('westfield'),'')
+        with self.assertRaises(ValueError): rs.S=dict(rs.S,area_photos={'carmel':dict(sample,credit='')}); rs.area_photo('carmel')
+        self.assertEqual(rs.about_photos().count('<figure'),2)
+        self.assertIn('alt="Hero alt"',rs.hero_figure())
+        with self.assertRaises(FileNotFoundError): rs.photo('work',{'id':'missing-file','alt':'x'},'100vw','x')
 
     def test_work_gallery_slot(self):
         items=self.site['work_gallery']

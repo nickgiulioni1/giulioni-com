@@ -91,5 +91,15 @@
       "alt": "Single-story home with board-and-batten siding and a side deck, seen from the alley."
     }
   ],
-  "work_gallery_credit": ""
+  "work_gallery_credit": "",
+  "hero_photo": null,
+  "about_photos": [],
+  "area_photos": {
+    "carmel": null,
+    "westfield": null,
+    "fishers": null,
+    "north-indianapolis": null,
+    "noblesville": null,
+    "zionsville": null
+  }
 }
