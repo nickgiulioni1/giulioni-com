@@ -9,7 +9,7 @@
     {
       "id": "1602-w-76th-pl-exterior",
       "place": "1602 W 76th Pl, Indianapolis",
-      "detail": "Exterior",
+      "detail": "76th Pl exterior",
       "alt": "Single-story painted brick home with a covered patio, landscaped beds and mature trees."
     },
     {
@@ -21,7 +21,7 @@
     {
       "id": "1602-w-76th-pl-kitchen",
       "place": "1602 W 76th Pl, Indianapolis",
-      "detail": "Kitchen",
+      "detail": "76th Pl kitchen",
       "alt": "Kitchen with a dark island, leather counter stools and a pendant light, open to the dining area."
     },
     {
@@ -33,7 +33,7 @@
     {
       "id": "1410-s-alabama-st-kitchen",
       "place": "1410 S Alabama St, Indianapolis",
-      "detail": "Kitchen",
+      "detail": "Alabama St kitchen",
       "alt": "White kitchen with subway tile, a stainless range hood and refrigerator, and leather counter stools."
     },
     {
@@ -51,7 +51,7 @@
     {
       "id": "1410-s-alabama-st-bathroom",
       "place": "1410 S Alabama St, Indianapolis",
-      "detail": "Bathroom",
+      "detail": "Alabama St bathroom",
       "alt": "Bathroom with a freestanding tub and a double vanity with two mirrors."
     },
     {
@@ -75,13 +75,13 @@
     {
       "id": "1410-s-alabama-st-exterior",
       "place": "1410 S Alabama St, Indianapolis",
-      "detail": "Exterior",
+      "detail": "Alabama St exterior",
       "alt": "Single-story home with board-and-batten siding and a side deck, seen from the alley."
     },
     {
       "id": "1602-w-76th-pl-dining",
       "place": "1602 W 76th Pl, Indianapolis",
-      "detail": "Dining",
+      "detail": "76th Pl dining",
       "alt": "View past the kitchen counters to a dining table in front of a dark accent wall."
     },
     {
