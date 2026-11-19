@@ -173,6 +173,14 @@ class SiteTests(unittest.TestCase):
                 self.assertNotIn(paragraph,seen)
                 seen.add(paragraph)
 
+    def test_sell_or_rent_steps_wrap_their_text(self):
+        # Each step is a two-column grid (counter + text); a bare inline element would become its own grid cell.
+        for url in ['/','/sell/']:
+            steps=re.search(r'<ol class="steps">(.*?)</ol>',self.pages[url],re.S).group(1)
+            items=re.findall(r'<li>(.*?)</li>',steps)
+            self.assertEqual(len(items),3)
+            for item in items: self.assertRegex(item,r'^<span>.*</span>$')
+
     def test_work_gallery_slot(self):
         items=self.site['work_gallery']
         self.assertIsInstance(items,list)
