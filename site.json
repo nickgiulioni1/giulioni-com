@@ -104,7 +104,8 @@
     {
       "id": "about-family-01",
       "alt": "Nick, Diane and their baby",
-      "credit": "Ashlyn Peters Photography"
+      "credit": "Ashlyn Peters Photography",
+      "fit": "contain"
     },
     {
       "id": "about-solo-02",

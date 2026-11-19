@@ -535,7 +535,10 @@ em { font-style: italic; }
 .about-photo img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--radius); background: var(--paper-deep); }
 .about-photos--1 .about-photo img, .about-photo--wide img { aspect-ratio: 3 / 2; }
 .about-photo--wide { grid-column: 1 / -1; }
-.about-photo--family img { aspect-ratio: 4 / 5; object-fit: contain; }
+.about-photo--contain img { aspect-ratio: 4 / 5; object-fit: contain; }
+@media (max-width: 600px) {
+  .about-photos--2, .about-photos--3 { grid-template-columns: minmax(0, 1fr); }
+}
 
 /* Closing sign-off */
 .signoff { margin: .75rem 0 0; font-family: var(--serif); font-style: italic; font-size: 1.75rem; line-height: 1; color: var(--brick); }
@@ -568,7 +571,7 @@ em { font-style: italic; }
   .hero-grid, .approach, .sell-or-rent, .editorial, .lede-block, .process-panel, .contact-layout, .page-header--area, .page-header--portrait, .towns-head, .guide-group, .guide-cta, .closing-cta__inner { grid-template-columns: minmax(0, 1fr); }
   .hero-content { padding-bottom: 2.5rem; }
   .hero-portrait { max-width: none; justify-self: stretch; }
-  .hero-portrait img { height: auto; aspect-ratio: 5 / 4; object-position: 30% 16%; }
+  .hero-portrait img { height: auto; aspect-ratio: 6 / 5; object-position: 30% 17%; }
   .approach h2 { max-width: 18ch; }
   .town { grid-template-columns: minmax(0, 1fr); }
   .header-portrait { justify-self: start; max-width: 88px; order: -1; }
