@@ -147,7 +147,7 @@ class SiteTests(unittest.TestCase):
         headers={h['key']:h['value'] for h in self.config['headers'][0]['headers']}
         self.assertEqual(headers['Content-Security-Policy'],"default-src 'self'; img-src 'self'; style-src 'self'; font-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; object-src 'none'; upgrade-insecure-requests")
         for key in ['X-Content-Type-Options','Referrer-Policy','Permissions-Policy']: self.assertTrue(headers[key])
-        self.assertNotIn('git',self.config)
+        self.assertEqual(self.config['git'], {'deploymentEnabled': False})
         for path in ['/contact/thanks/','/contact/error/','/api/(.*)']:
             self.assertIn({'source':path,'headers':[{'key':'X-Robots-Tag','value':'noindex'}]},self.config['headers'])
         excluded=(ROOT/'.vercelignore').read_text().splitlines()
