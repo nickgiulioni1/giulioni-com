@@ -39,17 +39,17 @@ def form(source,review=False):
 
 def slot(source):
     return ('<section id="sell-or-rent" class="sell-or-rent"><div class="sell-or-rent__intro"><p class="section-label">A decision before a listing</p><h2>Sell it or rent it?</h2>'
-        '<p>Tell me the address. I review a sell-versus-rent range and send it to you myself. This is not an instant appraisal.</p>'
-        '<ol class="steps"><li>You send the address.</li><li>I review a sell-versus-rent range.</li><li>I send it to you myself.</li></ol>'
+        '<ol class="steps"><li>Tell me the address.</li><li>I review a <span class="nowrap">sell-versus-rent</span> range.</li><li>I send it to you myself.</li></ol>'
+        '<p class="sell-or-rent__caveat">This is not an instant appraisal.</p>'
         '<p class="sell-or-rent__note">I respond personally, usually the same day.</p></div>'
         '<div class="sell-or-rent__embed">'+form(source,True)+'</div></section>')
 
 def section(title,text,cls='editorial'): return '<section class="'+cls+'"><h2>'+title+'</h2><p>'+text+'</p></section>'
 
-def cta(label='Request a consult'):
+def cta(label='Request a consult',promise=True):
     return ('<section class="closing-cta"><div class="closing-cta__inner"><p class="closing-title">Let’s talk through your next move</p>'
         '<div class="closing-actions"><a class="btn btn-primary btn-large" href="/contact/">'+label+'</a>'
-        '<p class="closing-note">Or call '+TEL+'. I respond personally, usually the same day.</p></div></div></section>')
+        '<p class="closing-note">Or call '+TEL+('. I respond personally, usually the same day.' if promise else '.')+'</p></div></div></section>')
 
 # Schematic line maps of places named in the copy. Decorative and not to scale; the
 # same places are named in the adjacent text, so each drawing is hidden from assistive tech.
@@ -63,20 +63,20 @@ MAPS={
     '<path class="map-trail" d="M206 0C204 70 212 120 208 170S200 250 204 300"/>'
     '<circle class="map-roundabout" cx="330" cy="62" r="13"/><circle class="map-roundabout" cx="330" cy="150" r="15"/><circle class="map-roundabout" cx="330" cy="238" r="13"/>'
     '<circle class="map-point" cx="208" cy="166" r="5"/>'
-    '<text class="map-label map-label--trail" x="192" y="40" text-anchor="end">Monon Greenway</text>'
-    '<text class="map-label map-label--place" x="24" y="98">Arts &amp; Design</text><text class="map-label map-label--place" x="24" y="118">District</text>'
+    '<text class="map-label map-label--trail" x="192" y="28" text-anchor="end">Monon</text><text class="map-label map-label--trail" x="192" y="50" text-anchor="end">Greenway</text>'
+    '<text class="map-label map-label--place" x="24" y="96">Arts &amp; Design</text><text class="map-label map-label--place" x="24" y="118">District</text>'
     '<text class="map-label" x="24" y="200">Main St</text>'
-    '<text class="map-label" x="350" y="104">Range Line</text><text class="map-label" x="350" y="124">Road</text>'
+    '<text class="map-label" x="346" y="98">Range</text><text class="map-label" x="346" y="120">Line Rd</text>'
     '<text class="map-label map-label--muted" x="352" y="282">roundabouts</text></svg>'),
 'westfield':('<svg class="map map--westfield" viewBox="0 0 480 300" aria-hidden="true" focusable="false">'
     '<rect class="map-ground" width="480" height="300"/>'
     '<path class="map-road map-road--minor" d="M0 276H480"/>'
-    '<rect class="map-park" x="34" y="62" width="300" height="190" rx="4"/>'
-    +''.join(f'<rect class="map-field" x="{54+c*68}" y="{80+r*56}" width="54" height="40" rx="2"/><path class="map-field-line" d="M{81+c*68} {80+r*56}v40"/><circle class="map-field-line" cx="{81+c*68}" cy="{100+r*56}" r="7"/>' for r in range(2) for c in range(4))
-    +''.join(f'<path class="map-diamond" d="M{54+c*68} 232v-40a40 40 0 0 1 40 40z"/>' for c in range(4))+
-    '<path class="map-trail" d="M388 0C384 80 392 150 386 210S380 270 384 300"/>'
+    '<rect class="map-park" x="34" y="62" width="272" height="190" rx="4"/>'
+    +''.join(f'<rect class="map-field" x="{52+c*62}" y="{80+r*56}" width="50" height="40" rx="2"/><path class="map-field-line" d="M{77+c*62} {80+r*56}v40"/><circle class="map-field-line" cx="{77+c*62}" cy="{100+r*56}" r="7"/>' for r in range(2) for c in range(4))
+    +''.join(f'<path class="map-diamond" d="M{52+c*62} 232v-40a40 40 0 0 1 40 40z"/>' for c in range(4))+
+    '<path class="map-trail" d="M366 0C362 80 370 150 364 210S358 270 362 300"/>'
     '<text class="map-label map-label--place" x="34" y="44">Grand Park</text>'
-    '<text class="map-label map-label--trail" x="400" y="150">Monon</text><text class="map-label map-label--trail" x="400" y="170">Trail</text></svg>'),
+    '<text class="map-label map-label--trail" x="382" y="150">Monon</text><text class="map-label map-label--trail" x="382" y="172">Trail</text></svg>'),
 'fishers':('<svg class="map map--fishers" viewBox="0 0 480 300" aria-hidden="true" focusable="false">'
     '<rect class="map-ground" width="480" height="300"/>'
     '<path class="map-road map-road--minor" d="M0 84H480M0 252H480"/>'
@@ -85,10 +85,10 @@ MAPS={
     +''.join(f'<rect class="map-block" x="{x}" y="{y}" width="26" height="22" rx="2"/>' for x in [190,220,264,294] for y in [112,142,172])+
     '<path class="map-trail" d="M252 0V300"/>'
     '<rect class="map-district" x="336" y="154" width="70" height="44" rx="3"/>'
-    '<text class="map-label map-label--river" x="102" y="150">White</text><text class="map-label map-label--river" x="102" y="170">River</text>'
-    '<text class="map-label map-label--trail" x="266" y="36">Nickel Plate</text><text class="map-label map-label--trail" x="266" y="56">Trail</text>'
+    '<text class="map-label map-label--river" x="102" y="150">White</text><text class="map-label map-label--river" x="102" y="172">River</text>'
+    '<text class="map-label map-label--trail" x="266" y="34">Nickel Plate</text><text class="map-label map-label--trail" x="266" y="56">Trail</text>'
     '<text class="map-label" x="244" y="230" text-anchor="end">Downtown</text>'
-    '<text class="map-label map-label--place" x="336" y="122">Fishers</text><text class="map-label map-label--place" x="336" y="142">District</text>'
+    '<text class="map-label map-label--place" x="336" y="120">Fishers</text><text class="map-label map-label--place" x="336" y="142">District</text>'
     '<text class="map-label map-label--muted" x="420" y="282">I-69</text></svg>'),
 }
 COUNTY=('<svg class="map map--county" viewBox="0 0 480 360" role="img" aria-label="Schematic map, not to scale: Westfield sits north of Carmel along the Monon, and Fishers lies east of Carmel across the White River.">'
@@ -98,14 +98,14 @@ COUNTY=('<svg class="map map--county" viewBox="0 0 480 360" role="img" aria-labe
     '<rect class="map-town" x="276" y="176" width="172" height="160" rx="4"/>'
     '<path class="map-river" d="M352 0C330 70 300 120 262 168S246 280 254 360"/>'
     '<path class="map-trail" d="M150 360C148 250 154 160 150 0"/>'
-    '<path class="map-trail map-trail--thin" d="M352 176V336"/>'
-    '<circle class="map-point" cx="104" cy="112" r="5"/><circle class="map-point" cx="151" cy="262" r="5"/><circle class="map-point" cx="404" cy="280" r="5"/>'
+    '<path class="map-trail map-trail--thin" d="M330 228V336"/>'
+    '<circle class="map-point" cx="104" cy="112" r="5"/><circle class="map-point" cx="151" cy="262" r="5"/><circle class="map-point" cx="420" cy="300" r="5"/>'
     '<text class="map-town-name" x="52" y="62">Westfield</text><text class="map-town-name" x="52" y="214">Carmel</text><text class="map-town-name" x="294" y="214">Fishers</text>'
     '<text class="map-label" x="114" y="130">Grand Park</text>'
-    '<text class="map-label" x="62" y="290">Arts &amp; Design</text><text class="map-label" x="62" y="306">District</text>'
-    '<text class="map-label" x="360" y="252">Fishers District</text>'
+    '<text class="map-label" x="62" y="290">Arts &amp; Design</text><text class="map-label" x="62" y="312">District</text>'
+    '<text class="map-label" x="410" y="306" text-anchor="end">Fishers</text><text class="map-label" x="410" y="328" text-anchor="end">District</text>'
     '<text class="map-label map-label--trail" x="160" y="154">Monon</text>'
-    '<text class="map-label map-label--trail" x="360" y="324">Nickel Plate</text>'
+    '<text class="map-label map-label--trail" x="340" y="254">Nickel</text><text class="map-label map-label--trail" x="340" y="276">Plate</text>'
     '<text class="map-label map-label--river" x="324" y="40">White River</text></svg>')
 
 AREAS=[('carmel','Carmel','Start here if established neighborhoods and time on the Monon are on your list.'),('westfield','Westfield','Compare new-build plans with existing homes, and put Grand Park on your map.'),('fishers','Fishers','Compare downtown routines with life closer to Fishers District.')]
@@ -146,7 +146,7 @@ def guide(groups):
     return out
 
 def guide_cta(city):
-    return ('<aside class="guide-cta"><p class="guide-cta__title">Comparing '+city+' with the other two?</p><p>Bring your shortlist to a consult. We can talk through the routine, the house, and the next step.</p>'
+    return ('<aside class="guide-cta"><p class="guide-cta__title">Comparing '+city+' with '+' or '.join(c for _,c,_ in AREAS if c!=city)+'?</p><p>Bring your shortlist to a consult. We can talk through the routine, the house, and the next step.</p>'
         '<div class="guide-cta__actions"><a class="btn btn-primary btn-large" href="/contact/">Request a consult</a><a class="hero-link" href="'+S['phone_tel']+'">Call '+S['phone_display']+'</a></div></aside>')
 
 def page(path,title,description,h1,body,card='home',noindex=False,hero=False,kicker='Central Indiana real estate',deck='',actions='',extra='',art='',variant=''):
@@ -192,7 +192,7 @@ HOME=('<section class="home-hero"><div class="hero-grid">'
     '<div class="paths"><a class="path" href="/sell/"><span class="path-kicker">Selling</span><span class="path-title">Thinking about selling?</span><span class="path-text">Start with your timing, the condition of the home, and what you want to do next.</span><span class="path-arrow" aria-hidden="true">→</span></a>'
     '<a class="path" href="/buy/"><span class="path-kicker">Buying</span><span class="path-title">Start with the right town</span><span class="path-text">Compare towns, home condition and new-build choices before narrowing the home list.</span><span class="path-arrow" aria-hidden="true">→</span></a></div></section>'
     '<section class="towns"><div class="towns-head"><h2>Find the town that fits your day</h2><p>Choose the daily routine first. Then choose the home.</p><a class="text-link" href="/areas/">Compare all three</a></div>'+towns('h3')+'</section>'
-    +slot('sell-or-rent-home')+gallery()+cta())
+    +slot('sell-or-rent-home')+gallery()+cta(promise=False))
 
 AREA_ACTIONS='<a class="btn btn-primary btn-large" href="/contact/">Request a consult</a>'+CALL_LINK
 def area_page(slug,city,title,description,deck,groups):
@@ -200,12 +200,12 @@ def area_page(slug,city,title,description,deck,groups):
 
 page('/', 'Nick Giulioni | Carmel, Westfield and Fishers real estate broker', 'Buyer and seller help in Carmel, Westfield and Fishers from an investor with renovation experience and T&H Realty Services broker.', '', HOME, hero=True)
 page('/sell/', 'Selling a home in Carmel, Westfield or Fishers | Nick Giulioni', 'A personal seller consult, preparation advice and a sell-versus-rent review for your Carmel, Westfield or Fishers home.', 'Thinking about selling in Carmel, Westfield, or Fishers?',
- section('A listing consult starts with listening','We talk through your goals, walk the property, and identify the questions that need answering before a listing. I&nbsp;respond personally, usually the same day.','lede-block')
+ section('A listing consult starts with listening','We talk through your goals, walk the property, and identify the questions that need answering before a listing.','lede-block')
  +'<section class="pair"><div class="pair-item"><h2>Selling is one option</h2><p>Keeping a property means weighing rent, expenses, repair reserves, and the time you want to put into it. Selling means weighing preparation, timing, and what you would do with the proceeds. The numbers I share are not an appraisal.</p></div>'
  '<div class="pair-item"><h2>Fix what matters</h2><p>Years running renovation and new-build work help me ask useful questions about condition. We can separate work worth pricing before a listing from changes a buyer may prefer to make. An older home and a new build deserve different preparation conversations.</p></div></section>'
  +'<section class="process-panel"><h2>A clear process, with me directly</h2><div class="process-body"><p>I am newly licensed as a broker. I bring '+STAT+' from my investing and renovation experience, and I live in Carmel. We agree on priorities, review the pricing rationale together, and set a communication plan before moving forward.</p>'
- '<p class="mgmt-referral">If you would rather keep the property and have it managed, I can introduce you to <a href="https://threaltyinc.com/">T&amp;H</a>.</p></div></section>'+slot('sell-or-rent-sell')+cta('Request a seller consult'),
- card='sell', kicker='Selling · Carmel, Westfield, Fishers', deck='Start with your timing, the condition of the home, and what you want to do next.', actions='<a class="btn btn-primary btn-large" href="/contact/">Request a seller consult</a><a class="hero-link" href="#sell-or-rent">Ask about sell or rent</a>', art=picture('(max-width: 900px) 88px, 300px','portrait header-portrait'), variant='portrait')
+ '<p class="mgmt-referral">If you would rather keep the property and have it managed, I can introduce you to <a href="https://threaltyinc.com/">T&amp;H</a>.</p></div></section>'+slot('sell-or-rent-sell')+cta('Request a seller consult',promise=False),
+ card='sell', kicker='Indiana real estate broker · <span class="nowrap">T&amp;H Realty Services</span>', deck='Start with your timing, the condition of the home, and what you want to do next.', actions='<a class="btn btn-primary btn-large" href="/contact/">Request a seller consult</a><a class="hero-link" href="#sell-or-rent">Ask about sell or rent</a>', art=picture('(max-width: 900px) 88px, 300px','portrait header-portrait'), variant='portrait')
 page('/buy/', 'Buying a home in Carmel, Westfield or Fishers | Nick Giulioni', 'Compare towns, home condition and new-build choices with a personal Hamilton County buyer consult from Nick Giulioni.', 'Buying in Hamilton County? Start with the right town.', section('Choose your everyday routine','Start with where you need to be, what you want nearby, and how much house you want to look after. Compare <a href="/areas/carmel/">Carmel</a>, <a href="/areas/westfield/">Westfield</a>, and <a href="/areas/fishers/">Fishers</a> before narrowing the home list.','lede-block')+'<section class="pair"><div class="pair-item"><h2>Look beyond the finishes</h2><p>For an existing home, we can talk through condition, likely projects, and what to ask an inspector. For a new build, we can compare the base plan with options, timing, and the finished cost. My renovation background helps frame the questions; specialist inspections still matter.</p></div><div class="pair-item"><h2>What a buyer consult covers</h2><p>We discuss your budget, timing, location, and tolerance for projects. Then we agree on the next steps, including financing conversations and a plan for seeing homes. Live listing search comes later. For now, tell me what you are looking for.</p></div></section>'+cta('Request a buyer consult'),card='buy',kicker='Buying · Hamilton County',deck='Choose the everyday routine first. Then look beyond the finishes.',art='<div class="page-header__art">'+COUNTY+'</div>',variant='area')
 page('/areas/', 'Carmel, Westfield and Fishers: where to live | Nick Giulioni', 'A practical starting point for choosing between Carmel, Westfield and Fishers, Indiana.', 'Carmel, Westfield, or Fishers?', '<section class="towns towns--index">'+towns()+'</section>'+section('Coming later','Zionsville and Noblesville guides are coming later. We can still talk through your location questions in a consult.','note-row')+cta(),card='areas',kicker='Area guides · Hamilton County',deck='Choose the daily routine first. Then choose the home.',art='<div class="page-header__art">'+COUNTY+'</div>',variant='area')
 
@@ -245,7 +245,8 @@ area_page('fishers','Fishers','Living in Fishers, Indiana: Fishers District and 
   ('Look up the assigned district','For a home in Fishers, start with Hamilton Southeastern’s official district site and verify the property’s district boundary and enrollment details directly.','Source: <a href="https://www.hseschools.org/">Hamilton Southeastern Schools</a><span class="source-date">Checked November 18, 2026</span>')])])
 
 page('/about/', 'About Nick Giulioni | Indiana real estate broker, T&H Realty Services', 'Meet Nick Giulioni, a Carmel-based Indiana broker with investing and renovation experience serving buyers and sellers.', 'An agent with an investor’s eye',section('Who I help','I help buyers and sellers in Carmel, Westfield, and Fishers think through their next move, including homes that need work and owners deciding whether to sell or keep a property.','lede-block')+section('From tech sales to Indiana homes','My background is in tech sales leadership. I have been investing in Central Indiana since 2017, with '+STAT+'. Years running renovation and new-build work taught me to ask what sits behind a finish and what a project might require. I live in Carmel and am newly licensed as an Indiana real estate broker.')+section('The podcast',POD+' <a href="https://indyreiwiththrealty.podbean.com/">Listen to the show</a>.')+section('My brokerage','I am affiliated with T&amp;H Realty Services.')+section('Careful numbers','I build and use Central Indiana market data through <a href="https://ballpark.build">Ballpark</a> to support careful numbers and better questions about a property. Estimates are a starting point for a conversation, not an appraisal.')+gallery()+cta(),card='about',kicker='About · Carmel, Indiana',art=picture('(max-width: 900px) 88px, 300px','portrait header-portrait'),variant='portrait')
-page('/contact/', 'Request a consult | Nick Giulioni', 'Request a buyer, seller or sell-versus-rent consult with Nick Giulioni in Central Indiana.', 'Request a consult', '<section class="contact-layout"><aside class="contact-aside" aria-label="Contact Nick directly"><div class="contact-id">'+picture('(max-width: 900px) 56px, 88px','portrait contact-portrait')+'<div><p class="contact-aside__name">Nick Giulioni</p><p class="contact-aside__role">Indiana real estate broker, <span class="nowrap">T&amp;H Realty Services</span></p></div></div><div class="contact-line"><a class="contact-call" href="'+S['phone_tel']+'">Call '+S['phone_display']+'</a><a class="contact-email" href="mailto:'+S['email']+'">'+S['email']+'</a></div><p class="contact-aside__note">I respond personally, usually the same day.</p></aside><div class="contact-form-card">'+form('contact')+'</div></section>', kicker='Buyer, seller or sell-versus-rent', deck='Tell me what you are considering. We can work out the next step together.', variant='band')
+CONTACT_CARD=('<aside class="contact-aside" aria-label="Contact Nick directly"><div class="contact-id">'+picture('(max-width: 900px) 56px, 88px','portrait contact-portrait')+'<div><p class="contact-aside__name">Nick Giulioni</p><p class="contact-aside__role">Indiana real estate broker, <span class="nowrap">T&amp;H Realty Services</span></p></div></div><div class="contact-line"><a class="contact-call" href="'+S['phone_tel']+'">Call '+S['phone_display']+'</a><a class="contact-email" href="mailto:'+S['email']+'">'+S['email']+'</a></div><p class="contact-aside__note">I respond personally, usually the same day.</p></aside>')
+page('/contact/', 'Request a consult | Nick Giulioni', 'Request a buyer, seller or sell-versus-rent consult with Nick Giulioni in Central Indiana.', 'Request a consult', '<section class="contact-layout"><div class="contact-form-card">'+form('contact')+'</div></section>', kicker='Buyer, seller or sell-versus-rent', deck='Tell me what you are considering. We can work out the next step together.', art=CONTACT_CARD, variant='contact')
 page('/contact/thanks/', 'Thank you | Nick Giulioni', 'Your consult request has been received.', 'Thanks. I will reply personally, usually the same day.', '<section class="plain"><p><a href="/">Back home</a></p></section>',noindex=True,variant='band')
 page('/contact/error/', 'Request not sent | Nick Giulioni', 'Contact Nick directly if your consult request could not be sent.', 'That did not go through', '<section class="plain"><p>Please email <a href="mailto:'+S['email']+'">'+S['email']+'</a> or call <a href="'+S['phone_tel']+'">'+S['phone_display']+'</a>.</p><p><a href="/">Back home</a></p></section>',noindex=True,variant='band')
 page('/privacy/', 'Privacy | Nick Giulioni', 'How Nick Giulioni uses and protects information submitted through the consult form.', 'Privacy', section('Your request','Effective November 18, 2026. The form collects your name, email, phone, city or address, intent, message, and consent, along with the page source and receipt time. I use this information to reply to your consult request. The email notification is the stored record for now.')+section('Contact and consent','Your consent covers calls, emails, and texts from Nick about your request. Message and data rates may apply. Reply STOP to opt out of texts. Consent is only for responding to this request; it does not enroll you in a campaign. You can also contact me directly by email or phone.')+section('Processing and deletion','Vercel provides hosting for the site and processes submissions. Resend processes the email notification, and the Quo text service processes the text notification. Your data is not sold or shared for marketing. To request deletion, email <a href="mailto:'+S['email']+'">'+S['email']+'</a>.'),kicker='Privacy policy',variant='band')
