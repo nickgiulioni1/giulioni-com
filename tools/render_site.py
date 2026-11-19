@@ -123,18 +123,44 @@ def picture(sizes,cls='portrait',priority=False,caption=''):
     cap=f'<figcaption>{caption}</figcaption>' if caption else ''
     return f'<figure class="{cls}"><picture><source type="image/webp" srcset="{webp}" sizes="{sizes}"><img src="/assets/portrait-nick-400.jpg" srcset="{jpg}" sizes="{sizes}" width="636" height="954"{pri} alt="Nick Giulioni seated and looking out a window."></picture>{cap}</figure>'
 
-# Work gallery: renders only when site.json "work_gallery" has approved entries.
-# Each entry: {"src": "/assets/work/<file>.jpg", "width": 1200, "height": 900,
-# "alt": "...", "caption": "..." (optional), "webp": "/assets/work/<file>.webp" (optional)}.
+# Work gallery: renders only when site.json "work_gallery" lists approved, metadata-stripped photos.
+# Each entry: {"id": "<file id>", "place": "...", "detail": "...", "alt": "..."}. Files live at
+# /assets/work/<id>-<800|1200|1600>.<avif|webp|jpg> (the number is the long edge). Order in the list is display order.
+# "work_gallery_credit" is an optional photo credit line; blank renders nothing.
+WORK_SIZES=[800,1200,1600]
+def jpeg_size(path):
+    data=path.read_bytes(); i=2
+    while i<len(data):
+        if data[i]!=0xFF: i+=1; continue
+        marker=data[i+1]; length=int.from_bytes(data[i+2:i+4],'big')
+        if marker in (0xC0,0xC1,0xC2): return int.from_bytes(data[i+7:i+9],'big'),int.from_bytes(data[i+5:i+7],'big')
+        i+=2+length
+    raise ValueError(path)
+
+def work_item(item,index):
+    files=[(ROOT/'assets/work'/f'{item["id"]}-{n}.jpg',n) for n in WORK_SIZES]
+    files=[(f,n) for f,n in files if f.exists()]
+    dims=[(jpeg_size(f),n) for f,n in files]
+    (w,h),largest=dims[-1]
+    shape='portrait' if h>w else 'landscape'
+    srcset=lambda ext: ', '.join(f'/assets/work/{item["id"]}-{n}.{ext} {dw}w' for (dw,_),n in dims)
+    if index==0: sizes='(max-width: 700px) 80vw, (max-width: 1100px) calc(100vw - 2.5rem), 790px'
+    elif shape=='portrait': sizes='(max-width: 700px) 36vw, (max-width: 1100px) 25vw, 190px'
+    else: sizes='(max-width: 700px) 80vw, (max-width: 1100px) 50vw, 390px'
+    pic=(f'<picture><source type="image/avif" srcset="{srcset("avif")}" sizes="{sizes}"><source type="image/webp" srcset="{srcset("webp")}" sizes="{sizes}">'
+        f'<img src="/assets/work/{item["id"]}-{dims[0][1]}.jpg" srcset="{srcset("jpg")}" sizes="{sizes}" width="{w}" height="{h}" alt="{e(item["alt"])}" loading="lazy" decoding="async"></picture>')
+    cap='<figcaption><span class="work-detail">'+e(item['detail'])+'</span><span class="work-place">'+e(item['place'])+'</span></figcaption>'
+    cls='work-item work-item--'+shape+(' work-item--feature' if index==0 else '')
+    return f'<li class="{cls}"><figure>{pic}{cap}</figure></li>'
+
 def gallery():
     items=S.get('work_gallery') or []
     if not items: return ''
-    cells=''
-    for item in items:
-        webp=f'<source type="image/webp" srcset="{e(item["webp"])}">' if item.get('webp') else ''
-        cap=f'<figcaption>{e(item["caption"])}</figcaption>' if item.get('caption') else ''
-        cells+=f'<li><figure class="work-item"><picture>{webp}<img src="{e(item["src"])}" width="{int(item["width"])}" height="{int(item["height"])}" alt="{e(item["alt"])}" loading="lazy" decoding="async"></picture>{cap}</figure></li>'
-    return '<section class="work-gallery" aria-labelledby="work-gallery-title"><h2 id="work-gallery-title">Properties I have worked on</h2><ul class="work-grid">'+cells+'</ul></section>'
+    credit=S.get('work_gallery_credit','').strip()
+    cells=''.join(work_item(item,i) for i,item in enumerate(items))
+    return ('<section class="work-gallery" aria-labelledby="work-gallery-title"><div class="work-head"><h2 id="work-gallery-title">Properties I have worked on</h2>'
+        '<p>In Indianapolis and the Bloomington area.</p></div><ul class="work-grid" tabindex="0" aria-label="Property photos">'+cells+'</ul>'
+        +(f'<p class="work-credit">Photos: {e(credit)}</p>' if credit else '')+'</section>')
 
 def guide(groups):
     out=''
@@ -191,8 +217,9 @@ HOME=('<section class="home-hero"><div class="hero-grid">'
     '<p class="approach-lead">My background is in tech sales. I have been investing in Central Indiana since 2017. Years running renovation and new-build work taught me to look past finishes and ask what a property needs. I live in Carmel. Now I represent buyers and sellers in Carmel, Westfield, and Fishers, bringing that experience to the conversation.</p>'
     '<div class="paths"><a class="path" href="/sell/"><span class="path-kicker">Selling</span><span class="path-title">Thinking about selling?</span><span class="path-text">Start with your timing, the condition of the home, and what you want to do next.</span><span class="path-arrow" aria-hidden="true">→</span></a>'
     '<a class="path" href="/buy/"><span class="path-kicker">Buying</span><span class="path-title">Start with the right town</span><span class="path-text">Compare towns, home condition and new-build choices before narrowing the home list.</span><span class="path-arrow" aria-hidden="true">→</span></a></div></section>'
+    +gallery()+
     '<section class="towns"><div class="towns-head"><h2>Find the town that fits your day</h2><div class="towns-head__aside"><p>Choose the daily routine first. Then choose the home.</p><a class="text-link" href="/areas/">Compare all three</a></div></div>'+towns('h3')+'</section>'
-    +slot('sell-or-rent-home')+gallery()+cta(promise=False))
+    +slot('sell-or-rent-home')+cta(promise=False))
 
 AREA_ACTIONS='<a class="btn btn-primary btn-large" href="/contact/">Request a consult</a>'+CALL_LINK
 def area_page(slug,city,title,description,deck,groups):
