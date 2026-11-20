@@ -23,11 +23,11 @@ RUST = (154, 59, 26)
 SERIF = os.path.join(ASSETS, "fonts/instrument-serif-latin-normal.woff2")
 SANS = os.path.join(ASSETS, "fonts/instrument-sans-latin-wght.woff2")
 
-CARDS = tuple(("og-"+key+".png", "Nick Giulioni", title, "Carmel · Westfield · Fishers") for key,title in [
+CARDS = tuple(("og-"+key+".png", "Nick Giulioni", title, "Indianapolis north side & suburbs") for key,title in [
     ("home", "A practical eye for\nyour next move."),
     ("sell", "Thinking about\nselling your home?"),
     ("buy", "Find the town.\nThen find the home."),
-    ("areas", "Carmel, Westfield\nor Fishers?"),
+    ("areas", "Find your area.\nPlan your move."),
     ("about", "An agent with\nan investor’s eye."),
     ("podcast", "Indiana real estate\nin conversation."),
 ])
