@@ -1,0 +1,123 @@
+{
+  "properties_touched": "300+",
+  "phone_display": "(463) 223-9952",
+  "phone_tel": "tel:+14632239952",
+  "email": "nick@giulioni.com",
+  "podcast_name": "Indy Real Estate Investing Podcast",
+  "podcast_line": "Incoming host of the Indy Real Estate Investing Podcast with T&H Realty Services.",
+  "work_gallery": [
+    {
+      "id": "1602-w-76th-pl-exterior",
+      "place": "1602 W 76th Pl, Indianapolis",
+      "detail": "76th Pl exterior",
+      "alt": "Single-story painted brick home with a covered patio, landscaped beds and mature trees."
+    },
+    {
+      "id": "stay-wilds-villa-hillside-exterior",
+      "place": "Stay Wilds, Bloomington area",
+      "detail": "Villa hillside exterior",
+      "alt": "Two-story gray house on a hillside above landscaped beds and a paved drive."
+    },
+    {
+      "id": "1602-w-76th-pl-kitchen",
+      "place": "1602 W 76th Pl, Indianapolis",
+      "detail": "76th Pl kitchen",
+      "alt": "Kitchen with a dark island, leather counter stools and a pendant light, open to the dining area."
+    },
+    {
+      "id": "stay-wilds-villa-front",
+      "place": "Stay Wilds, Bloomington area",
+      "detail": "Villa front",
+      "alt": "Long single-story house on a wide lawn beneath a large shade tree."
+    },
+    {
+      "id": "1410-s-alabama-st-kitchen",
+      "place": "1410 S Alabama St, Indianapolis",
+      "detail": "Alabama St kitchen",
+      "alt": "White kitchen with subway tile, a stainless range hood and refrigerator, and leather counter stools."
+    },
+    {
+      "id": "stay-wilds-homestead-approach",
+      "place": "Stay Wilds, Bloomington area",
+      "detail": "Homestead approach",
+      "alt": "Gravel drive curving up to a stone-front house with attached garages."
+    },
+    {
+      "id": "stay-wilds-villa-covered-patio",
+      "place": "Stay Wilds, Bloomington area",
+      "detail": "Villa covered patio",
+      "alt": "Wood pergola over a patio dining table beside the house."
+    },
+    {
+      "id": "stay-wilds-villa-kitchen",
+      "place": "Stay Wilds, Bloomington area",
+      "detail": "Villa kitchen",
+      "alt": "Kitchen with gray cabinets, open shelving and an island with stools over a wood floor."
+    },
+    {
+      "id": "stay-wilds-villa-fire-pit",
+      "place": "Stay Wilds, Bloomington area",
+      "detail": "Villa fire pit",
+      "alt": "Fire pit ringed by wooden benches at the edge of a field."
+    },
+    {
+      "id": "1410-s-alabama-st-bathroom",
+      "place": "1410 S Alabama St, Indianapolis",
+      "detail": "Alabama St bathroom",
+      "alt": "Bathroom with a freestanding tub and a double vanity with two mirrors."
+    },
+    {
+      "id": "1602-w-76th-pl-dining",
+      "place": "1602 W 76th Pl, Indianapolis",
+      "detail": "76th Pl dining",
+      "alt": "View past the kitchen counters to a dining table in front of a dark accent wall."
+    },
+    {
+      "id": "stay-wilds-villa-living-room",
+      "place": "Stay Wilds, Bloomington area",
+      "detail": "Villa living room",
+      "alt": "Living room with a leather sectional, an armchair and a round coffee table under a ceiling fan."
+    },
+    {
+      "id": "stay-wilds-homestead-glam-suite",
+      "place": "Stay Wilds, Bloomington area",
+      "detail": "Homestead glam suite",
+      "alt": "Room with arched mirrors above a long counter with stools."
+    },
+    {
+      "id": "1410-s-alabama-st-exterior",
+      "place": "1410 S Alabama St, Indianapolis",
+      "detail": "Alabama St exterior",
+      "alt": "Single-story home with board-and-batten siding and a side deck, seen from the alley."
+    }
+  ],
+  "work_gallery_credit": "",
+  "hero_photo": {
+    "id": "hero-01",
+    "alt": "Nick Giulioni, Indianapolis-area real estate agent"
+  },
+  "about_photos": [
+    {
+      "id": "about-nick-diane-01",
+      "alt": "Nick Giulioni and his wife Diane"
+    },
+    {
+      "id": "about-family-01",
+      "alt": "Nick, Diane and their baby",
+      "credit": "Ashlyn Peters Photography",
+      "fit": "contain"
+    },
+    {
+      "id": "about-solo-02",
+      "alt": "Nick Giulioni seated in a white chair"
+    }
+  ],
+  "area_photos": {
+    "carmel": null,
+    "westfield": null,
+    "fishers": null,
+    "north-indianapolis": null,
+    "noblesville": null,
+    "zionsville": null
+  }
+}

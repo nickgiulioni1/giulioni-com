@@ -15,3 +15,6 @@
 
 # Unreferenced design preview; keep all other assets and vercel.json.
 /assets/favicon-preview.png
+
+/site.json
+/AGENTS.md

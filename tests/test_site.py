@@ -1,1607 +1,318 @@
-"""Static-site contract for giulioni.com (cream/forest/rust editorial system).
-
-Deterministic, standard-library-only checks describing the approved final
-production state: a four-page static site (Home, Resume, Selected work,
-Earlier media) with root-relative internal links and assets, the approved
-contact links (Email, LinkedIn), the recruiter-first primary nav, the
-approved Resume section structure, the Selected work Ballpark case + A
-Little True + three receipts, the seven Earlier media URLs, the resume
-PDF, the responsive / safe-area / coarse-pointer / reduced-motion CSS,
-CSP-safe markup, balanced CSS braces, and none of the prohibited Open
-Design-only artifacts (data-od-id attributes, sidecars, home.html,
-DESIGN.md, brand-spec.md).
-
-Run:
-
-    python3 -m unittest discover -s tests -v
-"""
-
-import hashlib
-import html
+"""Static site contracts, shared copy, accessibility structure and asset hygiene."""
 import json
-import os
 import re
-import shutil
 import struct
-import subprocess
-import tempfile
 import unittest
-import xml.etree.ElementTree as ET
-import zlib
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import unquote, urljoin, urlsplit
-
-REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-PAGES = {
-    "home": "index.html",
-    "resume": "career/index.html",
-    "work": "work/index.html",
-    "media": "media/index.html",
-}
-
-# Approved contact links (exact strings, no trailing variants).
-SOCIAL_HREFS = (
-    "mailto:nick@giulioni.com",
-    "https://www.linkedin.com/in/nickgiulioni",
-)
-
-# Approved Media appearances: (episode title, URL), exact strings.
-MEDIA_ENTRIES = (
-    (
-        "You WON'T BELIEVE Nick Giulioni's Journey from Tech to Real Estate",
-        "https://www.rootsrealty.co/podcast/nick-giulioni-real-estate",
-    ),
-    (
-        "The Leverage Podcast - Nick Giulioni",
-        "https://www.youtube.com/watch?v=_A2HrOjWe50",
-    ),
-    (
-        "Episode 1 - Nick Giulioni: How To Go From Side Hustle To Real Business",
-        "https://www.youtube.com/watch?v=dv72SopKqeM",
-    ),
-    (
-        "Convert I.T. Skills Into Long Distance Real Estate Investing Success"
-        " - Nick Giulioni",
-        "https://www.youtube.com/watch?v=B3gRQMjCng0",
-    ),
-    (
-        "Why He Left Facebook to Build a Multimillion-Dollar Portfolio"
-        " in the Midwest",
-        "https://getindiana.com/podcast/nick-giulioni-off-leash-construction",
-    ),
-    (
-        "Finding Deals In Today's Real Estate Market",
-        "https://www.simplequarters.com/podcasts/finding-deals-in-todays-real-estate-market",
-    ),
-    (
-        "Episode 4 Nick Giulioni",
-        "https://www.hackingrealestatepodcast.com/episodes/104-nick-giulioni",
-    ),
-)
-
-# External schemes that are exempt from the root-relative rule.
-EXTERNAL_PREFIXES = ("#", "mailto:", "tel:", "data:", "http://", "https://")
-
-
-def _path(rel):
-    return os.path.join(REPO_ROOT, rel)
-
-
-def _read_page(name):
-    rel = PAGES[name]
-    path = _path(rel)
-    if not os.path.isfile(path):
-        raise AssertionError("required page %r is missing (%s)" % (rel, path))
-    with open(path, encoding="utf-8") as fh:
-        return fh.read()
-
-
-def _strip_html_comments(html):
-    return re.sub(r"<!--.*?-->", "", html, flags=re.S)
-
-
-def _anchor_pairs(html):
-    """List of (quote, href) for every <a> tag, in document order."""
-    html = _strip_html_comments(html)
-    return re.findall(
-        r'<a\b[^>]*?\bhref\s*=\s*(["\'])(.*?)\1',
-        html,
-        flags=re.S | re.I,
-    )
-
-
-def _nav_block(html):
-    html = _strip_html_comments(html)
-    return "\n".join(re.findall(r"<nav\b.*?</nav>", html, flags=re.S | re.I))
-
-
-def _local_refs(html):
-    """Every local href/src value (external/data/hash/mailto/tel excluded)."""
-    html = _strip_html_comments(html)
-    refs = []
-    for attr in ("href", "src"):
-        refs.extend(
-            val
-            for _q, val in re.findall(
-                r'\b' + attr + r'\s*=\s*(["\'])(.*?)\1',
-                html,
-                flags=re.S | re.I,
-            )
-        )
-    return [v for v in refs if v and not v.startswith(EXTERNAL_PREFIXES)]
-
-
-def _class_tokens(html):
-    html = _strip_html_comments(html)
-    pairs = re.findall(r'\bclass\s*=\s*(["\'])(.*?)\1', html, flags=re.S | re.I)
-    return {token for _q, val in pairs for token in val.split()}
-
-
-def _normalized_text(text):
-    return re.sub(r"\s+", "", text.lower())
-
-
-class StructureTests(unittest.TestCase):
-    """The site is four directory-rooted pages."""
-
-    def test_required_pages_exist(self):
-        for name, rel in PAGES.items():
-            with self.subTest(page=name):
-                self.assertTrue(
-                    os.path.isfile(_path(rel)),
-                    "required page %r is missing" % rel,
-                )
-
-    def test_every_track_record_label_has_a_year_range(self):
-        home = _read_page("home")
-        labels = re.findall(
-            r'<div class="track-label">(.*?)</div>', home, flags=re.S | re.I
-        )
-
-        self.assertTrue(labels, "home page needs Track record labels")
-        for label in labels:
-            text = html.unescape(re.sub(r"<[^>]+>", "", label))
-            with self.subTest(label=text):
-                self.assertRegex(text, r"\d{4}–(?:\d{4}|present)")
-
-    def test_favicon_links_and_assets_exist(self):
-        self.assertTrue(os.path.isfile(_path("favicon.svg")))
-        self.assertTrue(os.path.isfile(_path("favicon.ico")))
-        touch_icon_path = _path("apple-touch-icon.png")
-        self.assertTrue(os.path.isfile(touch_icon_path))
-        with open(touch_icon_path, "rb") as touch_icon:
-            png_header = touch_icon.read(24)
-        self.assertEqual(png_header[:8], b"\x89PNG\r\n\x1a\n")
-        self.assertEqual(png_header[12:16], b"IHDR")
-        self.assertEqual((180, 180), struct.unpack(">II", png_header[16:24]))
-        icon_pages = {**PAGES, "404": "404.html"}
-        for name, rel in icon_pages.items():
-            with self.subTest(page=name):
-                with open(_path(rel), encoding="utf-8") as page_file:
-                    html = page_file.read()
-                self.assertRegex(
-                    html,
-                    r'<link rel="icon" href="/favicon\.svg" type="image/svg\+xml">',
-                )
-                self.assertRegex(
-                    html,
-                    r'<link rel="icon" href="/favicon\.ico" sizes="any">',
-                )
-                self.assertRegex(
-                    html,
-                    r'<link rel="apple-touch-icon" href="/apple-touch-icon\.png">',
-                )
-
-
-class LcpImagePriorityTests(unittest.TestCase):
-    """Desktop LCP images stay eager and receive high fetch priority."""
-
-    @staticmethod
-    def _image_in_figure(html, figure_class):
-        figure = re.search(
-            r'<figure class="' + re.escape(figure_class) + r'">.*?</figure>',
-            html,
-            flags=re.S,
-        )
-        if figure is None:
-            raise AssertionError("figure %r is missing" % figure_class)
-        image = re.search(r"<img\b[^>]*>", figure.group(0), flags=re.I)
-        if image is None:
-            raise AssertionError("figure %r has no image" % figure_class)
-        return image.group(0)
-
-    def test_desktop_lcp_images_are_eager_and_prioritized(self):
-        home = _read_page("home")
-        portrait = self._image_in_figure(home, "portrait")
-        self.assertIn('fetchpriority="high"', portrait)
-        self.assertNotRegex(portrait, r'\bloading\s*=\s*["\']lazy["\']')
-
-
-class SitemapTests(unittest.TestCase):
-    def test_sitemap_lists_every_page_canonical(self):
-        sitemap = ET.parse(_path("sitemap.xml"))
-        locations = [
-            node.text
-            for node in sitemap.findall(
-                ".//{http://www.sitemaps.org/schemas/sitemap/0.9}loc"
-            )
-        ]
-        canonicals = []
-        for name in PAGES:
-            html = _read_page(name)
-            matches = re.findall(
-                r'<link\b[^>]*\brel="canonical"[^>]*\bhref="([^"]+)"',
-                html,
-                flags=re.I,
-            )
-            self.assertEqual(len(matches), 1, "%s needs one canonical URL" % name)
-            canonicals.extend(matches)
-        self.assertCountEqual(locations, canonicals)
-        self.assertEqual(len(locations), 4)
-
-
-class CanonicalUrlTests(unittest.TestCase):
-    """Each page names its public URL, with trailing slashes enforced by Vercel."""
-
-    def test_each_page_has_self_referencing_canonical_in_head(self):
-        urls = {
-            "home": "https://giulioni.com/",
-            "resume": "https://giulioni.com/career/",
-            "work": "https://giulioni.com/work/",
-            "media": "https://giulioni.com/media/",
-        }
-        for name, url in urls.items():
-            with self.subTest(page=name):
-                html = _strip_html_comments(_read_page(name))
-                head = re.search(r"<head\b[^>]*>(.*?)</head>", html, re.S | re.I)
-                self.assertIsNotNone(head, "%s must have a head element" % name)
-                canonicals = re.findall(
-                    r'<link\b[^>]*\brel="canonical"[^>]*>',
-                    head.group(1),
-                    flags=re.I,
-                )
-                self.assertEqual(
-                    ['<link rel="canonical" href="%s">' % url],
-                    canonicals,
-                    "%s must have exactly one self-referencing canonical" % name,
-                )
-
-    def test_vercel_enforces_trailing_slashes(self):
-        with open(_path("vercel.json"), encoding="utf-8") as fh:
-            vercel = json.load(fh)
-        self.assertIs(vercel.get("trailingSlash"), True)
-
-    def test_vercel_redirects_www_to_apex(self):
-        with open(_path("vercel.json"), encoding="utf-8") as fh:
-            vercel = json.load(fh)
-        self.assertEqual(
-            vercel.get("redirects"),
-            [
-                {
-                    "source": "/(.*)",
-                    "has": [{"type": "host", "value": "www.giulioni.com"}],
-                    "destination": "https://giulioni.com/$1",
-                    "permanent": True,
-                }
-            ],
-        )
-
-
-class NavigationTests(unittest.TestCase):
-    """Approved primary nav: Home, Resume, Selected work, Contact."""
-
-    PRIMARY_NAV_LABELS = ("Home", "Resume", "Selected work", "Contact")
-    PRIMARY_NAV_HREFS = (
-        "/",
-        "/career/",
-        "/work/",
-        "mailto:nick@giulioni.com",
-    )
-
-    def test_each_page_has_approved_primary_navigation(self):
-        for name in PAGES:
-            try:
-                html = _read_page(name)
-            except AssertionError as exc:
-                self.fail(str(exc))
-            hrefs = {h for _q, h in _anchor_pairs(_nav_block(html))}
-            nav_block = _nav_block(html)
-            with self.subTest(page=name):
-                self.assertTrue(
-                    "/" in hrefs or "/index.html" in hrefs,
-                    "%s nav missing Home link (/ or /index.html)" % name,
-                )
-                self.assertIn(
-                    "/career/", hrefs, "%s nav missing /career/ (Resume)" % name
-                )
-                self.assertIn(
-                    "/work/", hrefs, "%s nav missing /work/ (Selected work)" % name
-                )
-                self.assertIn(
-                    "mailto:nick@giulioni.com",
-                    hrefs,
-                    "%s nav missing Contact mailto link" % name,
-                )
-                # The four primary labels must appear inside the nav block.
-                for label in self.PRIMARY_NAV_LABELS:
-                    self.assertIn(
-                        ">" + label + "<",
-                        nav_block,
-                        "%s nav missing primary label %r" % (name, label),
-                    )
-
-    def test_media_is_not_in_primary_nav(self):
-        for name in PAGES:
-            try:
-                html = _read_page(name)
-            except AssertionError as exc:
-                self.fail(str(exc))
-            nav_block = _nav_block(html)
-            with self.subTest(page=name):
-                self.assertNotIn(
-                    ">Media<",
-                    nav_block,
-                    "%s primary nav must not contain literal Media label" % name,
-                )
-                self.assertNotIn(
-                    "/media/",
-                    nav_block,
-                    "%s primary nav must not link /media/" % name,
-                )
-
-
-class HomeTests(unittest.TestCase):
-    """Home page carries hero, track record, product band, and closing CTA."""
-
-    PRIMARY_HREFS = (
-        "/career/",
-        "/work/",
-        "mailto:nick@giulioni.com",
-        "/assets/nick-giulioni-resume.pdf",
-    )
-
-    def test_home_has_primary_actions_and_pdf_download(self):
-        html = _strip_html_comments(_read_page("home"))
-        for href in self.PRIMARY_HREFS:
-            with self.subTest(href=href):
-                self.assertIn(
-                    'href="%s"' % href,
-                    html,
-                    "home must link %r as a primary action or PDF download" % href,
-                )
-
-    def test_home_has_hero_lede(self):
-        html = _strip_html_comments(_read_page("home"))
-        self.assertIn("operator who doesn't accept the status quo", html.lower())
-
-    def test_home_hero_is_lede_targeting_and_one_primary_cta(self):
-        """First screen stays skimmable: no career narrative, one primary CTA."""
-        html = _strip_html_comments(_read_page("home"))
-        hero = html[html.index('<section class="home-hero"') : html.index("</section>")]
-        self.assertIn("hero-targeting", hero, "hero must carry a targeting line")
-        self.assertEqual(
-            hero.count("btn-primary"),
-            1,
-            "hero must offer exactly one primary CTA",
-        )
-        self.assertNotIn(
-            "btn-secondary",
-            hero,
-            "hero secondary buttons must be demoted to quiet links",
-        )
-        self.assertNotIn(
-            "expensive problem",
-            hero,
-            "career narrative must move out of the first screen",
-        )
-
-    def test_home_keeps_career_narrative_in_more_expand(self):
-        """The long Razer/Corsair/Meta paragraph stays on the page, below the
-        fold, inside a no-JavaScript <details> expand."""
-        html = _strip_html_comments(_read_page("home"))
-        start = html.index('<details class="track-more"')
-        expand = html[start : html.index("</details>", start)]
-        self.assertIn("<summary>", expand, "expand must have a summary control")
-        for phrase in (
-            "expensive problem",
-            "$150M annual budget",
-            "$3M+ in its first year",
-            "3,000+ doors",
-            "Estimating was the thing that kept breaking",
-            "Ballpark",
-        ):
-            with self.subTest(phrase=phrase):
-                self.assertIn(
-                    phrase,
-                    expand,
-                    "career expand must contain approved phrase %r" % phrase,
-                )
-
-    def test_home_carries_target_role_language(self):
-        html = _strip_html_comments(_read_page("home"))
-        for phrase in (
-            "AI product",
-            "solutions",
-            "enablement",
-            "forward-deployed",
-            "construction",
-            "field service",
-        ):
-            with self.subTest(phrase=phrase):
-                self.assertIn(
-                    phrase.lower(),
-                    html.lower(),
-                    "home must carry target-role phrase %r" % phrase,
-                )
-
-    def test_home_has_track_record_section(self):
-        html = _strip_html_comments(_read_page("home"))
-        self.assertIn("track-record", html)
-        for label in ("Ballpark", "Off Leash Construction", "Meta", "Corsair", "Razer"):
-            with self.subTest(label=label):
-                self.assertIn(label, html)
-
-    def test_home_track_record_has_three_cells_per_row(self):
-        html = _strip_html_comments(_read_page("home"))
-        self.assertIn("track-problem", html, "track record must have problem cells")
-        self.assertIn("track-did", html, "track record must have what-I-did cells")
-        self.assertIn("track-outcome", html, "track record must have outcome cells")
-
-    def test_home_has_product_band_with_ballpark_link(self):
-        html = _strip_html_comments(_read_page("home"))
-        self.assertIn("product-band", html)
-        self.assertIn('href="https://ballpark.build"', html)
-
-    def test_home_btn_classes_meet_coarse_pointer_44px_rule(self):
-        css = _read_css()
-        coarse = re.search(r"@media \(pointer: coarse\)\s*\{(.*?)\n\}", css, re.S)
-        self.assertIsNotNone(coarse, "styles.css must define @media (pointer: coarse)")
-        body = coarse.group(1)
-        self.assertIn(".btn", body, "coarse-pointer rule must cover .btn buttons")
-        self.assertRegex(
-            body,
-            r"min-height:\s*44px",
-            "coarse-pointer rule must set min-height: 44px",
-        )
-
-    def test_home_carries_meta_unit_growth_figures(self):
-        html = _strip_html_comments(_read_page("home"))
-        for token in ("Meta", "Portal", "Oculus", "300%", "450%"):
-            with self.subTest(token=token):
-                self.assertIn(
-                    token,
-                    html,
-                    "home must carry Meta tenure token %r" % token,
-                )
-        self.assertRegex(
-            html,
-            r"units.{0,20}300%|300%.{0,20}units",
-            "home must mention units near 300% figure",
-        )
-        self.assertRegex(
-            html,
-            r"units.{0,20}450%|450%.{0,20}units",
-            "home must mention units near 450% figure",
-        )
-
-
-class ResponsiveImageTests(unittest.TestCase):
-    """Each picture has local WebP candidates and a resized legacy fallback."""
-
-    def test_variants_exist_and_are_referenced(self):
-        expected = {
-            "portrait-nick": ("jpg", [160, 200, 320, 348, 400, 636]),
-        }
-        for page, names in (("home", list(expected)), ("work", [])):
-            pictures = re.findall(r"<picture>.*?</picture>", _read_page(page), re.S)
-            self.assertEqual(len(pictures), len(names))
-            for picture, name in zip(pictures, names):
-                ext, widths = expected[name]
-                tags = re.findall(r"<(?:source|img)\b[^>]*>", picture)
-                self.assertEqual(len(tags), 2)
-                attrs = [dict(re.findall(r'([\w-]+)="([^"]*)"', tag)) for tag in tags]
-                source, fallback = attrs
-                self.assertEqual(source["type"], "image/webp")
-                self.assertEqual(source["sizes"], fallback["sizes"])
-                self.assertTrue(source["sizes"])
-                for attributes, fmt in ((source, "webp"), (fallback, ext)):
-                    candidates = [value.strip() for value in attributes["srcset"].split(",")]
-                    self.assertEqual(candidates, [
-                        "/assets/%s-%s.%s %sw" % (name, width, fmt, width)
-                        for width in widths
-                    ])
-                    for candidate in candidates:
-                        path = _path(candidate.split()[0].lstrip("/"))
-                        self.assertTrue(os.path.isfile(path), path)
-                        self.assertGreater(os.path.getsize(path), 0)
-                self.assertIn(fallback["src"], [
-                    candidate.split()[0] for candidate in fallback["srcset"].split(", ")
-                ])
-                self.assertTrue(fallback["alt"])
-                self.assertEqual((fallback["width"], fallback["height"]),
-                                 ("636", "954"))
-                self.assertIsNone(fallback.get("loading"))
-
-
-class ShareCardTests(unittest.TestCase):
-    """All four pages ship portrait+title share cards.
-
-    Cards carry Nick's portrait only: no child faces in any public media."""
-
-    CARDS = {
-        "home": "og-home.png",
-        "resume": "og-career.png",
-        "work": "og-work.png",
-        "media": "og-media.png",
-    }
-
-    PAGE_URLS = {
-        "home": "https://giulioni.com/",
-        "resume": "https://giulioni.com/career/",
-        "work": "https://giulioni.com/work/",
-        "media": "https://giulioni.com/media/",
-    }
-
-    def test_share_card_images_exist_at_1200x630(self):
-        for card in sorted(set(self.CARDS.values())):
-            path = os.path.join(REPO_ROOT, "assets", card)
-            with self.subTest(card=card):
-                self.assertTrue(os.path.isfile(path), "missing share card %r" % card)
-                with open(path, "rb") as handle:
-                    header = handle.read(24)
-                self.assertEqual(
-                    header[:8], b"\x89PNG\r\n\x1a\n", "%r must be PNG" % card
-                )
-                width = int.from_bytes(header[16:20], "big")
-                height = int.from_bytes(header[20:24], "big")
-                self.assertEqual((width, height), (1200, 630))
-
-    def test_pages_declare_absolute_card_urls_and_twitter_equivalents(self):
-        for name, card in self.CARDS.items():
-            html = _strip_html_comments(_read_page(name))
-            url = "https://giulioni.com/assets/%s" % card
-            with self.subTest(page=name):
-                for tag in (
-                    '<meta property="og:image" content="%s">' % url,
-                    '<meta property="og:url" content="%s">' % self.PAGE_URLS[name],
-                    '<meta property="og:image:width" content="1200">',
-                    '<meta property="og:image:height" content="630">',
-                    '<meta name="twitter:card" content="summary_large_image">',
-                    '<meta name="twitter:image" content="%s">' % url,
-                ):
-                    self.assertIn(tag, html, "%s missing %r" % (name, tag))
-                self.assertRegex(
-                    html,
-                    r'<meta property="og:image:alt" content="[^"]{10,}">',
-                    "%s needs og:image:alt text" % name,
-                )
-
-    def test_media_page_ships_share_card(self):
-        html = _strip_html_comments(_read_page("media"))
-        self.assertIn(
-            '<meta property="og:image" content="https://giulioni.com/assets/og-media.png">',
-            html,
-        )
-
-
-class MixedSignalTests(unittest.TestCase):
-    """Home and Selected work must not carry Best Notes, venues, real
-    estate, or 48-hour STR claims."""
-
-    MIXED_TOKENS = (
-        "Best Notes",
-        "The Wilds",
-        "Laural Mill",
-        "Off Leash Investments",
-        "48 hours",
-        "short-term rental",
-    )
-
-    def test_home_carries_no_mixed_signal_tokens(self):
-        html = _strip_html_comments(_read_page("home"))
-        normalized = _normalized_text(html)
-        for token in self.MIXED_TOKENS:
-            with self.subTest(token=token):
-                self.assertNotIn(
-                    _normalized_text(token),
-                    normalized,
-                    "home must not carry mixed-signal token %r" % token,
-                )
-
-    def test_work_carries_no_mixed_signal_tokens(self):
-        html = _strip_html_comments(_read_page("work"))
-        normalized = _normalized_text(html)
-        for token in self.MIXED_TOKENS:
-            with self.subTest(token=token):
-                self.assertNotIn(
-                    _normalized_text(token),
-                    normalized,
-                    "work must not carry mixed-signal token %r" % token,
-                )
-
-    def test_resume_keeps_operating_history_only_in_subordinate_section(self):
-        html = _strip_html_comments(_read_page("resume"))
-        self.assertIn("Operating history", html)
-        self.assertIn("resume-section-subordinate", html)
-
-
-class ResumeTests(unittest.TestCase):
-    """/career/ renders the recruiter-first Resume."""
-
-    REQUIRED_SECTIONS = (
-        "Summary",
-        "Ballpark bridge",
-        "Experience",
-        "Earlier experience",
-        "Operating history",
-        "Education",
-    )
-
-    def test_resume_title_and_metadata(self):
-        html = _read_page("resume")
-        self.assertIn("<title>Resume | Nick Giulioni</title>", html)
-        self.assertIn(
-            '<meta property="og:title" content="Resume | Nick Giulioni">', html
-        )
-
-    def test_resume_has_required_sections(self):
-        html = _strip_html_comments(_read_page("resume"))
-        for section in self.REQUIRED_SECTIONS:
-            with self.subTest(section=section):
-                self.assertIn(
-                    section,
-                    html,
-                    "resume must include section heading %r" % section,
-                )
-
-    def test_resume_carries_contact_block_and_pdf_link(self):
-        html = _read_page("resume")
-        self.assertIn("mailto:nick@giulioni.com", html)
-        self.assertIn("linkedin.com/in/nickgiulioni", html)
-        self.assertIn(
-            'href="/assets/nick-giulioni-resume.pdf"', html,
-            "resume must link the downloadable PDF"
-        )
-        self.assertIn(
-            'download="Nick-Giulioni-Resume.pdf"', html,
-            "resume PDF link must carry the canonical download filename",
-        )
-
-    def test_resume_carries_target_role_language(self):
-        html = _strip_html_comments(_read_page("resume"))
-        for phrase in (
-            "AI product",
-            "solutions",
-            "enablement",
-            "forward-deployed",
-            "construction tech",
-            "field-service software",
-        ):
-            with self.subTest(phrase=phrase):
-                self.assertIn(
-                    phrase,
-                    html,
-                    "resume must carry target-role phrase %r" % phrase,
-                )
-
-    def test_resume_preserves_truthful_titles_dates_metrics(self):
-        html = _read_page("resume")
-        for token in (
-            "$150 million",
-            "team of six",
-            "$3 million",
-            "3,000+ doors",
-            "Oct 2023",
-            "Jul 2026",
-            "Nov 2019",
-            "Mar 2022",
-            "Apr 2016",
-            "Oct 2017",
-            "May 2015",
-            "Jul 2014",
-            "Jun 2013",
-            "Jun 2014",
-            "Dec 2011",
-            "May 2013",
-        ):
-            with self.subTest(token=token):
-                self.assertIn(
-                    token,
-                    html,
-                    "resume must preserve truthful token %r" % token,
-                )
-
-    def test_resume_off_leash_title_is_ceo_only(self):
-        html = _read_page("resume")
-        self.assertNotIn(
-            "Brand Ambassador",
-            html,
-            "Off Leash Construction title must be CEO only, not Brand Ambassador"
-        )
-
-    def test_resume_education_attendance_without_degree_or_major(self):
-        html = _strip_html_comments(_read_page("resume"))
-        self.assertIn("University of Southern California", html)
-        self.assertIn("Marshall School of Business", html)
-        self.assertIn("2009", html)
-        self.assertIn("2012", html)
-        forbidden = ("B.S.", "B.A.", "BS", "BA", "Bachelor", "MBA", "major")
-        for token in forbidden:
-            self.assertNotIn(
-                token,
-                html,
-                "resume education must not claim degree or major %r" % token,
-            )
-
-    def test_resume_carries_meta_unit_growth_figures(self):
-        html = _strip_html_comments(_read_page("resume"))
-        for token in ("Facebook / Meta", "Portal", "Oculus", "300%", "450%"):
-            with self.subTest(token=token):
-                self.assertIn(
-                    token,
-                    html,
-                    "resume must carry Meta tenure token %r" % token,
-                )
-        self.assertRegex(
-            html,
-            r"units.{0,20}300%|300%.{0,20}units",
-            "resume must mention units near 300% figure",
-        )
-        self.assertRegex(
-            html,
-            r"units.{0,20}450%|450%.{0,20}units",
-            "resume must mention units near 450% figure",
-        )
-
-
-class JobTitleTests(unittest.TestCase):
-    """Home and career job titles consistently abbreviate Senior as Sr."""
-
-    def test_job_titles_do_not_spell_out_senior(self):
-        for page in ("home", "resume"):
-            with self.subTest(page=page):
-                html = _strip_html_comments(_read_page(page))
-                titles = re.findall(
-                    r'<(?:p|span)\b[^>]*\bclass="(?:role|track-years)"[^>]*>'
-                    r'(.*?)</(?:p|span)>',
-                    html,
-                    flags=re.S,
-                )
-                self.assertTrue(titles, "%s must contain job titles" % page)
-                for title in titles:
-                    self.assertNotRegex(title, r"\bSenior\s")
-
-    def test_corsair_and_razer_use_approved_abbreviated_titles(self):
-        for page in ("home", "resume"):
-            for title in ("Sr. Ecommerce Sales Manager", "Sr. Ecommerce Manager"):
-                with self.subTest(page=page, title=title):
-                    self.assertIn(title, _read_page(page))
-
-
-class SelectedWorkTests(unittest.TestCase):
-    """/work/ renders one Ballpark case + one Also shipped + three receipts."""
-
-    def test_work_title_and_metadata(self):
-        html = _read_page("work")
-        self.assertIn("<title>Selected work | Nick Giulioni</title>", html)
-        self.assertIn(
-            '<meta property="og:title" content="Selected work | Nick Giulioni">',
-            html,
-        )
-
-    def test_ballpark_case_carries_four_labelled_facts(self):
-        html = _read_page("work")
-        ballpark = re.search(
-            r'<article\b[^>]*data-project="ballpark".*?</article>', html, re.S
-        )
-        self.assertIsNotNone(ballpark, "Ballpark case article missing")
-        block = ballpark.group(0)
-        facts = re.findall(r'data-fact="([^"]+)"', block)
-        self.assertEqual(len(facts), 4)
-        self.assertEqual(
-            sorted(facts),
-            sorted(["context", "problem", "built", "status"]),
-            "Ballpark must carry Operating context / Problem / Built / Status",
-        )
-        forbidden_phrases = (
-            "public launch",
-            "publicly launched",
-            "ROI",
-            "savings",
-            "customer count",
-            "adoption",
-            "live at",
-        )
-        for phrase in forbidden_phrases:
-            self.assertNotIn(
-                phrase.lower(),
-                block.lower(),
-                "Ballpark must not carry claim %r" % phrase,
-            )
-
-    def test_a_little_true_is_compact_also_shipped_with_one_link(self):
-        html = _strip_html_comments(_read_page("work"))
-        self.assertIn("Also shipped", html)
-        self.assertIn('href="https://alittletrue.com"', html)
-        self.assertEqual(html.count('href="https://alittletrue.com"'), 1)
-        also = re.search(
-            r'<article\b[^>]*data-project="a-little-true".*?</article>', html, re.S
-        )
-        self.assertIsNotNone(also)
-        block = also.group(0)
-        urls = re.findall(r'href="(https?://[^"]+)"', block)
-        self.assertEqual(urls, ["https://alittletrue.com"])
-
-    def test_work_receipts_are_exactly_three(self):
-        html = _strip_html_comments(_read_page("work"))
-        receipts_block = re.search(
-            r'<section\s+class="receipts">.*?</section>', html, re.S
-        )
-        self.assertIsNotNone(receipts_block)
-        block = receipts_block.group(0)
-        numbers = re.findall(r"<strong>([^<]+)</strong>", block)
-        self.assertEqual(sorted(numbers), sorted(["3,000+", "$3M+", "$150M"]))
-        for forbidden in (
-            "48 hours",
-            "Best Notes",
-            "The Wilds",
-            "Laural Mill",
-            "Off Leash Investments",
-            "short-term rental",
-        ):
-            self.assertNotIn(
-                forbidden,
-                block,
-                "receipts must not carry %r" % forbidden,
-            )
-
-
-class MediaArchiveTests(unittest.TestCase):
-    """/media/ retains the seven incumbent URLs and stays out of the
-    primary nav."""
-
-    def test_media_title_and_metadata(self):
-        html = _read_page("media")
-        self.assertIn("<title>Earlier media | Nick Giulioni</title>", html)
-        self.assertIn(
-            '<meta property="og:title" content="Earlier media | Nick Giulioni">', html
-        )
-
-    def test_intrigue_podcast_show_name(self):
-        html = _strip_html_comments(_read_page("media"))
-        entry = re.search(
-            r'<article class="media-entry">(?:(?!</article>).)*'
-            r'href="https://www\.youtube\.com/watch\?v=dv72SopKqeM"'
-            r'(?:(?!</article>).)*</article>',
-            html,
-            flags=re.S,
-        )
-        self.assertIsNotNone(entry, "The Intrigue episode must stay on /media/")
-        self.assertIn("The Intrigue Podcast", entry.group(0))
-
-    def test_each_approved_url_appears_exactly_once_as_href(self):
-        html = _strip_html_comments(_read_page("media"))
-        for _title, url in MEDIA_ENTRIES:
-            with self.subTest(url=url):
-                self.assertEqual(
-                    html.count('href="%s"' % url),
-                    1,
-                    "Earlier media must link %r exactly once" % url,
-                )
-
-    def test_no_external_image_assets_on_media(self):
-        html = _strip_html_comments(_read_page("media"))
-        self.assertNotRegex(
-            html,
-            r"<img\b",
-            "Earlier media must not carry any <img> tags (no media-logo assets)",
-        )
-
-
-def _pdf_link_urls(data):
-    """Read literal URI annotations, including Flate-compressed object streams."""
-    chunks = [data]
-    for stream in re.finditer(rb"stream\r?\n(.*?)\r?\nendstream", data, re.S):
-        try:
-            chunks.append(zlib.decompress(stream[1]))
-        except zlib.error:
-            continue
-    urls = []
-    for chunk in chunks:
-        for uri in re.finditer(rb"/URI\s*\(((?:\\.|[^\\)])*)\)", chunk, re.S):
-            value = re.sub(
-                rb"\\([0-7]{1,3}|\r\n|[\s\S])",
-                lambda match: (
-                    bytes([int(match[1], 8)]) if match[1][:1] in b"01234567"
-                    else {b"n": b"\n", b"r": b"\r", b"t": b"\t",
-                          b"b": b"\b", b"f": b"\f", b"\n": b"",
-                          b"\r": b"", b"\r\n": b""}.get(match[1], match[1])
-                ),
-                uri[1],
-            )
-            urls.append(value.decode("utf-8"))
-    return urls
-
-
-class ResumePdfTests(unittest.TestCase):
-    """The downloadable resume PDF is generated, two pages, and contains
-    the required tokens."""
-
-    REQUIRED_PDF_TOKENS = (
-        "resume",
-        "nick@giulioni.com",
-        "linkedin.com/in/nickgiulioni",
-        "ballpark",
-    )
-
-    @staticmethod
-    def _pdf_path():
-        return _path("assets/nick-giulioni-resume.pdf")
-
-    def test_pdf_exists(self):
-        self.assertTrue(
-            os.path.isfile(self._pdf_path()),
-            "resume PDF must be committed at assets/nick-giulioni-resume.pdf",
-        )
-
-    def test_pdf_links_are_absolute_and_public(self):
-        urls = _pdf_link_urls(Path(self._pdf_path()).read_bytes())
-        self.assertTrue(urls, "resume PDF must contain readable link annotations")
-        for url in urls:
-            with self.subTest(url=url):
-                self.assertTrue(urlsplit(url).scheme, "PDF links must be absolute")
-                self.assertNotRegex(url.lower(), r"127\.0\.0\.1|localhost|0\.0\.0\.0")
-        self.assertIn("https://giulioni.com/work/", urls)
-        for contact in SOCIAL_HREFS:
-            self.assertIn(contact, urls)
-
-    def test_pdf_link_reader_handles_compressed_and_escaped_uris(self):
-        annotations = (rb"<< /URI (http://local\150ost/work/) >>"
-                       rb"<< /URI (https://giulioni.com/work/\(example\)) >>")
-        for payload in (annotations, b"<< /Filter /FlateDecode >>\nstream\n"
-                        + zlib.compress(annotations) + b"\nendstream"):
-            self.assertEqual(_pdf_link_urls(payload), [
-                "http://localhost/work/", "https://giulioni.com/work/(example)",
-            ])
-
-    def test_pdf_is_at_most_two_pages(self):
-        if not os.path.isfile(self._pdf_path()):
-            self.skipTest("PDF not yet generated; run tools/regen_resume_pdf.sh")
-        info = subprocess.run(
-            ["pdfinfo", self._pdf_path()],
-            check=True,
-            capture_output=True,
-            text=True,
-        ).stdout
-        match = re.search(r"^Pages:\s+(\d+)", info, re.M)
-        self.assertIsNotNone(match, "pdfinfo must report a Pages count")
-        pages = int(match.group(1))
-        self.assertLessEqual(pages, 2, "resume PDF must be at most 2 pages")
-
-    def test_pdf_text_contains_required_tokens(self):
-        if not os.path.isfile(self._pdf_path()):
-            self.skipTest("PDF not yet generated; run tools/regen_resume_pdf.sh")
-        text = subprocess.run(
-            ["pdftotext", "-layout", self._pdf_path(), "-"],
-            check=True,
-            capture_output=True,
-            text=True,
-        ).stdout
-        normalized = _normalized_text(text)
-        for token in self.REQUIRED_PDF_TOKENS:
-            with self.subTest(token=token):
-                self.assertIn(
-                    _normalized_text(token),
-                    normalized,
-                    "resume PDF must contain %r" % token,
-                )
-
-
-class ResumePdfRegenTests(unittest.TestCase):
-    @staticmethod
-    def _tiny_pdf(text, pages=1, uri="https://giulioni.com/work/"):
-        objects = [
-            b"<< /Type /Catalog /Pages 2 0 R >>",
-            ("<< /Type /Pages /Kids [%s] /Count %d >>" % (
-                " ".join("%d 0 R" % (5 + i) for i in range(pages)), pages
-            )).encode(),
-            b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
-        ]
-        content = ("BT /F1 12 Tf 40 750 Td (%s) Tj ET" % text).encode()
-        objects.append(b"<< /Length %d >>\nstream\n" % len(content)
-                       + content + b"\nendstream")
-        objects.extend([b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] "
-                        b"/Resources << /Font << /F1 3 0 R >> >> /Contents 4 0 R "
-                        + ("/Annots [%d 0 R] >>" % (5 + pages)).encode()] * pages)
-        objects.append(("<< /Type /Annot /Subtype /Link /Rect [40 730 200 750] "
-                        "/A << /S /URI /URI (%s) >> >>" % uri).encode())
-        pdf = b"%PDF-1.4\n"
-        offsets = [0]
-        for number, obj in enumerate(objects, 1):
-            offsets.append(len(pdf))
-            pdf += b"%d 0 obj\n" % number + obj + b"\nendobj\n"
-        xref = len(pdf)
-        pdf += b"xref\n0 %d\n0000000000 65535 f \n" % len(offsets)
-        for offset in offsets[1:]:
-            pdf += b"%010d 00000 n \n" % offset
-        pdf += ("trailer\n<< /Size %d /Root 1 0 R >>\nstartxref\n%d\n%%%%EOF\n"
-                % (len(offsets), xref)).encode()
-        return pdf
-
-    def test_chrome_exit_requires_a_fresh_valid_pdf(self):
-        valid = self._tiny_pdf(
-            "Resume nick@giulioni.com linkedin.com/in/nickgiulioni Ballpark"
-        )
-        cases = (
-            ("missing", None, 2, False, "no fresh, non-empty PDF"),
-            ("empty", b"", 0, False, "no fresh, non-empty PDF"),
-            ("valid_teardown", valid, 2, True, "Chrome exited 2"),
-            ("valid", valid, 0, True, "Wrote"),
-            ("invalid", b"not a PDF", 2, False, "pdfinfo"),
-            ("missing_text", self._tiny_pdf("Resume"), 2, False, "missing required token"),
-            ("too_many_pages", self._tiny_pdf("Resume", pages=3), 2, False, "page count"),
-            ("stale", valid, 2, False, "no fresh, non-empty PDF"),
-        ) + tuple(
-            ("bad_link_%d" % i, self._tiny_pdf(
-                "Resume nick@giulioni.com linkedin.com/in/nickgiulioni Ballpark",
-                uri=url,
-            ), 0, False, "PDF link validation failed")
-            for i, url in enumerate((
-                "http://127.0.0.1:58890/work/", "http://localhost/work/",
-                "http://0.0.0.0/work/", "/work/", "work/",
-                "//giulioni.com/work/",
-            ))
-        )
-        for name, payload, chrome_status, success, message in cases:
-            with self.subTest(case=name), tempfile.TemporaryDirectory() as root:
-                os.makedirs(os.path.join(root, "tools"))
-                os.makedirs(os.path.join(root, "career"))
-                os.makedirs(os.path.join(root, "assets"))
-                script = os.path.join(root, "tools", "regen_resume_pdf.sh")
-                shutil.copyfile(_path("tools/regen_resume_pdf.sh"), script)
-                for page in ("index.html", "career/index.html"):
-                    with open(os.path.join(root, page), "w") as handle:
-                        handle.write('<html><link href="/styles.css">Resume '
-                                     '<a href="/work/">Selected work</a>'
-                                     '<a href="../media/">Media</a>'
-                                     '<a href="mailto:nick@giulioni.com">Email</a>'
-                                     '<a href="https://www.linkedin.com/in/nickgiulioni">'
-                                     'LinkedIn</a></html>')
-                Path(root, "styles.css").write_text("/* local styles */")
-                source_html = Path(root, "career/index.html").read_bytes()
-                default_output = os.path.join(root, "assets", "nick-giulioni-resume.pdf")
-                output_dir = os.path.join(root, "output with spaces")
-                os.mkdir(output_dir)
-                output = os.path.join(output_dir, "resume.pdf")
-                original = b"existing PDF must survive a failed render"
-                for path in (default_output, output):
-                    with open(path, "wb") as handle:
-                        handle.write(original)
-                fixture = os.path.join(root, "fixture.pdf")
-                if payload is not None:
-                    with open(fixture, "wb") as handle:
-                        handle.write(payload)
-                chrome = os.path.join(root, "fake-chrome")
-                with open(chrome, "w") as handle:
-                    handle.write("""#!/usr/bin/env python3
-import os
-import shutil
-import sys
-from urllib.parse import urljoin
-from urllib.request import urlopen
-url = sys.argv[-1]
-with urlopen(url) as response:
-    html = response.read().decode()
-assert '<a href="https://giulioni.com/work/">' in html
-assert '<a href="https://giulioni.com/media/">' in html
-assert '<a href="mailto:nick@giulioni.com">' in html
-assert '<a href="https://www.linkedin.com/in/nickgiulioni">' in html
-assert '<link href="/styles.css">' in html
-with urlopen(urljoin(url, '/styles.css')) as response:
-    assert response.read() == b'/* local styles */'
-output = next(arg.split('=', 1)[1] for arg in sys.argv[1:]
-              if arg.startswith('--print-to-pdf='))
-if os.path.exists(os.environ['FAKE_PDF']):
-    shutil.copyfile(os.environ['FAKE_PDF'], output)
-    if os.environ['FAKE_MODE'] == 'stale':
-        os.utime(output, (1, 1))
-sys.exit(int(os.environ['FAKE_STATUS']))
-""")
-                os.chmod(chrome, 0o755)
-                env = dict(os.environ, CHROME_BIN=chrome, OUT=output,
-                           FAKE_PDF=fixture, FAKE_MODE=name,
-                           FAKE_STATUS=str(chrome_status), RESUME_PDF_PORT="0")
-                result = subprocess.run(
-                    ["bash", script], env=env, capture_output=True, text=True, timeout=30
-                )
-                logs = result.stdout + result.stderr
-                self.assertEqual(result.returncode == 0, success, logs)
-                self.assertIn(message, logs)
-                with open(output, "rb") as handle:
-                    self.assertEqual(handle.read(), payload if success else original)
-                with open(default_output, "rb") as handle:
-                    self.assertEqual(handle.read(), original)
-                self.assertEqual(os.listdir(output_dir), ["resume.pdf"])
-                self.assertEqual(Path(root, "career/index.html").read_bytes(), source_html)
-                if not success:
-                    self.assertNotIn("Wrote", result.stdout)
-
-
-class ResponsiveAndA11yTests(unittest.TestCase):
-    """Viewport-fit, safe-area, coarse-pointer 44px, reduced-motion are
-    all present across pages and CSS."""
-
-    def test_all_pages_use_cover_viewport(self):
-        viewport = (
-            'content="width=device-width, initial-scale=1, viewport-fit=cover"'
-        )
-        for page in PAGES:
-            with self.subTest(page=page):
-                self.assertIn(viewport, _read_page(page))
-
-    def test_css_has_safe_area_touch_and_motion_guards(self):
-        css = _read_css()
-        for token in (
-            "env(safe-area-inset-left, 0px)",
-            "env(safe-area-inset-right, 0px)",
-            "env(safe-area-inset-bottom, 0px)",
-            "@media (pointer: coarse)",
-            "@media (prefers-reduced-motion: reduce)",
-        ):
-            with self.subTest(token=token):
-                self.assertIn(token, css)
-
-    def test_coarse_pointer_rule_includes_interactive_elements(self):
-        css = _read_css()
-        coarse = re.search(r"@media \(pointer: coarse\)\s*\{(.*?)\n\}", css, re.S)
-        self.assertIsNotNone(coarse)
-        body = coarse.group(1)
-        for selector in (
-            ".site-nav a",
-            ".btn",
-            ".destination-link",
-            ".media-entry .episode-title a",
-            ".contact-line a",
-        ):
-            with self.subTest(selector=selector):
-                self.assertIn(
-                    selector,
-                    body,
-                    "coarse-pointer rule must cover %s" % selector,
-                )
-        self.assertRegex(
-            body,
-            r"min-height:\s*44px",
-            "coarse-pointer rule must set min-height: 44px",
-        )
-
-    def test_print_css_keeps_min_7_8pt_body_size(self):
-        css = _read_css()
-        print_block = re.search(r"@media print\s*\{(.*?)\n\}", css, re.S)
-        self.assertIsNotNone(print_block)
-        body_size = re.search(
-            r"body\s*\{[^}]*font-size:\s*([0-9.]+)pt", print_block.group(1)
-        )
-        self.assertIsNotNone(body_size)
-        size = float(body_size.group(1))
-        self.assertGreaterEqual(
-            size, 7.8, "print body font-size must be at least 7.8pt"
-        )
-
-
-class RootRelativeTests(unittest.TestCase):
-    """Directory routing requires root-relative references from any depth."""
-
-    def test_all_local_references_are_root_relative(self):
-        for name in PAGES:
-            try:
-                html = _read_page(name)
-            except AssertionError as exc:
-                self.fail(str(exc))
-            local = _local_refs(html)
-            with self.subTest(page=name):
-                self.assertTrue(
-                    local, "%s has no local references to assert against" % name
-                )
-                bad = sorted(r for r in local if not r.startswith("/"))
-                self.assertEqual(
-                    bad,
-                    [],
-                    "%s has non-root-relative references: %r" % (name, bad),
-                )
-
-
-class SocialLinksTests(unittest.TestCase):
-    """Every page carries the approved contact links, exact URLs."""
-
-    def test_each_page_lists_approved_contact_links(self):
-        for name in PAGES:
-            try:
-                html = _read_page(name)
-            except AssertionError as exc:
-                self.fail(str(exc))
-            hrefs = {h for _q, h in _anchor_pairs(html)}
-            with self.subTest(page=name):
-                for href in SOCIAL_HREFS:
-                    self.assertIn(
-                        href,
-                        hrefs,
-                        "%s missing approved contact link %r" % (name, href),
-                    )
-
-
-class MarkupHygieneTests(unittest.TestCase):
-    """Markup stays CSP-safe: no scripts, inline styles, handlers."""
-
-    def test_no_script_tags(self):
-        for name in PAGES:
-            try:
-                html = _read_page(name)
-            except AssertionError as exc:
-                self.fail(str(exc))
-            with self.subTest(page=name):
-                self.assertNotRegex(
-                    _strip_html_comments(html),
-                    r"<script\b",
-                    "%s must not contain <script> tags" % name,
-                )
-
-    def test_no_inline_style_blocks_or_attributes(self):
-        for name in PAGES:
-            try:
-                html = _read_page(name)
-            except AssertionError as exc:
-                self.fail(str(exc))
-            clean = _strip_html_comments(html)
-            with self.subTest(page=name):
-                self.assertNotRegex(
-                    clean, r"<style\b", "%s must not contain inline <style> blocks" % name
-                )
-                self.assertNotRegex(
-                    clean,
-                    r'(?<![A-Za-z-])style\s*=\s*["\']',
-                    "%s must not use style= attributes" % name,
-                )
-
-    def test_no_inline_event_handlers_or_javascript_urls(self):
-        for name in PAGES:
-            try:
-                html = _read_page(name)
-            except AssertionError as exc:
-                self.fail(str(exc))
-            clean = _strip_html_comments(html)
-            with self.subTest(page=name):
-                self.assertNotRegex(
-                    clean,
-                    r'(?<![A-Za-z-])on[a-z]+\s*=\s*["\']',
-                    "%s must not use inline event handlers" % name,
-                )
-                self.assertNotRegex(
-                    clean,
-                    r"(?i)javascript:",
-                    "%s must not use javascript: URLs" % name,
-                )
-
-    def test_no_open_design_data_attributes(self):
-        for name in PAGES:
-            try:
-                html = _read_page(name)
-            except AssertionError as exc:
-                self.fail(str(exc))
-            with self.subTest(page=name):
-                self.assertNotIn(
-                    "data-od-id",
-                    _strip_html_comments(html),
-                    "%s must not carry Open Design data-od-id attributes" % name,
-                )
-
-
-def _read_css():
-    path = _path("styles.css")
-    if not os.path.isfile(path):
-        raise AssertionError("styles.css is missing")
-    with open(path, encoding="utf-8") as fh:
-        return fh.read()
-
-
-class CssTests(unittest.TestCase):
-    """styles.css is balanced and properly structured."""
-
-    @classmethod
-    def _css_noise_stripped(cls):
-        css = _read_css()
-        css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
-        css = re.sub(r'"[^"]*"', '""', css)
-        css = re.sub(r"'[^']*'", "''", css)
-        return css
-
-    def test_styles_css_exists_and_braces_balance(self):
-        css = self._css_noise_stripped()
-        self.assertEqual(
-            css.count("{"),
-            css.count("}"),
-            "styles.css has unbalanced braces",
-        )
-
-    def test_css_uses_new_palette(self):
-        css = _read_css()
-        self.assertIn("#f6f3ec", css, "CSS must use paper/cream color #f6f3ec")
-        self.assertIn("#16211c", css, "CSS must use ink/forest color #16211c")
-        self.assertIn("#b8501f", css, "CSS must use rust accent #b8501f")
-
-    def test_css_does_not_use_old_palette(self):
-        css = _read_css()
-        self.assertNotIn("#1f2ec4", css, "CSS must not use old ultramarine #1f2ec4")
-
-
-class OpenDesignArtifactTests(unittest.TestCase):
-    """Open Design-only files must not ship to production."""
-
-    def test_no_open_design_sidecar_or_source_files(self):
-        forbidden_names = {"home.html", "DESIGN.md", "brand-spec.md"}
-        found = []
-        for dirpath, _dirs, files in os.walk(REPO_ROOT):
-            if os.path.basename(dirpath) == ".git":
-                continue
-            for fname in files:
-                rel = os.path.relpath(os.path.join(dirpath, fname), REPO_ROOT)
-                if fname in forbidden_names or fname.endswith(".artifact.json"):
-                    found.append(rel)
-        self.assertEqual(
-            [],
-            sorted(found),
-            "Open Design-only files must not ship to production: %r" % sorted(found),
-        )
-
-
-class NotFoundPageTests(unittest.TestCase):
-    """Root 404.html: Vercel serves it for unknown paths with status 404."""
-
-    def setUp(self):
-        path = _path("404.html")
-        self.assertTrue(os.path.isfile(path), "404.html is missing at repo root")
-        with open(path, encoding="utf-8") as fh:
-            self.html = _strip_html_comments(fh.read())
-
-    def test_links_back_to_main_pages(self):
-        hrefs = {h for _q, h in _anchor_pairs(self.html)}
-        for href in ("/", "/career/", "/work/"):
-            with self.subTest(href=href):
-                self.assertIn(href, hrefs, "404.html missing link to %r" % href)
-
-    def test_is_noindex(self):
-        self.assertRegex(
-            self.html,
-            r'<meta\s+name="robots"\s+content="noindex"\s*>',
-            "404.html must carry <meta name=\"robots\" content=\"noindex\">",
-        )
-
-    def test_uses_shared_stylesheet_and_csp_safe_markup(self):
-        self.assertIn('<link rel="stylesheet" href="/styles.css">', self.html)
-        self.assertNotRegex(self.html, r"<script\b|<style\b")
-        self.assertNotRegex(self.html, r'(?<![A-Za-z-])(style|on[a-z]+)\s*=\s*["\']')
-        bad = sorted(r for r in _local_refs(self.html) if not r.startswith("/"))
-        self.assertEqual(bad, [], "404.html has non-root-relative references")
-
-    def test_unknown_paths_are_not_rewritten_to_200(self):
-        with open(_path("vercel.json"), encoding="utf-8") as fh:
-            vercel = fh.read()
-        self.assertNotIn('"rewrites"', vercel, "rewrites would serve 404.html as 200")
-
-
-class DeploymentReferences(HTMLParser):
-    """URLs used by markup, including responsive images and share cards."""
-
-    def __init__(self):
-        super().__init__()
-        self.urls = []
-
+import xml.etree.ElementTree as ET
+
+ROOT = Path(__file__).resolve().parents[1]
+AREA_SLUGS = ['carmel', 'westfield', 'fishers', 'north-indianapolis', 'noblesville', 'zionsville']
+PATHS = ['/', '/sell/', '/buy/', '/areas/'] + ['/areas/'+s+'/' for s in AREA_SLUGS] + ['/about/', '/contact/', '/podcast/', '/privacy/']
+EXTRA = ['/contact/thanks/', '/contact/error/', '/404.html']
+
+def file_for(url):
+    return ROOT / ('404.html' if url == '/404.html' else url.lstrip('/') + 'index.html')
+
+class Markup(HTMLParser):
+    def __init__(self, text):
+        super().__init__(convert_charrefs=True)
+        self.tags = []
+        self.feed(text)
     def handle_starttag(self, tag, attrs):
-        attrs = dict(attrs)
-        self.urls.extend(attrs[key] for key in ("href", "src") if attrs.get(key))
-        for candidate in attrs.get("srcset", "").split(","):
-            if candidate.strip():
-                self.urls.append(candidate.split()[0])
-        if tag == "meta" and attrs.get("property", attrs.get("name")) in (
-            "og:image", "twitter:image",
-        ):
-            self.urls.append(attrs["content"])
+        self.tags.append((tag, dict(attrs)))
+    def attrs(self, tag): return [a for t,a in self.tags if t == tag]
 
+class SiteTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.pages = {u: file_for(u).read_text() for u in PATHS + EXTRA}
+        cls.site = json.loads((ROOT/'site.json').read_text())
+        cls.config = json.loads((ROOT/'vercel.json').read_text())
 
-class VercelIgnoreTests(unittest.TestCase):
-    """Internal files stay out; pages and their dependencies remain deployable."""
+    def test_pages_and_head(self):
+        titles, descriptions = [], []
+        for url, text in self.pages.items():
+            with self.subTest(url=url):
+                m = Markup(text)
+                self.assertEqual(len(m.attrs('h1')), 1)
+                title = re.search(r'<title>(.*?)</title>',text).group(1)
+                titles.append(title)
+                metas = {a.get('name',a.get('property')): a.get('content') for a in m.attrs('meta')}
+                descriptions.append(metas['description'])
+                for tag in ['og:title','og:description','og:url','og:image','twitter:card','twitter:title','twitter:description','twitter:image']: self.assertTrue(metas.get(tag))
+                self.assertTrue(metas['og:image'].startswith('https://giulioni.com/assets/'))
+                canonicals=[a for a in m.attrs('link') if a.get('rel')=='canonical']
+                self.assertEqual(canonicals,[] if url in EXTRA else [{'rel':'canonical','href':'https://giulioni.com'+url}])
+                self.assertIn('viewport-fit=cover',metas['viewport'])
+                self.assertEqual(len([a for a in m.attrs('link') if a.get('as')=='font']),2)
+                if url in EXTRA: self.assertEqual(metas['robots'],'noindex')
+        self.assertEqual(len(titles),len(set(titles)))
+        self.assertEqual(len(descriptions),len(set(descriptions)))
 
-    def ignored_paths(self, paths):
-        # Let Git parse its own syntax, isolated from repo/global ignore rules.
-        with tempfile.TemporaryDirectory() as directory:
-            subprocess.run(["git", "init", "-q", directory], check=True)
-            Path(directory, ".gitignore").write_text(
-                Path(_path(".vercelignore")).read_text(encoding="utf-8"),
-                encoding="utf-8",
-            )
-            result = subprocess.run(
-                ["git", "-c", "core.excludesFile=/dev/null", "check-ignore",
-                 "--no-index", "-z", "--stdin"],
-                cwd=directory, input="\0".join(sorted(paths)) + "\0",
-                text=True, capture_output=True,
-            )
-            self.assertIn(result.returncode, (0, 1), result.stderr)
-            return set(result.stdout.split("\0")) - {""}
+    def test_shared_footer_contact_and_copy(self):
+        footers = []
+        for url,text in self.pages.items():
+            with self.subTest(url=url):
+                m=Markup(text)
+                footers.append(re.search(r'<footer class="site-footer">.*?</footer>',text,re.S).group())
+                self.assertLess(text.index('</main>'),text.index('<footer'))
+                self.assertIn('class="disclosure"',text)
+                self.assertIn('760 E. 52nd St',text)
+                self.assertIn('317-255-7767',text)
+                self.assertIn('T&amp;H Realty Services',text)
+                self.assertIn({'src':'/assets/equal-housing.svg','width':'28','height':'28','alt':'Equal Housing Opportunity'},m.attrs('img'))
+                self.assertEqual({a['href'] for a in m.attrs('a') if a.get('href','').startswith('tel:')},{self.site['phone_tel']})
+                self.assertIn('mailto:'+self.site['email'],text)
+                stats = re.findall(r'class="stat-properties">(.*?)</span>',text)
+                for value in stats: self.assertEqual(value,self.site['properties_touched']+' properties touched')
+                for number in re.findall(r'\b\d+\+ properties touched',text): self.assertEqual(number,self.site['properties_touched']+' properties touched')
+                plain = re.sub('<[^>]*>',' ',text)
+                plain = plain.replace(self.site['podcast_line'].replace('&','&amp;'),'')
+                self.assertNotRegex(plain,r'(?i)\bhosts?\b')
+                self.assertNotIn('®',text)
+        self.assertEqual(len(set(footers)),1)
 
-    def test_internal_paths_are_excluded(self):
-        paths = {
-            "AGENTS.md", "DEPLOYMENT.md", "README.md", "NOTES.md",
-            "PLAN", "PLAN.txt", "PLAN-release.json", ".github/workflows/check.yml",
-            ".gitignore", ".vercelignore", "assets/favicon-preview.png",
-            "docs/future/note.txt", "tests/future/test.py", "tools/future/script.sh",
+    def test_forms(self):
+        total=0
+        for url,text in self.pages.items():
+            for form in re.findall(r'<form\b.*?</form>',text,re.S):
+                total+=1
+                m=Markup(form)
+                self.assertEqual(m.attrs('form')[0]['method'],'post')
+                self.assertEqual(m.attrs('form')[0]['action'],'/api/consult')
+                fields={a.get('name'):a for tag,a in m.tags if tag in ['input','textarea']}
+                for field in ['name','email','phone','consent']: self.assertIn('required',fields[field])
+                self.assertNotIn('checked',fields['consent'])
+                self.assertEqual(fields['company_website']['tabindex'],'-1')
+                self.assertEqual(fields['company_website']['autocomplete'],'off')
+                self.assertIn('href="/privacy/"',form)
+                if url != '/contact/':
+                    self.assertIn('required',fields['location'])
+                    self.assertEqual(fields['intent']['value'],'Sell or rent review')
+        self.assertEqual(total,3)
+        for url in ['/','/sell/']:
+            slot=re.search(r'<section id="sell-or-rent".*?</section>',self.pages[url],re.S).group()
+            self.assertIn('class="sell-or-rent__embed"><form',slot)
+
+    def test_scoped_links(self):
+        for url,text in self.pages.items():
+            self.assertEqual(text.count('class="mgmt-referral"'),int(url=='/sell/'))
+            self.assertEqual(text.count('https://threaltyinc.com/'),int(url=='/sell/'))
+            self.assertEqual(text.count('https://ballpark.build'),int(url=='/about/'))
+        self.assertEqual(len(Markup(self.pages['/podcast/']).attrs('article')),6)
+
+    def test_removed_paths_and_redirects(self):
+        paths=['career','work','media','docs','assets/nick-giulioni-resume.pdf','tools/regen_resume_pdf.sh','assets/og-career.png','assets/og-work.png','assets/og-media.png']
+        for path in paths: self.assertFalse((ROOT/path).exists(),path)
+        redirects={r['source']:r for r in self.config['redirects']}
+        for old,new in [('career','about'),('work','about'),('media','podcast')]:
+            for suffix in ['','/']:
+                self.assertEqual(redirects['/'+old+suffix]['destination'],'/'+new+'/')
+                self.assertTrue(redirects['/'+old+suffix]['permanent'])
+        self.assertEqual(redirects['/assets/nick-giulioni-resume.pdf']['destination'],'/about/')
+        self.assertEqual(redirects['/(.*)']['has'][0]['value'],'www.giulioni.com')
+        self.assertTrue(self.config['trailingSlash'])
+
+    def test_markup_and_references(self):
+        for url,text in self.pages.items():
+            with self.subTest(url=url):
+                m=Markup(text)
+                ids=[a['id'] for _,a in m.tags if 'id' in a]
+                self.assertEqual(len(ids),len(set(ids)))
+                self.assertFalse(m.attrs('iframe'))
+                for a in m.attrs('script'): self.assertEqual(a.get('type'),'application/ld+json')
+                for tag,a in m.tags:
+                    self.assertFalse(any(k.startswith('on') or k=='style' for k in a))
+                    for key in ['href','src']:
+                        value=a.get(key,'')
+                        if value.startswith('/') and not value.startswith('/api/'):
+                            path=value.split('#')[0]
+                            target=file_for(path) if path.endswith('/') else ROOT/path.lstrip('/')
+                            self.assertTrue(target.exists(),value)
+                    for label in ['for']:
+                        if label in a: self.assertIn(a[label],ids)
+                for a in m.attrs('img'):
+                    for key in ['width','height','alt']: self.assertTrue(a.get(key))
+        for url in ['/','/about/']:
+            blocks=re.findall(r'<script type="application/ld\+json">(.*?)</script>',self.pages[url])
+            self.assertEqual(len(blocks),1)
+            schema=json.loads(blocks[0]); self.assertEqual(schema['@type'],'RealEstateAgent')
+            self.assertEqual([a['name'] for a in schema['areaServed']][:3],['Carmel, Indiana','Westfield, Indiana','Fishers, Indiana'])
+        self.assertIn('fetchpriority="high"',self.pages['/'])
+        self.assertIn('<picture>',self.pages['/'])
+
+    def test_headers_and_deploy_exclusions(self):
+        headers={h['key']:h['value'] for h in self.config['headers'][0]['headers']}
+        self.assertEqual(headers['Content-Security-Policy'],"default-src 'self'; img-src 'self'; style-src 'self'; font-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; object-src 'none'; upgrade-insecure-requests")
+        for key in ['X-Content-Type-Options','Referrer-Policy','Permissions-Policy']: self.assertTrue(headers[key])
+        self.assertNotIn('git',self.config)
+        for path in ['/contact/thanks/','/contact/error/','/api/(.*)']:
+            self.assertIn({'source':path,'headers':[{'key':'X-Robots-Tag','value':'noindex'}]},self.config['headers'])
+        excluded=(ROOT/'.vercelignore').read_text().splitlines()
+        for value in ['/tests','/tools','/docs','/.git','/.vercel','/site.json']: self.assertIn(value,excluded)
+        self.assertNotIn('/api',excluded)
+
+    def test_sitemap_robots_css_fonts(self):
+        tree=ET.parse(ROOT/'sitemap.xml')
+        self.assertEqual({e.text for e in tree.iter('{http://www.sitemaps.org/schemas/sitemap/0.9}loc')},{'https://giulioni.com'+u for u in PATHS})
+        self.assertIn('Disallow: /api/',(ROOT/'robots.txt').read_text())
+        css=(ROOT/'styles.css').read_text()
+        self.assertIn(':focus-visible',css)
+        self.assertIn('min-height:44px',css)
+        for font in re.findall(r'url\("(/assets/fonts/[^\"]+)"\)',css): self.assertTrue((ROOT/font.lstrip('/')).exists())
+
+    def test_area_paragraphs_are_distinct(self):
+        seen=set()
+        for city in AREA_SLUGS:
+            text=self.pages['/areas/'+city+'/'].split('<section class="closing-cta">')[0]
+            self.assertEqual(text.count('<section class="guide-group">'),3)
+            paragraphs=re.findall(r'<div class="guide-item"><h3>.*?</h3><p>(.*?)</p>',text)
+            self.assertGreaterEqual(len(paragraphs),6)
+            for paragraph in paragraphs:
+                self.assertNotIn(paragraph,seen)
+                seen.add(paragraph)
+
+    def test_sell_or_rent_steps_wrap_their_text(self):
+        # Each step is a two-column grid (counter + text); a bare inline element would become its own grid cell.
+        for url in ['/','/sell/']:
+            steps=re.search(r'<ol class="steps">(.*?)</ol>',self.pages[url],re.S).group(1)
+            items=re.findall(r'<li>(.*?)</li>',steps)
+            self.assertEqual(len(items),3)
+            for item in items: self.assertRegex(item,r'^<span>.*</span>$')
+
+    def test_area_guides_keep_primary_towns_first(self):
+        primary=['carmel','westfield','fishers']
+        def order(fragment):
+            found=re.findall(r'href="/areas/([a-z-]+)/"',fragment)
+            seen=[]
+            for slug in found:
+                if slug not in seen: seen.append(slug)
+            return seen
+        for url,text in self.pages.items():
+            with self.subTest(url=url):
+                footer=re.search(r'<nav class="footer-areas".*?</nav>',text,re.S).group()
+                self.assertEqual(order(footer),AREA_SLUGS)
+                menu=re.search(r'<div class="nav-menu">.*?</div>',text,re.S).group()
+                self.assertEqual(order(menu),AREA_SLUGS)
+        self.assertEqual(order(re.search(r'<div class="town-ledger">.*?</section>',self.pages['/areas/'],re.S).group())[:6],AREA_SLUGS)
+        self.assertNotIn('Coming later',self.pages['/areas/'])
+        for slug in AREA_SLUGS:
+            text=self.pages['/areas/'+slug+'/']
+            self.assertEqual(order(re.search(r'<nav class="area-switch".*?</nav>',text,re.S).group()),AREA_SLUGS)
+            self.assertIn('<title>',text)
+
+    def test_photo_slots_collapse_and_render(self):
+        import importlib.util
+        spec=importlib.util.spec_from_file_location('render_site',ROOT/'tools/render_site.py')
+        rs=importlib.util.module_from_spec(spec); spec.loader.exec_module(rs)
+        self.assertEqual(set(self.site['area_photos']),set(AREA_SLUGS))
+        if not self.site.get('hero_photo'): self.assertIn('/assets/portrait-nick-',re.search(r'<section class="home-hero">.*?</section>',self.pages['/'],re.S).group())
+        if not self.site.get('about_photos'): self.assertNotIn('about-photos',self.pages['/about/'])
+        for slug in AREA_SLUGS:
+            if not self.site['area_photos'][slug]: self.assertNotIn('town-photo',self.pages['/areas/'+slug+'/'])
+        sample={'id':'1602-w-76th-pl-exterior','alt':'Sample alt','caption':'Sample caption','credit':'Sample Credit','license':'CC BY 4.0','license_url':'https://creativecommons.org/licenses/by/4.0/','source_url':'https://example.org/photo'}
+        html=rs.photo('work',sample,'100vw','town-photo__figure')
+        for needle in ['type="image/avif"','type="image/webp"','.jpg 1600w','alt="Sample alt"','Sample caption','Photo: <a href="https://example.org/photo">Sample Credit</a>','CC BY 4.0</a>','loading="lazy"']:
+            self.assertIn(needle,html)
+        rs.NICK_DIR=rs.AREA_DIR='work'
+        self.assertIn('fetchpriority="high"',rs.photo('work',sample,'100vw','x',priority=True))
+        rs.S=dict(rs.S,area_photos={'carmel':sample},about_photos=[sample,sample,sample],hero_photo={'id':'1602-w-76th-pl-exterior','alt':'Hero alt'})
+        self.assertIn('class="town-photo"',rs.area_photo('carmel'))
+        self.assertEqual(rs.area_photo('westfield'),'')
+        with self.assertRaises(ValueError): rs.S=dict(rs.S,area_photos={'carmel':dict(sample,credit='')}); rs.area_photo('carmel')
+        self.assertEqual(rs.about_photos().count('<figure'),3)
+        self.assertIn('about-photo--wide',rs.about_photos())
+        self.assertIn('alt="Hero alt"',rs.hero_figure())
+        rs.S=dict(rs.S,about_photos=[sample,dict(sample,fit='contain'),dict(sample,fit='cover')])
+        figures=re.findall(r'<figure class="([^"]+)">.*?</figure>',rs.about_photos())
+        self.assertEqual(figures,['about-photo','about-photo about-photo--contain','about-photo about-photo--wide'])
+        with self.assertRaises(ValueError): rs.S=dict(rs.S,about_photos=[dict(sample,fit='crop')]); rs.about_photos()
+        half=rs.about_sizes(3,0); wide=rs.about_sizes(3,2); solo=rs.about_sizes(1,0)
+        self.assertTrue(half.startswith(f'(max-width: {rs.ABOUT_STACK}px) {rs.PAGE_WIDTH}, '))
+        self.assertEqual(rs.about_sizes(2,1),half)
+        self.assertNotEqual(wide,half); self.assertNotEqual(solo,half)
+        with self.assertRaises(FileNotFoundError): rs.photo('work',{'id':'missing-file','alt':'x'},'100vw','x')
+
+    def test_nick_photo_slots_preserve_family_frame(self):
+        import importlib.util
+        spec=importlib.util.spec_from_file_location('render_site',ROOT/'tools/render_site.py')
+        rs=importlib.util.module_from_spec(spec); spec.loader.exec_module(rs)
+        expected={
+            'hero-01':[(533,800),(800,1200),(1067,1600)],
+            'about-nick-diane-01':[(640,800),(960,1200),(1280,1600)],
+            'about-family-01':[(640,800),(960,1200),(1280,1600)],
+            'about-solo-02':[(800,534),(1200,800),(1600,1067)],
         }
-        for directory in ("docs", "tests", "tools"):
-            paths.update(
-                str(path.relative_to(REPO_ROOT))
-                for path in Path(_path(directory)).rglob("*") if path.is_file()
-            )
-        self.assertEqual(paths, self.ignored_paths(paths))
+        for id,dimensions in expected.items():
+            for n,dim in zip([800,1200,1600],dimensions):
+                self.assertEqual(rs.jpeg_size(ROOT/f'assets/nick/{id}-{n}.jpg'),dim)
+                for ext in ['avif','webp','jpg']:
+                    self.assertTrue((ROOT/f'assets/nick/{id}-{n}.{ext}').is_file())
+        about=self.pages['/about/']
+        section=re.search(r'<section class="about-photos.*?</section>',about).group()
+        self.assertEqual(section.count('<figure'),3)
+        self.assertEqual([a['alt'] for a in Markup(section).attrs('img')],[p['alt'] for p in self.site['about_photos']])
+        family_item=next(p for p in self.site['about_photos'] if p['id']=='about-family-01')
+        self.assertEqual(family_item.get('fit'),'contain')
+        family=re.search(r'<figure class="about-photo about-photo--contain">.*?</figure>',section).group()
+        self.assertEqual(section.count('about-photo--contain'),1)
+        self.assertIn('/assets/nick/about-family-01-1600.jpg 1280w',family)
+        self.assertIn('width="1280" height="1600"',family)
+        self.assertIn('Photo: Ashlyn Peters Photography',family)
+        self.assertNotIn('hero-portrait',family)
+        self.assertNotIn('style=',family)
+        css=(ROOT/'styles.css').read_text()
+        rule=re.search(r'\.about-photo--contain img\s*{([^}]+)}',css).group(1)
+        self.assertNotIn('about-photo--family',css)
+        stack=re.search(r'@media \(max-width: (\d+)px\) {\s*\.about-photos--2, \.about-photos--3 { grid-template-columns: minmax\(0, 1fr\); }',css)
+        self.assertEqual(int(stack.group(1)),rs.ABOUT_STACK)
+        self.assertIn('aspect-ratio: 4 / 5',rule)
+        self.assertIn('object-fit: contain',rule)
+        for selectors,decl in re.findall(r'([^{}]+){([^{}]*)}',css):
+            if 'object-position' in decl:
+                self.assertNotRegex(selectors,r'about-photo|(?:^|,)\s*(?:img|picture|figure)\b')
 
-    def test_font_assets_and_licenses_are_kept(self):
-        paths = {
-            "assets/fonts/instrument-sans-latin-wght.woff2",
-            "assets/fonts/instrumentsans-OFL.txt",
-            "assets/fonts/newsreader-OFL.txt",
-            "assets/fonts/newsreader-latin-italic.woff2",
-            "assets/fonts/newsreader-latin-normal.woff2",
-        }
-        self.assertEqual(set(), self.ignored_paths(paths))
+    def test_work_gallery_slot(self):
+        items=self.site['work_gallery']
+        self.assertIsInstance(items,list)
+        credit=self.site.get('work_gallery_credit','')
+        for url,text in self.pages.items():
+            with self.subTest(url=url):
+                if not items or url not in ['/','/about/']:
+                    self.assertNotIn('work-gallery',text)
+                else:
+                    self.assertEqual(text.count('<li class="work-item'),len(items))
+                    self.assertEqual('class="work-credit"' in text,bool(credit.strip()))
+                    for item in items: self.assertIn('alt="'+item['alt']+'"',text)
+        ids=[item['id'] for item in items]
+        self.assertEqual(len(ids),len(set(ids)))
+        for item in items:
+            for key in ['id','place','detail','alt']: self.assertTrue(item.get(key),key)
+            for ext in ['avif','webp','jpg']:
+                self.assertTrue(list((ROOT/'assets/work').glob(item['id']+'-*.'+ext)),item['id']+' '+ext)
 
-    def test_nested_markdown_is_excluded(self):
-        paths = {
-            "assets/fonts/README.md", "future/notes.md",
-            "future/deep/nested/notes.md",
-        }
-        self.assertEqual(paths, self.ignored_paths(paths))
+    def test_image_metadata_and_cards(self):
+        for path in (ROOT/'assets').rglob('*'):
+            if not path.is_file(): continue
+            data=path.read_bytes()
+            if path.suffix=='.png':
+                offset=8
+                while offset<len(data):
+                    size=struct.unpack('>I',data[offset:offset+4])[0]; kind=data[offset+4:offset+8]
+                    self.assertNotIn(kind,[b'eXIf',b'tEXt',b'zTXt',b'iTXt'],path.name)
+                    offset+=12+size
+            elif path.suffix=='.avif':
+                self.assertNotIn(b'Exif',data,path.name)
+                self.assertNotIn(b'<x:xmpmeta',data,path.name)
+                for box in re.findall(rb'colr(....)',data): self.assertNotIn(box,[b'prof',b'rICC'],path.name)
+            elif path.suffix=='.webp':
+                for chunk in [b'EXIF',b'XMP ',b'ICCP']: self.assertNotIn(chunk,data,path.name)
+            elif path.suffix in ['.jpg','.jpeg']:
+                for marker in [b'Exif\x00\x00',b'http://ns.adobe.com/',b'ICC_PROFILE']: self.assertNotIn(marker,data,path.name)
+        for card in ['home','sell','buy','areas','about','podcast']:
+            data=(ROOT/f'assets/og-{card}.png').read_bytes()
+            self.assertEqual(struct.unpack('>II',data[16:24]),(1200,630))
 
-    def test_site_files_and_references_are_kept(self):
-        root = Path(REPO_ROOT)
-        pages = sorted(root.rglob("*.html"))
-        paths = {"styles.css", "robots.txt", "sitemap.xml", "vercel.json",
-                 "favicon.ico", "favicon.svg", "apple-touch-icon.png"}
-        paths.update(str(page.relative_to(root)) for page in pages)
-        paths.update(
-            str(path.relative_to(root)) for path in (root / "assets").rglob("*")
-            if path.is_file() and path.name != "favicon-preview.png"
-            and path.suffix != ".md"
-        )
-        urls = []
-        for page in pages:
-            parser = DeploymentReferences()
-            parser.feed(page.read_text(encoding="utf-8"))
-            base = "https://giulioni.com/" + str(page.relative_to(root))
-            urls.extend((base, url) for url in parser.urls)
-        urls.extend(
-            ("https://giulioni.com/", node.text)
-            for node in ET.parse(_path("sitemap.xml")).iter()
-            if node.tag.endswith("}loc")
-        )
-        urls.extend(
-            ("https://giulioni.com/", url)
-            for url in re.findall(r"(?im)^Sitemap:\s*(\S+)",
-                                  Path(_path("robots.txt")).read_text())
-        )
-        urls.extend(
-            ("https://giulioni.com/styles.css", url.strip("\"' "))
-            for url in re.findall(r"url\(([^)]+)\)", _read_css())
-        )
-        for base, reference in urls:
-            url = urlsplit(urljoin(base, reference))
-            if url.scheme not in ("http", "https") or url.hostname not in (
-                "giulioni.com", "www.giulioni.com",
-            ):
-                continue
-            path = unquote(url.path).lstrip("/")
-            if not path or url.path.endswith("/") or (root / path).is_dir():
-                path += "index.html"
-            self.assertTrue((root / path).is_file(), "missing site reference: " + path)
-            paths.add(path)
-        self.assertEqual(set(), self.ignored_paths(paths))
-
-
-class CspTests(unittest.TestCase):
-    """The deployed CSP never grants inline or eval execution."""
-
-    def test_csp_forbids_unsafe_inline_and_eval(self):
-        path = _path("vercel.json")
-        self.assertTrue(os.path.isfile(path), "vercel.json is missing")
-        with open(path, encoding="utf-8") as fh:
-            vercel = fh.read()
-        self.assertNotIn("'unsafe-inline'", vercel, "CSP must not allow 'unsafe-inline'")
-        self.assertNotIn("'unsafe-eval'", vercel, "CSP must not allow 'unsafe-eval'")
-
-    def test_styles_and_fonts_are_same_origin_only(self):
-        with open(_path("vercel.json"), encoding="utf-8") as fh:
-            vercel = json.load(fh)
-        policies = [
-            header["value"]
-            for rule in vercel["headers"]
-            for header in rule["headers"]
-            if header["key"].lower() == "content-security-policy"
-        ]
-        self.assertTrue(policies, "a CSP must be configured")
-        for policy in policies:
-            directives = dict(
-                (parts[0], parts[1:])
-                for directive in policy.split(";")
-                if (parts := directive.split())
-            )
-            self.assertEqual(["'self'"], directives.get("style-src"))
-            self.assertEqual(["'self'"], directives.get("font-src"))
-
-
-class FontTests(unittest.TestCase):
-    """The existing typefaces load locally without a third-party CSS request."""
-
-    FACES = {
-        "instrument-sans-latin-wght.woff2": ("Instrument Sans", "normal", "400 600"),
-        "newsreader-latin-normal.woff2": ("Newsreader", "normal", "400"),
-        "newsreader-latin-italic.woff2": ("Newsreader", "italic", "400"),
-    }
-
-    def test_no_google_font_references_in_any_page_css_or_csp(self):
-        paths = ["styles.css", "vercel.json"]
-        for directory, dirs, files in os.walk(REPO_ROOT):
-            dirs[:] = [d for d in dirs if not d.startswith(".")]
-            paths.extend(
-                os.path.relpath(os.path.join(directory, name), REPO_ROOT)
-                for name in files if name.endswith(".html")
-            )
-        for path in paths:
-            with self.subTest(path=path), open(_path(path), encoding="utf-8") as fh:
-                self.assertNotRegex(fh.read(), r"(?i)(?:googleapis|gstatic)\.com")
-
-    def test_font_faces_reference_real_woff2_files_with_original_styles(self):
-        faces = re.findall(r"@font-face\s*\{([^}]+)\}", _read_css())
-        self.assertEqual(len(self.FACES), len(faces))
-        referenced = set()
-        for face in faces:
-            match = re.search(r'url\("(/assets/fonts/([^"/]+))"\)', face)
-            self.assertIsNotNone(match, "font sources must be root-relative")
-            url, filename = match.groups()
-            self.assertIn(filename, self.FACES)
-            referenced.add(filename)
-            family, style, weight = self.FACES[filename]
-            self.assertIn('font-family: "%s";' % family, face)
-            self.assertIn("font-style: %s;" % style, face)
-            self.assertIn("font-weight: %s;" % weight, face)
-            self.assertIn("font-display: swap;", face)
-            with open(_path(url.lstrip("/")), "rb") as fh:
-                self.assertEqual(b"wOF2", fh.read(4), "must be a WOFF2 file")
-        self.assertEqual(set(self.FACES), referenced)
-
-    def test_each_page_preloads_only_the_two_above_fold_faces(self):
-        expected = {
-            "/assets/fonts/instrument-sans-latin-wght.woff2",
-            "/assets/fonts/newsreader-latin-normal.woff2",
-        }
-        for name, path in {**PAGES, "not_found": "404.html"}.items():
-            with self.subTest(page=name):
-                with open(_path(path), encoding="utf-8") as fh:
-                    head = fh.read().split("</head>", 1)[0]
-                links = re.findall(r'<link\b[^>]*\brel="preload"[^>]*>', head)
-                self.assertEqual(2, len(links))
-                urls = set()
-                for link in links:
-                    attrs = dict(re.findall(r'(\w+)="([^"]*)"', link))
-                    self.assertEqual("font", attrs.get("as"))
-                    self.assertEqual("font/woff2", attrs.get("type"))
-                    self.assertRegex(link, r"\bcrossorigin(?:\s|=|>)")
-                    urls.add(attrs.get("href"))
-                self.assertEqual(expected, urls)
-
-    def test_both_font_licenses_ship_with_the_fonts(self):
-        for family in ("instrumentsans", "newsreader"):
-            with open(_path("assets/fonts/%s-OFL.txt" % family), encoding="utf-8") as fh:
-                self.assertIn("SIL OPEN FONT LICENSE Version 1.1", fh.read())
-
-
-if __name__ == "__main__":
-    unittest.main()
+if __name__=='__main__': unittest.main()

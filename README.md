@@ -1,97 +1,38 @@
 # giulioni.com
 
-Personal site for Nick Giulioni. Static. No build step.
+Nick Giulioni’s static Central Indiana buyer and seller site. Limestone, Monon green and brick, self-hosted Instrument Serif and Instrument Sans, and no executable page scripts.
 
-## Design system
-
-Cream / forest / rust editorial identity:
-
-| Token | Hex | Usage |
-|-------|-----|-------|
-| paper | #f6f3ec | Page background |
-| paper-band | #f1ede4 | Subtle bands |
-| ink | #16211c | Primary text |
-| ink-soft | #4a544e | Body text |
-| ink-mute | #6e695e | Secondary text |
-| rust | #b8501f | Accent, links |
-| rust-on-dark | #d97a45 | Accent on dark |
-| rule | #e0dbd0 | Borders |
-| dark-band | #16211c | Product band |
-
-Typography:
-- Headings: Newsreader (Google Fonts, weight 400)
-- Body / UI: Instrument Sans (400/500/600)
-- Labels: ui-monospace
-
-Borders, pills, and light border-radius are part of the system.
+Pages: `/`, `/sell/`, `/buy/`, `/areas/`, `/areas/carmel/`, `/areas/westfield/`, `/areas/fishers/`, `/areas/north-indianapolis/`, `/areas/noblesville/`, `/areas/zionsville/`, `/about/`, `/contact/`, `/podcast/`, `/privacy/`, `/contact/thanks/`, `/contact/error/`, and `404.html`.
 
 ## Local preview
 
-```sh
-python3 -m http.server 8791 --directory .
-```
+Run `python3 -m http.server 8000`, then open `http://localhost:8000`. This previews static pages only. Use `vercel dev` for the same-origin function; keep notification credentials unset for local failure-path testing.
 
-Open `http://127.0.0.1:8791/`, `http://127.0.0.1:8791/career/`,
-`http://127.0.0.1:8791/work/`, or `http://127.0.0.1:8791/media/`.
+Shared values live in `site.json`. After changing them or page copy, run `python3 tools/render_site.py` and commit the generated HTML. There is no deployment build step. Share cards regenerate with `python3 tools/make_og_cards.py` using Pillow, fonttools and brotli, installed in a local virtual environment. The tool uses the repository fonts and existing portrait.
 
-## Deploy subset
+## Consult requests
 
-| Path | Role |
-|---|---|
-| `index.html` | Home page (hero + track record + product band + closing CTA) |
-| `career/index.html` | Resume page (target role, summary, Ballpark bridge, experience, education) |
-| `work/index.html` | Selected work page (Ballpark case + Also shipped + receipts) |
-| `media/index.html` | Earlier media archive (seven incumbent podcast appearances) |
-| `styles.css` | Cream/forest/rust editorial design system |
-| `assets/portrait-nick.jpg` | Hero portrait |
-| `assets/nick-giulioni-resume.pdf` | Downloadable resume (PDF) |
-| `vercel.json` | Security headers (CSP allows Google Fonts) |
+Plain HTML forms POST to `api/consult.js`. It validates, applies a best-effort in-memory limit, sends email through Resend and a text through Quo, then redirects. No database or campaign enrollment. Email is the stored record; text failure does not discard a successful email. No dependencies are needed at runtime.
 
-## Regenerating the resume PDF
+Configuration names: `RESEND_API_KEY`, `NOTIFY_EMAIL_TO`, `NOTIFY_EMAIL_FROM`, `QUO_API_KEY`, `QUO_FROM_NUMBER`, `NOTIFY_SMS_TO`. See DEPLOYMENT.md for setup requirements. Leave these unset until Nick authorizes configuration.
 
-The resume PDF is generated from `career/index.html` using headless Chrome.
-It must stay at two Letter pages with selectable text and the required
-contact tokens.
+## Checks
 
-```sh
-./tools/regen_resume_pdf.sh
-```
+`python3 -m unittest discover -s tests -v`
 
-The script:
+`node --test`
 
-1. Picks a free local port.
-2. Starts `python3 -m http.server` against the repo root on that port.
-3. Waits for the server to respond.
-4. Renders `/career/` with Chrome headless `--print-to-pdf` and `@page letter`
-   from the existing print CSS.
-5. Validates the PDF: `pdfinfo` page count `<= 2`, `pdftotext` returns
-   `resume`, `nick@giulioni.com`, `linkedin.com/in/nickgiulioni`, and
-   `ballpark`.
-6. Moves the temp PDF to `assets/nick-giulioni-resume.pdf`.
-7. Tears the local server down on `EXIT` / `INT` / `TERM`.
+Tests cover static structure, shared copy, links, forms, headers, image metadata, redirects, and mocked function notifications. No test makes a real notification request.
 
-Override the Chrome binary, `pdfinfo`, or `pdftotext` paths via
-`CHROME_BIN`, `PDFINFO_BIN`, `PDFTOTEXT_BIN`. Override the port via
-`RESUME_PDF_PORT`. No immutable cache is written; the script can be re-run
-freely.
+## Photos
 
-## Tests
+All photos are driven by `site.json` and must be metadata-stripped (EXIF, GPS, XMP, ICC) before they are committed; the tests check every file under `assets/`. Each photo is a set of files named `<id>-<size>.<avif|webp|jpg>`, where size is the long edge in pixels (800, 1200, 1600 and, for wide area photos, 2400). Empty slots render nothing (the home hero falls back to the existing portrait).
 
-```sh
-python3 -m unittest discover -s tests -v
-```
+- `work_gallery`: ordered list of `{"id", "place", "detail", "alt"}`; files in `assets/work/`. `work_gallery_credit` is an optional credit line.
+- `hero_photo`: `null` or `{"id", "alt"}`; files in `assets/nick/`. Portrait 2:3.
+- `about_photos`: up to three `{"id", "alt", "caption"?, "credit"?, "fit"?}`; files in `assets/nick/`. Portrait 4:5 for the first two photos, side by side above 600px wide and stacked at 600px and below, with a full-width 3:2 landscape below when three are supplied; landscape 3:2 for one. `"fit": "contain"` shows the full 4:5 frame with `object-fit: contain` and no `object-position`, never cropped; the family photo must keep it.
+- `area_photos`: one key per area slug, `null` or `{"id", "alt", "caption", "credit", "license"?, "license_url"?, "source_url"?}`; files in `assets/areas/`. Landscape 3:2. A credit is required.
 
-Tests cover the recruiter-first nav, primary actions, track record section,
-product band, estimate image, mixed-signal removal, the Resume page sections,
-the Selected work case study with four labelled facts, the Earlier media
-archive, the resume PDF, the responsive / safe-area / coarse-pointer /
-reduced-motion CSS, the print body size floor, CSP, markup hygiene, balanced
-CSS braces, root-relative references, new palette tokens, and the absence of
-Open Design-only artifacts.
+After editing, run `python3 tools/render_site.py` and both test commands, and commit the regenerated HTML.
 
-## Provenance
-
-Editorial redesign (cream/forest/rust) on `cursor/editorial-redesign-19b6`,
-2026-08-16. Replaces the connected-letterhead system. CSS additions
-(viewport-fit, safe-area, coarse-pointer 44 px, reduced-motion) remain
-from earlier recruiter-first work.
+The sunflower composited into the family photo uses Google’s [Noto Emoji U+1F33B artwork](https://github.com/googlefonts/noto-emoji/blob/22e564626297b4df0a40570ad81d6c05cc7c38bd/svg/emoji_u1f33b.svg), copyright 2013 Google, Inc., under the [Apache License 2.0](https://github.com/googlefonts/noto-emoji/blob/22e564626297b4df0a40570ad81d6c05cc7c38bd/svg/LICENSE). The artwork was scaled and composited into the photograph.

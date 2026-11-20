@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Render the 1200x630 social share cards in assets/.
 
-Portrait plus title, cream/forest/rust palette. Run after changing card copy:
+Portrait plus title, limestone/green/brick palette. Run after changing card copy:
 
     python3 tools/make_og_cards.py
 """
@@ -15,40 +15,34 @@ ASSETS = os.path.join(REPO_ROOT, "assets")
 PORTRAIT = os.path.join(ASSETS, "portrait-nick.jpg")
 
 W, H = 1200, 630
-PAPER = (246, 243, 236)
-INK = (22, 33, 28)
-INK_SOFT = (74, 84, 78)
-RUST = (184, 80, 31)
+PAPER = (244, 239, 230)
+INK = (21, 33, 27)
+INK_SOFT = (70, 82, 75)
+RUST = (154, 59, 26)
 
-SERIF = "/System/Library/Fonts/Supplemental/Georgia.ttf"
-SANS = "/System/Library/Fonts/Helvetica.ttc"
+SERIF = os.path.join(ASSETS, "fonts/instrument-serif-latin-normal.woff2")
+SANS = os.path.join(ASSETS, "fonts/instrument-sans-latin-wght.woff2")
 
-CARDS = (
-    (
-        "og-home.png",
-        "Nick Giulioni",
-        "An operator who doesn't\naccept the status quo.",
-        "AI product, solutions, enablement, forward-deployed",
-    ),
-    (
-        "og-career.png",
-        "Resume",
-        "Razer, Corsair, Meta,\nOff Leash, Ballpark.",
-        "Ten years commercial, then built and ran the business",
-    ),
-    (
-        "og-work.png",
-        "Selected work",
-        "Ballpark: AI estimating\nbuilt inside the job.",
-        "Shipped from the company that needed it",
-    ),
-    (
-        "og-media.png",
-        "Earlier media",
-        "Podcast and interview\nappearances.",
-        "A record of past media coverage",
-    ),
-)
+CARDS = tuple(("og-"+key+".png", "Nick Giulioni", title, "Indianapolis north side & suburbs") for key,title in [
+    ("home", "A practical eye for\nyour next move."),
+    ("sell", "Thinking about\nselling your home?"),
+    ("buy", "Find the town.\nThen find the home."),
+    ("areas", "Find your area.\nPlan your move."),
+    ("about", "An agent with\nan investor’s eye."),
+    ("podcast", "Indiana real estate\nin conversation."),
+])
+
+
+def load_font(path, size):
+    # FreeType builds vary in WOFF2 support; decode the self-hosted font if needed.
+    from io import BytesIO
+    from fontTools.ttLib import TTFont
+    font = TTFont(path)
+    font.flavor = None
+    buffer = BytesIO()
+    font.save(buffer)
+    buffer.seek(0)
+    return ImageFont.truetype(buffer, size)
 
 
 def wrapped(draw, text, font, fill, x, y, leading):
@@ -75,13 +69,13 @@ def render(name, eyebrow, title, footer):
     card.paste(portrait.crop((left, top, left + panel_w, top + H)), (W - panel_w, 0))
     draw.rectangle([W - panel_w - 6, 0, W - panel_w - 1, H], fill=RUST)
 
-    eyebrow_font = ImageFont.truetype(SANS, 26)
-    title_font = ImageFont.truetype(SERIF, 62)
-    footer_font = ImageFont.truetype(SANS, 24)
+    eyebrow_font = load_font(SANS, 26)
+    title_font = load_font(SERIF, 78)
+    footer_font = load_font(SANS, 24)
 
     x = 72
-    draw.text((x, 104), eyebrow.upper(), font=eyebrow_font, fill=RUST)
-    wrapped(draw, title, title_font, INK, x, 168, 78)
+    draw.text((x, 104), eyebrow, font=eyebrow_font, fill=RUST)
+    wrapped(draw, title, title_font, INK, x, 160, 84)
     draw.line([(x, H - 152), (x + 96, H - 152)], fill=RUST, width=3)
     draw.text((x, H - 122), footer, font=footer_font, fill=INK_SOFT)
     draw.text((x, H - 84), "giulioni.com", font=footer_font, fill=INK)
