@@ -3,6 +3,7 @@ import json
 import re
 import struct
 import unittest
+from html import escape
 from html.parser import HTMLParser
 from pathlib import Path
 import xml.etree.ElementTree as ET
@@ -101,7 +102,15 @@ class SiteTests(unittest.TestCase):
             self.assertEqual(text.count('class="mgmt-referral"'),int(url=='/sell/'))
             self.assertEqual(text.count('https://threaltyinc.com/'),int(url=='/sell/'))
             self.assertEqual(text.count('https://ballpark.build'),int(url=='/about/'))
-        self.assertEqual(len(Markup(self.pages['/podcast/']).attrs('article')),6)
+        appearances = self.site['podcast_appearances']
+        podcast = self.pages['/podcast/']
+        self.assertEqual(len(Markup(podcast).attrs('article')), 12)
+        for item in appearances:
+            self.assertIn('href="'+escape(item['url'], quote=True)+'"', podcast)
+            self.assertIn(escape(item['title']), podcast)
+        self.assertEqual(podcast.count('Indy REI with T&amp;H Realty (guest)'), 3)
+        self.assertIn('Finding Deals In Today', podcast)
+        self.assertIn('Simple Quarters, Ep 187', podcast)
 
     def test_removed_paths_and_redirects(self):
         paths=['career','work','media','docs','assets/nick-giulioni-resume.pdf','tools/regen_resume_pdf.sh','assets/og-career.png','assets/og-work.png','assets/og-media.png']
