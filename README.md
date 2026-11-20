@@ -34,3 +34,5 @@ All photos are driven by `site.json` and must be metadata-stripped (EXIF, GPS, X
 - `area_photos`: one key per area slug, `null` or `{"id", "alt", "caption", "credit", "license"?, "license_url"?, "source_url"?}`; files in `assets/areas/`. Landscape 3:2. A credit is required.
 
 After editing, run `python3 tools/render_site.py` and both test commands, and commit the regenerated HTML.
+
+The sunflower composited into the family photo uses Google’s [Noto Emoji U+1F33B artwork](https://github.com/googlefonts/noto-emoji/blob/22e564626297b4df0a40570ad81d6c05cc7c38bd/svg/emoji_u1f33b.svg), copyright 2013 Google, Inc., under the [Apache License 2.0](https://github.com/googlefonts/noto-emoji/blob/22e564626297b4df0a40570ad81d6c05cc7c38bd/svg/LICENSE). The artwork was scaled and composited into the photograph.
